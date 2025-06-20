@@ -29,6 +29,8 @@ public partial class User
 
     public double? Rating { get; set; }
 
+    public string? ReasonForLeave { get; set; }
+
     public virtual ICollection<Alert> Alerts { get; set; } = new List<Alert>();
 
     public virtual ICollection<Leaf> LeafApprovedByNavigations { get; set; } = new List<Leaf>();
@@ -40,6 +42,8 @@ public partial class User
     public virtual ICollection<Request> Requests { get; set; } = new List<Request>();
 
     public virtual Role? Role { get; set; }
+
+    public virtual ICollection<ScheduleDetail> ScheduleDetailBackupForUsers { get; set; } = new List<ScheduleDetail>();
 
     public virtual ICollection<ScheduleDetail> ScheduleDetailSupervisors { get; set; } = new List<ScheduleDetail>();
 
