@@ -1,0 +1,33 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics.Contracts;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using MSWT_BussinessObject.Model;
+using MSWT_BussinessObject.ResponseDTO;
+using static MSWT_BussinessObject.RequestDTO.RequestDTO;
+
+namespace MSWT_Services.IServices
+{
+    public interface IUserService
+    {
+        #region CRUD User
+        Task<IEnumerable<User>> GetAllUsers();
+        Task<User> GetUserById(string id);
+        //Task AddUser(UserRegisterDTO userDto);
+        //Task UpdateUser(int id, UserDTO userDto);
+        Task DeleteUser(string id);
+        #endregion
+
+
+
+        Task<ResponseDTO> Login(LoginRequestDTO userDto);
+        //Task<ResponseDTO> ChangePassword(ChangePasswordDTO userDto);
+        //Task<string> GoogleLoginAsync(string idToken);
+        Task RecoverUser(string id);
+        //Task<ResponseDTO> GetUserProfile();
+        //Task<ResponseDTO> UpdateUserProfile(UserUpdateDTO userDto);
+
+    }
+}
