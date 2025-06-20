@@ -184,6 +184,7 @@ public partial class SmartTrashBinandCleaningStaffManagementContext : DbContext
                 .HasDefaultValueSql("(newid())");
             entity.Property(e => e.Description).HasMaxLength(150);
             entity.Property(e => e.Image).HasMaxLength(150);
+            entity.Property(e => e.Priority).HasMaxLength(50);
             entity.Property(e => e.ReportName).HasMaxLength(50);
             entity.Property(e => e.ReportType).HasMaxLength(50);
             entity.Property(e => e.Status).HasMaxLength(50);
@@ -289,15 +290,23 @@ public partial class SmartTrashBinandCleaningStaffManagementContext : DbContext
             entity.Property(e => e.ScheduleDetailId)
                 .HasMaxLength(50)
                 .HasDefaultValueSql("(newid())");
+            entity.Property(e => e.BackupForUserId).HasMaxLength(50);
             entity.Property(e => e.Description).HasMaxLength(150);
+            entity.Property(e => e.EndTime).HasPrecision(0);
             entity.Property(e => e.EvidenceImage).HasMaxLength(250);
+            entity.Property(e => e.IsBackup).HasMaxLength(50);
             entity.Property(e => e.Rating)
                 .HasMaxLength(10)
                 .IsFixedLength();
             entity.Property(e => e.ScheduleId).HasMaxLength(50);
+            entity.Property(e => e.StartTime).HasPrecision(0);
             entity.Property(e => e.Status).HasMaxLength(50);
             entity.Property(e => e.SupervisorId).HasMaxLength(50);
             entity.Property(e => e.WorkerId).HasMaxLength(50);
+
+            entity.HasOne(d => d.BackupForUser).WithMany(p => p.ScheduleDetailBackupForUsers)
+                .HasForeignKey(d => d.BackupForUserId)
+                .HasConstraintName("ScheduleDetails_Users_FK");
 
             entity.HasOne(d => d.Schedule).WithMany(p => p.ScheduleDetails)
                 .HasForeignKey(d => d.ScheduleId)
@@ -390,6 +399,7 @@ public partial class SmartTrashBinandCleaningStaffManagementContext : DbContext
             entity.Property(e => e.Phone)
                 .HasMaxLength(50)
                 .IsUnicode(false);
+            entity.Property(e => e.ReasonForLeave).HasMaxLength(100);
             entity.Property(e => e.RoleId).HasMaxLength(50);
             entity.Property(e => e.Status).HasMaxLength(50);
             entity.Property(e => e.UserName)

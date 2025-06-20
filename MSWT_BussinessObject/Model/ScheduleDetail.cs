@@ -23,6 +23,16 @@ public partial class ScheduleDetail
 
     public string? EvidenceImage { get; set; }
 
+    public TimeOnly? StartTime { get; set; }
+
+    public TimeOnly? EndTime { get; set; }
+
+    public string? IsBackup { get; set; }
+
+    public string? BackupForUserId { get; set; }
+
+    public virtual User? BackupForUser { get; set; }
+
     public virtual Schedule? Schedule { get; set; }
 
     public virtual User? Supervisor { get; set; }
