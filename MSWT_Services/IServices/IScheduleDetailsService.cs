@@ -14,5 +14,8 @@ namespace MSWT_Services.IServices
         Task<IEnumerable<ScheduleDetail>> GetAllSchedule();
         Task<ScheduleDetail> GetScheduleById(string id);
         Task UpdateSchedule(ScheduleDetail scheduleDetail);
+
+        Task<bool> AddWorkerToSchedule(string id, string workerId);
+        Task<bool> AddSupervisorToSchedule(string id, string supervisorId);
     }
 }

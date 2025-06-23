@@ -47,5 +47,39 @@ namespace MSWT_API.Controllers
         }
         #endregion
 
+        [HttpPut("user/worker/{id}")]
+        public async Task<IActionResult> AssignWorker(string id, [FromBody] string userId)
+        {
+            try
+            {
+                var result = await _scheduleDetailsService.AddWorkerToSchedule(id, userId);
+                if (!result)
+                    return BadRequest(new { message = "Failed to assign worker to schedule." });
+
+                return Ok(new { message = "Worker assigned successfully." });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpPut("user/supervisor/{id}")]
+        public async Task<IActionResult> AssignSupervisor(string id, [FromBody] string userId)
+        {
+            try
+            {
+                var result = await _scheduleDetailsService.AddSupervisorToSchedule(id, userId);
+                if (!result)
+                    return BadRequest(new { message = "Failed to assign supervisor to schedule." });
+
+                return Ok(new { message = "Supervisor assigned successfully." });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
     }
 }
