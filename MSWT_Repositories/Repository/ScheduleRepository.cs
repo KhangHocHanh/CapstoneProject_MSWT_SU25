@@ -18,7 +18,14 @@ namespace MSWT_Repositories.Repository
 
         public async Task<Schedule> GetByIdAsync(string id)
         {
-            return await _context.Schedules.FindAsync(id);
+            return await _context.Schedules
+        .Include(s => s.Area)
+        .Include(s => s.Assignment)
+        .Include(s => s.Restroom)
+        .Include(s => s.TrashBin)
+        .Include(s => s.Shift)
+        .Include(s => s.ScheduleDetails)
+        .FirstOrDefaultAsync(s => s.ScheduleId == id);
         }
 
         public async Task AddAsync(Schedule schedule)
@@ -39,7 +46,14 @@ namespace MSWT_Repositories.Repository
 
         async Task<IEnumerable<Schedule>> IScheduleRepository.GetAllAsync()
         {
-            return await _context.Schedules.ToListAsync();
+            return await _context.Schedules
+        .Include(s => s.Area)
+        .Include(s => s.Assignment)
+        .Include(s => s.Restroom)
+        .Include(s => s.TrashBin)
+        .Include(s => s.Shift)
+        .Include(s => s.ScheduleDetails)
+        .ToListAsync();
         }
 
         public async Task UpdateAsync(Schedule schedule)

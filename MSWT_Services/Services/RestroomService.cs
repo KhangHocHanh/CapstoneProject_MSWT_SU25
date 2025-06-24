@@ -1,4 +1,6 @@
-﻿using MSWT_BussinessObject.Model;
+﻿using AutoMapper;
+using MSWT_BussinessObject.Model;
+using MSWT_BussinessObject.ResponseDTO;
 using MSWT_Repositories.IRepository;
 using MSWT_Services.IServices;
 using System;
@@ -12,9 +14,11 @@ namespace MSWT_Services.Services
     public class RestroomService : IRestroomService
     {
         private readonly IRestroomRepository _restroomRepository;
-        public RestroomService(IRestroomRepository restroomRepository)
+        private readonly IMapper _mapper;
+        public RestroomService(IRestroomRepository restroomRepository, IMapper mapper)
         {
             _restroomRepository = restroomRepository;
+            _mapper = mapper;
         }
 
         public async Task AddRestroom(Restroom restroom)
@@ -27,14 +31,17 @@ namespace MSWT_Services.Services
             await _restroomRepository.DeleteAsync(id);
         }
 
-        public async Task<IEnumerable<Restroom>> GetAllRestrooms()
+        public async Task<IEnumerable<RestroomResponseDTO>> GetAllRestrooms()
         {
-            return await _restroomRepository.GetAllAsync();
+            var restrooms = await _restroomRepository.GetAllAsync();
+            return _mapper.Map<IEnumerable<RestroomResponseDTO>>(restrooms);
         }
 
-        public async Task<Restroom> GetRestroomById(string id)
+
+        public async Task<RestroomResponseDTO?> GetRestroomById(string id)
         {
-            return await _restroomRepository.GetByIdAsync(id);
+            var restroom = await _restroomRepository.GetByIdAsync(id);
+            return _mapper.Map<RestroomResponseDTO?>(restroom);
         }
 
         public async Task UpdateRestroom(Restroom restroom)
