@@ -34,9 +34,9 @@ namespace MSWT_Services.Services
             return await _requestRepository.GetAllAsync();
         }
 
-        public Task<Request> GetRequestById(string id)
+        public async Task<Request> GetRequestById(string id)
         {
-            return _requestRepository.GetByIdAsync(id);
+            return await _requestRepository.GetByIdAsync(id);
         }
 
         public async Task SoftDeleteRequest(string id)

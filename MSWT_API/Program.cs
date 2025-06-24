@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using MSWT_BussinessObject.Mapper;
 using MSWT_BussinessObject.Model;
 using MSWT_Repositories.IRepository;
 using MSWT_Repositories.Repository;
@@ -109,6 +110,10 @@ builder.Services.AddScoped<IAreaRepository, AreaRepository>();
 builder.Services.AddScoped<IFloorRepository, FloorRepository>();
 builder.Services.AddScoped<IRestroomRepository, RestroomRepository>();
 builder.Services.AddScoped<IShiftRepository, ShiftRepository>();
+builder.Services.AddScoped<ISensorRepository, SensorRepository>();
+builder.Services.AddScoped<ITrashBinRepository, TrashBinRepository>();
+builder.Services.AddScoped<ILeafRepository, LeafRepository>();
+builder.Services.AddScoped<IReportRepository, ReportRepository>();
 
 // Đăng ký services
 builder.Services.AddScoped<IUserService, UserService>();
@@ -119,6 +124,10 @@ builder.Services.AddScoped<IAreaService, AreaService>();
 builder.Services.AddScoped<IFloorService, FloorService>();
 builder.Services.AddScoped<IRestroomService, RestroomService>();
 builder.Services.AddScoped<IShiftService, ShiftService>();
+builder.Services.AddScoped<ISensorService, SensorService>();
+builder.Services.AddScoped<ITrashBinService, TrashBinService>();
+builder.Services.AddScoped<ILeaveService, LeaveService>();
+builder.Services.AddScoped<IReportService, ReportService>();
 
 
 builder.Services.AddControllers();
@@ -127,8 +136,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 
-// Đăng ký AutoMapper
-//builder.Services.AddAutoMapper(typeof(MappingProfile));
+//Đăng ký AutoMapper
+builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 var app = builder.Build();
 

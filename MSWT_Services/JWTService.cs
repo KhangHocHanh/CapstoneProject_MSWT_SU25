@@ -62,7 +62,7 @@ namespace MSWT_Services
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                     new Claim("User_Id",account.UserId.ToString()),
                     new Claim("Username", account.UserName.ToString()),
-                    new Claim(ClaimTypes.Role, account.Role.RoleName.ToLower())  // Store Role in Token
+                    new Claim(ClaimTypes.Role, account.Role.RoleName)  // Store Role in Token
                 };
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
             var signIn = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -115,7 +115,8 @@ namespace MSWT_Services
                 throw new Exception("User not found in token."); // Hoặc trả về một ResponseDTO nếu cần
             }
 
-            int userId = int.Parse(userIdClaim.Value);
+            var userId = userIdClaim.Value;          // string – KHÔNG parse int!
+            
 
             // Lấy người dùng hiện tại
             var user = await _unitOfWork.UserRepository.GetByIdAsync(userId);
