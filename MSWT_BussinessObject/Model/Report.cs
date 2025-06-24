@@ -21,7 +21,6 @@ public partial class Report
     public string? Image { get; set; }
     public string? Priority { get; set; }
 
-    public string? Priority { get; set; }
 
     public virtual User? User { get; set; }
 }
