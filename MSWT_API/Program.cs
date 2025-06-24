@@ -110,6 +110,10 @@ builder.Services.AddScoped<IAreaRepository, AreaRepository>();
 builder.Services.AddScoped<IFloorRepository, FloorRepository>();
 builder.Services.AddScoped<IRestroomRepository, RestroomRepository>();
 builder.Services.AddScoped<IShiftRepository, ShiftRepository>();
+builder.Services.AddScoped<ISensorRepository, SensorRepository>();
+builder.Services.AddScoped<ITrashBinRepository, TrashBinRepository>();
+builder.Services.AddScoped<ILeafRepository, LeafRepository>();
+builder.Services.AddScoped<IReportRepository, ReportRepository>();
 builder.Services.AddScoped<IScheduleRepository, ScheduleRepository>();
 builder.Services.AddScoped<IScheduleDetailsRepository, ScheduleDetailsRepository>();
 
@@ -122,6 +126,10 @@ builder.Services.AddScoped<IAreaService, AreaService>();
 builder.Services.AddScoped<IFloorService, FloorService>();
 builder.Services.AddScoped<IRestroomService, RestroomService>();
 builder.Services.AddScoped<IShiftService, ShiftService>();
+builder.Services.AddScoped<ISensorService, SensorService>();
+builder.Services.AddScoped<ITrashBinService, TrashBinService>();
+builder.Services.AddScoped<ILeaveService, LeaveService>();
+builder.Services.AddScoped<IReportService, ReportService>();
 builder.Services.AddScoped<IScheduleService, ScheduleService>();
 builder.Services.AddScoped<IScheduleDetailsService, ScheduleDetailsService>();
 

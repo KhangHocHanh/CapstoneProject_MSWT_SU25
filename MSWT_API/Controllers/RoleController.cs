@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MSWT_BussinessObject.Enum;
 using MSWT_BussinessObject.Model;
 using MSWT_Services.IServices;
+using static MSWT_BussinessObject.Enum.Enum;
+using static MSWT_BussinessObject.RequestDTO.RequestDTO;
 
 namespace MSWT_API.Controllers
 {
@@ -21,7 +24,12 @@ namespace MSWT_API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Role>>> GetAll()
         {
-            return Ok(await _roleService.GetAllRoles());
+            var roles = await _roleService.GetAllRoles();
+            var activeRoles = roles
+                .Where(r => r.Status == RoleStatus.DangHoatDong.ToDisplayString())  // "Đang hoạt động"
+                .ToList();
+
+            return Ok(activeRoles);
         }
 
         [HttpGet("{id}")]
@@ -33,35 +41,43 @@ namespace MSWT_API.Controllers
             return Ok(role);
         }
 
-        //[HttpPost]
-        //public async Task<ActionResult> Create([FromBody] RoleDTO roleDto)
-        //{
-        //    var role = new Role
-        //    {
-        //        RoleName = roleDto.RoleName,
-        //    };
+        [HttpPost]
+        public async Task<ActionResult<Role>> Create([FromBody] RoleCreateDto dto)
+        {
+            var newRole = new Role
+            {
+                RoleId = "RL" + DateTime.UtcNow.Ticks,
+                RoleName = dto.RoleName,
+                Description = dto.Description,
+                Status = RoleStatus.DangHoatDong.ToDisplayString()  // "Đang hoạt động"
+            };
 
-        //    await _roleService.AddRole(role);
-        //    return CreatedAtAction(nameof(GetById), new { id = role.RoleId }, role);
+            await _roleService.AddRole(newRole);
 
-        //}
+            return CreatedAtAction(nameof(GetById),
+                new { id = newRole.RoleId }, newRole);
+        }
+        [HttpPut("toggle-status/{id}")]
+        public async Task<IActionResult> ToggleStatus(string id)
+        {
+            var role = await _roleService.GetRoleById(id);
+            if (role == null)
+                return NotFound(new { message = "Role không tồn tại" });
 
-        //[HttpPut("{id}")]
-        //public async Task<ActionResult> Update(string id, [FromBody] RoleDTO roleDto)
-        //{
-        //    var existingRole = await _roleService.GetRoleById(id);
-        //    if (existingRole == null)
-        //    {
-        //        return NotFound();
-        //    }
+            // Đảo trạng thái
+            if (role.Status == RoleStatus.DangHoatDong.ToDisplayString())
+                role.Status = RoleStatus.NgungHoatDong.ToDisplayString();
+            else
+                role.Status = RoleStatus.DangHoatDong.ToDisplayString();
 
-        //    // Update only allowed properties
-        //    existingRole.RoleName = roleDto.RoleName;
+            await _roleService.UpdateRole(role);
 
-        //    await _roleService.UpdateRole(existingRole);
-        //    return NoContent();
-
-        //}
+            return Ok(new
+            {
+                message = "Cập nhật trạng thái thành công",
+                newStatus = role.Status
+            });
+        }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(string id)
@@ -79,14 +95,7 @@ namespace MSWT_API.Controllers
         #endregion
 
 
-        //[HttpGet("byname/{name}")]
-        //public async Task<ActionResult<Role>> GetIdByName(string name)
-        //{
-        //    var role = await _roleService.GetIdRoleByName(name);
-        //    if (role == null)
-        //        return NotFound();
-        //    return Ok(role);
-        //}
+       
 
     }
 }

@@ -19,8 +19,8 @@ public partial class Report
     public DateOnly? Date { get; set; }
 
     public string? Image { get; set; }
-
     public string? Priority { get; set; }
+
 
     public virtual User? User { get; set; }
 }

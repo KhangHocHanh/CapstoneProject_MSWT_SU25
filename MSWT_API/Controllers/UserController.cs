@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MSWT_BussinessObject;
 using MSWT_BussinessObject.Model;
@@ -93,5 +94,13 @@ namespace MSWT_API.Controllers
                 return StatusCode(500, new { message = "Internal Server Error", details = ex.Message });
             }
         }
+
+            [HttpPost("logout")]
+            public async Task<IActionResult> Logout()
+            {
+                await HttpContext.SignOutAsync(); 
+                return Ok(new { message = "Logout successful." });
+            }
+        
     }
 }
