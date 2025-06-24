@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MSWT_BussinessObject.Model;
+using MSWT_BussinessObject.RequestDTO;
+using MSWT_BussinessObject.ResponseDTO;
 using MSWT_Services.IServices;
 
 namespace MSWT_API.Controllers
@@ -16,15 +18,26 @@ namespace MSWT_API.Controllers
             }
 
             #region CRUD Category
+            [HttpPost]
+            public async Task<ActionResult<FloorResponseDTO>> CreateFloor([FromBody] FloorRequestDTO request)
+            {
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+                    
+                var createdFloor = await _floorService.CreateFloorAsync(request);
+
+                // Optionally use CreatedAtAction if you have a GetFloorById method
+            return Ok(createdFloor);
+            }
 
             [HttpGet]
-            public async Task<ActionResult<IEnumerable<Floor>>> GetAll()
+            public async Task<ActionResult<IEnumerable<FloorResponseDTO>>> GetAll()
             {
                 return Ok(await _floorService.GetAllFloors());
             }
 
             [HttpGet("{id}")]
-            public async Task<ActionResult<Floor>> GetById(string id)
+            public async Task<ActionResult<FloorResponseDTO>> GetById(string id)
             {
                 var floor = await _floorService.GetFloorById(id);
                 if (floor == null)

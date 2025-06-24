@@ -16,7 +16,7 @@ namespace MSWT_Repositories.Repository
             _context = context;
         }
 
-        public async Task<Restroom> GetByIdAsync(string id)
+        public async Task<Restroom?> GetByIdAsync(string id)
         {
             return await _context.Restrooms
                 .Include(r => r.Area)
