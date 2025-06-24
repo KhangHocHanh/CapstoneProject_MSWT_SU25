@@ -114,6 +114,8 @@ builder.Services.AddScoped<ISensorRepository, SensorRepository>();
 builder.Services.AddScoped<ITrashBinRepository, TrashBinRepository>();
 builder.Services.AddScoped<ILeafRepository, LeafRepository>();
 builder.Services.AddScoped<IReportRepository, ReportRepository>();
+builder.Services.AddScoped<IScheduleRepository, ScheduleRepository>();
+builder.Services.AddScoped<IScheduleDetailsRepository, ScheduleDetailsRepository>();
 
 // Đăng ký services
 builder.Services.AddScoped<IUserService, UserService>();
@@ -128,6 +130,8 @@ builder.Services.AddScoped<ISensorService, SensorService>();
 builder.Services.AddScoped<ITrashBinService, TrashBinService>();
 builder.Services.AddScoped<ILeaveService, LeaveService>();
 builder.Services.AddScoped<IReportService, ReportService>();
+builder.Services.AddScoped<IScheduleService, ScheduleService>();
+builder.Services.AddScoped<IScheduleDetailsService, ScheduleDetailsService>();
 
 
 builder.Services.AddControllers();
@@ -136,7 +140,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 
-//Đăng ký AutoMapper
+// Đăng ký AutoMapper
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 var app = builder.Build();

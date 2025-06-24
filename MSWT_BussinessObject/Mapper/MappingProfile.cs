@@ -9,6 +9,9 @@ using static MSWT_BussinessObject.RequestDTO.RequestDTO;
 using AutoMapper;
 using MSWT_BussinessObject.Enum;
 using static MSWT_BussinessObject.Enum.Enum;
+using MSWT_BussinessObject.Model;
+using MSWT_BussinessObject.RequestDTO;
+using MSWT_BussinessObject.ResponseDTO;
 
 namespace MSWT_BussinessObject.Mapper
 {
@@ -60,6 +63,12 @@ namespace MSWT_BussinessObject.Mapper
                 .IncludeBase<ReportCreateDto, Report>()
                 .ForMember(dest => dest.ReportType, opt => opt.MapFrom(src => src.ReportType.ToVietnamese()));
             #endregion
+            CreateMap<AreaRequestDTO, Area>();
+
+            CreateMap<Restroom, RestroomResponseDTO>();
+            CreateMap<Floor, FloorResponseDTO>();
+            CreateMap<Area, AreaResponseDTO>();
+            CreateMap<Schedule, ScheduleResponseDTO>();
         }
     }
 }

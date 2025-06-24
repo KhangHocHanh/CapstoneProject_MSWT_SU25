@@ -16,10 +16,14 @@ namespace MSWT_Repositories.Repository
             _context = context;
         }
 
-        public async Task<Restroom> GetByIdAsync(string id)
+        public async Task<Restroom?> GetByIdAsync(string id)
         {
-            return await _context.Restrooms.FindAsync(id);
+            return await _context.Restrooms
+                .Include(r => r.Area)
+                .Include(r => r.Floor)
+                .FirstOrDefaultAsync(r => r.RestroomId == id);
         }
+
 
         public async Task AddAsync(Restroom restroom)
         {
@@ -39,7 +43,10 @@ namespace MSWT_Repositories.Repository
 
         async Task<IEnumerable<Restroom>> IRestroomRepository.GetAllAsync()
         {
-            return await _context.Restrooms.ToListAsync();
+            return await _context.Restrooms
+                .Include(r => r.Area)
+                .Include(r => r.Floor)
+                .ToListAsync();
         }
 
         public async Task UpdateAsync(Restroom restroom)
