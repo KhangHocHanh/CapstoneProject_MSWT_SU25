@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using MSWT_BussinessObject.Mapper;
 using MSWT_BussinessObject.Model;
 using MSWT_Repositories.IRepository;
 using MSWT_Repositories.Repository;
@@ -132,7 +133,7 @@ builder.Services.AddSwaggerGen();
 
 
 // Đăng ký AutoMapper
-//builder.Services.AddAutoMapper(typeof(MappingProfile));
+builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 var app = builder.Build();
 

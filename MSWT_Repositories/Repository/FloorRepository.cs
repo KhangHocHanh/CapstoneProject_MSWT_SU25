@@ -18,7 +18,11 @@ namespace MSWT_Repositories.Repository
 
         public async Task<Floor> GetByIdAsync(string id)
         {
-            return await _context.Floors.FindAsync(id);
+            return await _context.Floors
+        .Include(f => f.Areas)
+        .Include(f => f.Restrooms)
+        .Include(f => f.TrashBins)
+        .FirstOrDefaultAsync(f => f.FloorId == id);
         }
 
         public async Task AddAsync(Floor floor)
@@ -39,7 +43,11 @@ namespace MSWT_Repositories.Repository
 
         async Task<IEnumerable<Floor>> IFloorRepository.GetAllAsync()
         {
-            return await _context.Floors.ToListAsync();
+            return await _context.Floors
+        .Include(f => f.Areas)
+        .Include(f => f.Restrooms)
+        .Include(f => f.TrashBins)
+        .ToListAsync();
         }
 
         public async Task UpdateAsync(Floor floor)

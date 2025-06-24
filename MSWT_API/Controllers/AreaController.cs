@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MSWT_BussinessObject.Model;
+using MSWT_BussinessObject.RequestDTO;
+using MSWT_BussinessObject.ResponseDTO;
 using MSWT_Services.IServices;
 using MSWT_Services.Services;
 
@@ -17,6 +19,16 @@ namespace MSWT_API.Controllers
         }
 
         #region CRUD Category
+        [HttpPost]
+        public async Task<ActionResult<AreaResponseDTO>> CreateArea([FromBody] AreaRequestDTO request)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var createdArea = await _areaService.CreateAreaAsync(request);
+            return Ok(createdArea);
+        }
+
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Area>>> GetAll()
