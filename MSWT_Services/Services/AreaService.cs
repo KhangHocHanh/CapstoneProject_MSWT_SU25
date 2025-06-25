@@ -39,10 +39,12 @@ namespace MSWT_Services.Services
             await _areaRepository.DeleteAsync(id);
         }
 
-        public async Task<IEnumerable<Area>> GetAllAreas()
+        public async Task<IEnumerable<AreaResponseDTO>> GetAllAreasAsync()
         {
-            return await _areaRepository.GetAllAsync();
+            var areas = await _areaRepository.GetAllAsync();
+            return _mapper.Map<IEnumerable<AreaResponseDTO>>(areas);
         }
+
 
         public async Task<Area> GetAreaById(string id)
         {

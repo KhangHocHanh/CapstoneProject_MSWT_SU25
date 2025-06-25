@@ -13,7 +13,7 @@ namespace MSWT_Services.IServices
     {
         Task<AreaResponseDTO> CreateAreaAsync(AreaRequestDTO request);
         Task DeleteArea(string id);
-        Task<IEnumerable<Area>> GetAllAreas();
+        Task<IEnumerable<AreaResponseDTO>> GetAllAreasAsync();
         Task<Area> GetAreaById(string id);
         Task UpdateArea(Area area);
     }
