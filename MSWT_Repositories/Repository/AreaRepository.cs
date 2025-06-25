@@ -39,7 +39,9 @@ namespace MSWT_Repositories.Repository
 
         async Task<IEnumerable<Area>> IAreaRepository.GetAllAsync()
         {
-            return await _context.Areas.ToListAsync();
+            return await _context.Areas
+        .Include(f => f.Floor)
+        .ToListAsync();
         }
 
         public async Task UpdateAsync(Area area)
