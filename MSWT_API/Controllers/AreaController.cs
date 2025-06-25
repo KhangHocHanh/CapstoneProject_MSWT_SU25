@@ -33,7 +33,7 @@ namespace MSWT_API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Area>>> GetAll()
         {
-            return Ok(await _areaService.GetAllAreas());
+            return Ok(await _areaService.GetAllAreasAsync());
         }
 
         [HttpGet("{id}")]
