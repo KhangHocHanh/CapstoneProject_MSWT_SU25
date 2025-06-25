@@ -15,6 +15,8 @@ namespace MSWT_Repositories.IRepository
         Task AddAsync(Report report);
         Task DeleteAsync(string id);
         Task UpdateAsync(Report report);
+        Task<IEnumerable<Report>> GetAllWithUserAndRoleAsync();
+
         #endregion
     }
 }

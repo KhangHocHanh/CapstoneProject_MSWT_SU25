@@ -68,5 +68,14 @@ namespace MSWT_BussinessObject.Enum
             DangXuLy = 2, // Đang xử lý
             DaHoanThanh = 3, // Đã hoàn thành
         }
+        /// <summary>Trạng thái người dùng.</summary>
+        public enum UserStatusEnum
+        {
+            ChuaXacThuc = 0, // Chưa xác thực
+            NghiPhep = 1, // Đang nghỉ phép
+            Trong = 2, // Đang trống lịch
+            DaCoLich = 3, // Đã có lịch
+            ThoiViec = 4 // Thôi việc
+        }
     }
 }

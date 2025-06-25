@@ -101,6 +101,8 @@ builder.Services.AddDbContext<SmartTrashBinandCleaningStaffManagementContext>(op
 //Đăng ký DI (Dependency Injection)
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IJWTService, JWTService>();
+builder.Services.AddHostedService<LeaveStatusUpdateService>();
+
 
 // Đăng ký repositories
 builder.Services.AddScoped<IUserRepository, UserRepository>();

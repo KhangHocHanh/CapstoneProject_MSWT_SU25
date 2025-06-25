@@ -102,5 +102,10 @@ namespace MSWT_Repositories
         {
             return await _dbSet.Where(predicate).ToListAsync();
         }
+        public IQueryable<Report> GetAllQueryable()
+        {
+            return _context.Reports.AsQueryable();
+        }
+
     }
 }
