@@ -18,7 +18,9 @@ namespace MSWT_Repositories.Repository
 
         public async Task<Area> GetByIdAsync(string id)
         {
-            return await _context.Areas.FindAsync(id);
+            return await _context.Areas
+                .Include(a => a.Floor)
+                .FirstOrDefaultAsync(a => a.AreaId == id);
         }
 
         public async Task AddAsync(Area area)
@@ -37,12 +39,13 @@ namespace MSWT_Repositories.Repository
             }
         }
 
-        async Task<IEnumerable<Area>> IAreaRepository.GetAllAsync()
+        public async Task<IEnumerable<Area>> GetAllAsync()
         {
             return await _context.Areas
-        .Include(f => f.Floor)
-        .ToListAsync();
+                .Include(a => a.Floor)
+                .ToListAsync();
         }
+
 
         public async Task UpdateAsync(Area area)
         {

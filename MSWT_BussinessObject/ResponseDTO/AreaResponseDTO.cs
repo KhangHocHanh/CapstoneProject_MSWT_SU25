@@ -22,6 +22,6 @@ namespace MSWT_BussinessObject.ResponseDTO
 
         public string? AreaName { get; set; }
 
-        public FloorResponseDTO? Floor { get; set; }
+        public int? FloorNumber { get; set; }
     }
 }

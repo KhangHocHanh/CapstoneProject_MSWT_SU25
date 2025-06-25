@@ -67,7 +67,8 @@ namespace MSWT_BussinessObject.Mapper
 
             CreateMap<Restroom, RestroomResponseDTO>();
             CreateMap<Floor, FloorResponseDTO>();
-            CreateMap<Area, AreaResponseDTO>();
+            CreateMap<Area, AreaResponseDTO>()
+            .ForMember(dest => dest.FloorNumber, opt => opt.MapFrom(src => src.Floor.FloorNumber));
             CreateMap<Schedule, ScheduleResponseDTO>();
         }
     }
