@@ -71,14 +71,20 @@ namespace MSWT_Services.Services
             {
                 var account = await _userRepository.GetByUsernameAsync(userDto.Username);
 
+                // Nếu không tìm thấy, thử tìm theo số điện thoại
                 if (account == null)
                 {
-                    return new ResponseDTO(Const.FAIL_READ_CODE, "Invalid username or password.");
+                    account = await _userRepository.GetByPhoneAsync(userDto.Username);
+                }
+
+                if (account == null)
+                {
+                    return new ResponseDTO(Const.FAIL_READ_CODE, "Sai tên đăng nhập/số điện thoại hoặc mật khẩu");
                 }
 
                 if (account.Password != userDto.Password)  // Nếu dùng hash, cần giải mã password
                 {
-                    return new ResponseDTO(Const.FAIL_READ_CODE, "Invalid username or password.");
+                    return new ResponseDTO(Const.FAIL_READ_CODE, "Sai tên đăng nhập/số điện thoại hoặc mật khẩu");
                 }
 
                 var jwt = _jWTService.GenerateToken(account);

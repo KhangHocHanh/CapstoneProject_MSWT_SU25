@@ -21,6 +21,7 @@ namespace MSWT_Repositories.IRepository
         Task RecoverAsync(string id);
         Task<User?> GetByUsernameAsync(string username);
         Task<User?> GetByEmailAsync(string email);
+        Task<User?> GetByPhoneAsync(string phone);
         Task<List<User>> GetUsersByRoleAsync(string roleName);
     }
 }

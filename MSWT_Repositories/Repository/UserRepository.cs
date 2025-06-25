@@ -94,5 +94,12 @@ namespace MSWT_Repositories.Repository
         {
             return await _context.Users.FindAsync(id);
         }
+
+        public async Task<User?> GetByPhoneAsync(string phone)
+        {
+            return await _context.Users
+                .Include(u => u.Role) // Ensure role is loaded if needed
+                .FirstOrDefaultAsync(u => u.Phone == phone);
+        }
     }
 }
