@@ -15,6 +15,9 @@ namespace MSWT_Services.IServices
         Task AddReport(Report report);
         Task UpdateReport(Report report);
         Task DeleteReport(string id);
+        Task<IEnumerable<Report>> GetReportsByUserId(string userId);
+        Task<List<Report>> GetAllReportsWithUserAndRole();
+
         #endregion
     }
 }

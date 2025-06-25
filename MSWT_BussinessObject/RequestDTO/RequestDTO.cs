@@ -47,6 +47,24 @@ namespace MSWT_BussinessObject.RequestDTO
             public string RoleName { get; set; } = null!;
             public string? Description { get; set; }
         }
+        public class ReportWithRoleDto
+        {
+            public string ReportId { get; set; }
+            public string? ReportType { get; set; }
+            public string? Description { get; set; }
+            public string? Status { get; set; }
+            public string? ReportName { get; set; }
+            public DateOnly? Date { get; set; }
+            public string? Image { get; set; }
+            public string? Priority { get; set; }
+
+            public string? UserId { get; set; }
+            public string? UserName { get; set; }
+            public string? FullName { get; set; }
+
+            public string? RoleName { get; set; } // <-- Lấy từ User.Role.RoleName
+        }
+
         #endregion
 
         #region LeaveDTO
@@ -82,6 +100,49 @@ namespace MSWT_BussinessObject.RequestDTO
         {
             public ReportStatus NewStatus { get; set; }
         }
+        #endregion
+        #region UserDTO
+        public class UserCreateDto
+        {
+            [Required(ErrorMessage = "Tên đăng nhập không được để trống")]
+            public string UserName { get; set; }
+
+            [Required(ErrorMessage = "Mật khẩu không được để trống")]
+            public string Password { get; set; }
+
+            [Required(ErrorMessage = "Họ và tên không được để trống")]
+            public string FullName { get; set; }
+
+            [Phone(ErrorMessage = "Số điện thoại không hợp lệ")]
+            [Required(ErrorMessage = "Số điện thoại không được để trống")]
+            public string Phone { get; set; }
+
+            public string? Email { get; set; }
+            public string? Address { get; set; }
+            public string? Image { get; set; }
+
+            [Required(ErrorMessage = "Vai trò không được để trống")]
+            public string RoleId { get; set; }
+        }
+        public class UserStatusUpdateDto
+        {
+            public string Note { get; set; } // Lưu lý do nghỉ việc nếu cần
+        }
+        public class UserUpdateProfileDto
+        {
+            [Required(ErrorMessage = "Họ và tên không được để trống")]
+            public string FullName { get; set; }
+
+            [Phone(ErrorMessage = "Số điện thoại không hợp lệ")]
+            public string Phone { get; set; }
+
+            [EmailAddress(ErrorMessage = "Email không hợp lệ")]
+            public string? Email { get; set; }
+
+            public string? Address { get; set; }
+            public string? Image { get; set; }
+        }
+
         #endregion
     }
 }

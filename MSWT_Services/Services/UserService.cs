@@ -7,10 +7,12 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using MSWT_BussinessObject;
+using MSWT_BussinessObject.Enum;
 using MSWT_BussinessObject.Model;
 using MSWT_BussinessObject.ResponseDTO;
 using MSWT_Repositories.IRepository;
 using MSWT_Services.IServices;
+using static MSWT_BussinessObject.Enum.Enum;
 using static MSWT_BussinessObject.RequestDTO.RequestDTO;
 
 namespace MSWT_Services.Services
@@ -21,13 +23,15 @@ namespace MSWT_Services.Services
         private readonly IRoleRepository _roleRepository;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IJWTService _jWTService;
+        private readonly AutoMapper.IMapper _mapper;
 
-        public UserService(IUserRepository userRepository, IRoleRepository roleRepository, IHttpContextAccessor httpContextAccessor, IJWTService jWTService)
+        public UserService(IUserRepository userRepository, IRoleRepository roleRepository, IHttpContextAccessor httpContextAccessor, IJWTService jWTService, AutoMapper.IMapper mapper)
         {
             _userRepository = userRepository;
             _roleRepository = roleRepository;
             _httpContextAccessor = httpContextAccessor;
             _jWTService = jWTService;
+            _mapper = mapper;
         }
 
         #region CRUD User
@@ -105,5 +109,37 @@ namespace MSWT_Services.Services
             }
         }
 
+        public async Task AddUser(User userDto)
+        {
+            await _userRepository.AddAsync(userDto);
+        }
+        public async Task<ResponseDTO> UpdateUserProfile(string userId, UserUpdateProfileDto dto)
+        {
+            var user = await _userRepository.GetByIdAsync(userId);
+            if (user == null)
+                return new ResponseDTO(Const.FAIL_READ_CODE, "Không tìm thấy người dùng.");
+
+            _mapper.Map(dto, user);
+            await _userRepository.UpdateAsync(user);
+
+            return new ResponseDTO(Const.SUCCESS_UPDATE_CODE, "Cập nhật thông tin cá nhân thành công.");
+        }
+
+        public async Task<ResponseDTO> UpdateUserStatusToQuit(string userId, string note)
+        {
+            var user = await _userRepository.GetByIdAsync(userId);
+            if (user == null)
+                return new ResponseDTO(Const.FAIL_READ_CODE, "Không tìm thấy người dùng.");
+
+            var statusEnum = UserStatusHelper.ToEnum(user.Status);
+            if (statusEnum != UserStatusEnum.Trong)
+                return new ResponseDTO(Const.FAIL_UPDATE_CODE, "Chỉ có thể chuyển trạng thái từ 'Trống lịch' sang 'Thôi việc'.");
+
+            user.Status = UserStatusHelper.ToStringStatus(UserStatusEnum.ThoiViec);
+            user.ReasonForLeave = note;
+            await _userRepository.UpdateAsync(user);
+
+            return new ResponseDTO(Const.SUCCESS_UPDATE_CODE, "Đã cập nhật trạng thái sang 'Thôi việc'.");
+        }
     }
 }

@@ -15,11 +15,13 @@ namespace MSWT_Services.IServices
         #region CRUD User
         Task<IEnumerable<User>> GetAllUsers();
         Task<User> GetUserById(string id);
-        //Task AddUser(UserRegisterDTO userDto);
-        //Task UpdateUser(int id, UserDTO userDto);
+        Task AddUser(User userDto);
+       
         Task DeleteUser(string id);
         #endregion
 
+        Task<ResponseDTO> UpdateUserProfile(string userId, UserUpdateProfileDto dto);
+        Task<ResponseDTO> UpdateUserStatusToQuit(string userId, string note);
 
 
         Task<ResponseDTO> Login(LoginRequestDTO userDto);

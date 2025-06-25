@@ -15,6 +15,14 @@ namespace MSWT_Services.IServices
         Task AddLeaf(Leaf Leaf);
         Task UpdateLeaf(Leaf Leaf);
         Task DeleteLeaf(string id);
+        Task AddLeave(Leaf leave);
+        Task<Leaf?> ApproveLeave(string leaveId, string approverId);
+        Task<IEnumerable<Leaf>> GetLeaves(string userId, string role);
+        Task<Leaf?> GetLeaveById(string id);
+        Task<bool> DeleteLeave(string id);
+        Task<IEnumerable<Leaf>> GetLeavesByUser(string userId);
+
+
         #endregion
     }
 }

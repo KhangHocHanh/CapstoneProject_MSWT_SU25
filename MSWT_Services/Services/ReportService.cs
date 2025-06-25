@@ -40,5 +40,16 @@ namespace MSWT_Services.Services
         {
             await _reportRepository.UpdateAsync(report);
         }
+        public async Task<IEnumerable<Report>> GetReportsByUserId(string userId)
+        {
+            var allReports = await _reportRepository.GetAllAsync();
+            return allReports.Where(r => r.UserId == userId).OrderByDescending(r => r.Date); // nếu có CreatedDate
+        }
+        public async Task<List<Report>> GetAllReportsWithUserAndRole()
+        {
+            var reports = await _reportRepository.GetAllWithUserAndRoleAsync();
+            return reports.ToList();
+        }
+
     }
 }

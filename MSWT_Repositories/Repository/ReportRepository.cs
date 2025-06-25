@@ -47,5 +47,13 @@ namespace MSWT_Repositories.Repository
             _context.Reports.Update(report);
             await _context.SaveChangesAsync();
         }
+        public async Task<IEnumerable<Report>> GetAllWithUserAndRoleAsync()
+        {
+            return await _context.Reports
+                .Include(r => r.User)
+                    .ThenInclude(u => u.Role)
+                .ToListAsync();
+        }
+
     }
 }
