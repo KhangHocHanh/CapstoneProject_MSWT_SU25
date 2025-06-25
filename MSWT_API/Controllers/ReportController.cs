@@ -137,5 +137,30 @@ namespace MSWT_API.Controllers
 
             return Ok("Cập nhật trạng thái thành công.");
         }
+
+        // GET api/reports/my-history
+        /// <summary>
+        /// Lấy lịch sử báo cáo của người dùng hiện tại.
+        /// </summary>
+        [HttpGet("my-history")]
+        [Authorize] // Ai đăng nhập cũng gọi được
+        public async Task<IActionResult> GetMyReportHistory()
+        {
+            var userId = User.FindFirstValue("User_Id");
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized("Không xác định được người dùng.");
+
+            var reports = await _reportService.GetReportsByUserId(userId);
+
+            return Ok(reports);
+        }
+        [HttpGet("with-role")]
+        public async Task<ActionResult<IEnumerable<ReportWithRoleDto>>> GetAllWithRole()
+        {
+            var reports = await _reportService.GetAllReportsWithUserAndRole();
+            var reportDtos = _mapper.Map<List<ReportWithRoleDto>>(reports);
+            return Ok(reportDtos);
+        }
+
     }
 }

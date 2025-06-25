@@ -62,6 +62,11 @@ namespace MSWT_BussinessObject.Mapper
             CreateMap<ReportCreateDtoWithType, Report>()
                 .IncludeBase<ReportCreateDto, Report>()
                 .ForMember(dest => dest.ReportType, opt => opt.MapFrom(src => src.ReportType.ToVietnamese()));
+            CreateMap<Report, ReportWithRoleDto>()
+    .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.UserName))
+    .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.User.FullName))
+    .ForMember(dest => dest.RoleName, opt => opt.MapFrom(src => src.User.Role.RoleName));
+
             #endregion
             CreateMap<AreaRequestDTO, Area>();
 
@@ -69,6 +74,25 @@ namespace MSWT_BussinessObject.Mapper
             CreateMap<Floor, FloorResponseDTO>();
             CreateMap<Area, AreaResponseDTO>();
             CreateMap<Schedule, ScheduleResponseDTO>();
+            #region User
+
+            CreateMap<UserCreateDto, User>()
+    .ForMember(dest => dest.UserId, opt => opt.Ignore())
+    .ForMember(dest => dest.CreateAt, opt => opt.Ignore())
+    .ForMember(dest => dest.Status, opt => opt.Ignore())
+    .ForMember(dest => dest.Rating, opt => opt.Ignore())
+    .ForMember(dest => dest.ReasonForLeave, opt => opt.Ignore());
+            CreateMap<UserUpdateProfileDto, User>()
+                .ForMember(dest => dest.Status, opt => opt.Ignore()) // không cho update Status
+                .ForMember(dest => dest.UserId, opt => opt.Ignore()) // giữ nguyên ID
+                .ForMember(dest => dest.RoleId, opt => opt.Ignore()) // giữ nguyên Role
+                .ForMember(dest => dest.CreateAt, opt => opt.Ignore()) // giữ nguyên ngày tạo
+                .ForMember(dest => dest.Password, opt => opt.Ignore()) // không cập nhật pass
+                .ForMember(dest => dest.Rating, opt => opt.Ignore())
+                .ForMember(dest => dest.ReasonForLeave, opt => opt.Ignore());
+            #endregion
+
+
         }
     }
 }

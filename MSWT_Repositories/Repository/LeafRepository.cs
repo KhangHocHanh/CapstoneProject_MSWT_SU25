@@ -47,5 +47,13 @@ namespace MSWT_Repositories.Repository
             _context.Leaves.Update(Leaf);
             await _context.SaveChangesAsync();
         }
+        public async Task<IEnumerable<Leaf>> GetLeavesByUserId(string userId)
+        {
+            return await _context.Leaves
+                .Where(l => l.WorkerId == userId)
+                .OrderByDescending(l => l.StartDate)
+                .ToListAsync();
+        }
+
     }
 }

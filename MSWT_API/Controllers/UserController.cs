@@ -1,9 +1,13 @@
-﻿using Microsoft.AspNetCore.Authentication;
+﻿using System.Security.Claims;
+using AutoMapper;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MSWT_BussinessObject;
+using MSWT_BussinessObject.Enum;
 using MSWT_BussinessObject.Model;
 using MSWT_Services.IServices;
+using static MSWT_BussinessObject.Enum.Enum;
 using static MSWT_BussinessObject.RequestDTO.RequestDTO;
 
 namespace MSWT_API.Controllers
@@ -13,9 +17,11 @@ namespace MSWT_API.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
-        public UserController(IUserService userService)
+        private readonly IMapper _mapper;
+        public UserController(IUserService userService, IMapper mapper)
         {
             _userService = userService;
+            _mapper = mapper;
         }
         #region CRUD User
         [HttpGet]
@@ -41,33 +47,21 @@ namespace MSWT_API.Controllers
             }
         }
 
-        //[HttpPost]
-        //public async Task<ActionResult> Register([FromBody] UserRegisterDTO userDto)
-        //{
-        //    try
-        //    {
-        //        await _userService.AddUser(userDto);
-        //        return Ok("User registered successfully.");
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return BadRequest(ex.Message);
-        //    }
-        //}
-        //[HttpPut("{id}")]
-        //public async Task<ActionResult> Update(int id, [FromBody] UserDTO userDto)
-        //{
-        //    await _userService.UpdateUser(id, userDto);
-        //    return NoContent();
-        //}
+        [HttpPost]
+        public async Task<IActionResult> CreateUser([FromBody] UserCreateDto dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-        //[Authorize(Roles = "admin, staff")]
-        //[HttpDelete("{id}")]
-        //public async Task<ActionResult> Delete(int id)
-        //{
-        //    await _userService.DeleteUser(id);
-        //    return NoContent();
-        //}
+            var newUser = _mapper.Map<User>(dto);
+            newUser.UserId = "US" + DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+            newUser.CreateAt = DateOnly.FromDateTime(DateTime.Now);
+            newUser.Status = UserStatusHelper.ToStringStatus(UserStatusEnum.ChuaXacThuc);
+
+            await _userService.AddUser(newUser);
+            return Ok(new { message = "Tạo người dùng thành công", newUser.UserId });
+        }
+
         #endregion
 
         [HttpPost("login")]
@@ -94,8 +88,34 @@ namespace MSWT_API.Controllers
                 return StatusCode(500, new { message = "Internal Server Error", details = ex.Message });
             }
         }
+        [HttpPut("update-profile")]
+        [Authorize] // Ai cũng có thể gọi
+        public async Task<IActionResult> UpdateProfile([FromBody] UserUpdateProfileDto dto)
+        {
+            var userId = User.FindFirstValue("User_Id");
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized("Không xác định được người dùng.");
 
-            [HttpPost("logout")]
+            var result = await _userService.UpdateUserProfile(userId, dto);
+            if (result.Status != Const.SUCCESS_UPDATE_CODE)
+                return BadRequest(result);
+
+            return Ok(result);
+        }
+
+        [HttpPut("update-status/{id}")]
+        [Authorize(Roles = "Leader")]
+        public async Task<IActionResult> UpdateStatus(string id, [FromBody] UserStatusUpdateDto dto)
+        {
+            var result = await _userService.UpdateUserStatusToQuit(id, dto.Note);
+            if (result.Status != Const.SUCCESS_UPDATE_CODE)
+                return BadRequest(result);
+
+            return Ok(result);
+        }
+
+
+        [HttpPost("logout")]
             public async Task<IActionResult> Logout()
             {
                 await HttpContext.SignOutAsync(); 
