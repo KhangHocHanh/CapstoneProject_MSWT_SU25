@@ -68,5 +68,14 @@ namespace MSWT_BussinessObject.Enum
             DangXuLy = 2, // Đang xử lý
             DaHoanThanh = 3, // Đã hoàn thành
         }
+
+        /// <summary>Trạng thái Chi tiết công việc</summary>
+        public enum ScheduleDetailsStatus
+        {
+            SapToi = 1, // Sắp tới
+            DangLam = 2, // Đang làm
+            HoanTat = 3, // Hoàn tất
+            ChuaHoanTat = 4, // Chưa hoàn tất
+        }
     }
 }

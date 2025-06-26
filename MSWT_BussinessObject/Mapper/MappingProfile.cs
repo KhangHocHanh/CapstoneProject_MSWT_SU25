@@ -63,13 +63,21 @@ namespace MSWT_BussinessObject.Mapper
                 .IncludeBase<ReportCreateDto, Report>()
                 .ForMember(dest => dest.ReportType, opt => opt.MapFrom(src => src.ReportType.ToVietnamese()));
             #endregion
+
+
             CreateMap<AreaRequestDTO, Area>();
+            CreateMap<AreaUpdateRequestDTO, Area>();
+            CreateMap<ScheduleRequestDTO, Schedule>();
+            CreateMap<ScheduleDetailsRequestDTO, ScheduleDetail>();
+
 
             CreateMap<Restroom, RestroomResponseDTO>();
             CreateMap<Floor, FloorResponseDTO>();
             CreateMap<Area, AreaResponseDTO>()
             .ForMember(dest => dest.FloorNumber, opt => opt.MapFrom(src => src.Floor.FloorNumber));
             CreateMap<Schedule, ScheduleResponseDTO>();
+            CreateMap<ScheduleDetail, ScheduleDetailsResponseDTO>();
+            CreateMap<Shift, ShiftResponseDTO>();
         }
     }
 }

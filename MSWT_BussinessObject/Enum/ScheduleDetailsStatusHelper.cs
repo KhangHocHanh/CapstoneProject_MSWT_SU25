@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MSWT_BussinessObject.Enum
 {
-    class ScheduleDetailsStatus
+    public class ScheduleDetailsStatusHelper
     {
     }
 }

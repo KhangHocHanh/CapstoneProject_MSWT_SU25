@@ -1,4 +1,6 @@
-﻿using MSWT_BussinessObject.Model;
+﻿using AutoMapper;
+using MSWT_BussinessObject.Model;
+using MSWT_BussinessObject.ResponseDTO;
 using MSWT_Repositories.IRepository;
 using MSWT_Services.IServices;
 using System;
@@ -12,9 +14,11 @@ namespace MSWT_Services.Services
     public class ShiftService : IShiftService
     {
         private readonly IShiftRepository _shiftRepository;
-        public ShiftService(IShiftRepository shiftRepository)
+        private readonly IMapper _mapper;
+        public ShiftService(IShiftRepository shiftRepository, IMapper mapper)
         {
             _shiftRepository = shiftRepository;
+            _mapper = mapper;
         }
         public async Task AddShift(Shift shift)
         {
@@ -26,14 +30,16 @@ namespace MSWT_Services.Services
             await _shiftRepository.DeleteAsync(id);
         }
 
-        public async Task<IEnumerable<Shift>> GetAllShifts()
+        public async Task<IEnumerable<ShiftResponseDTO>> GetAllShifts()
         {
-            return await _shiftRepository.GetAllAsync();
+            var shift = await _shiftRepository.GetAllAsync();
+            return _mapper.Map<IEnumerable<ShiftResponseDTO>>(shift);
         }
 
-        public async Task<Shift> GetShiftById(string id)
+        public async Task<ShiftResponseDTO> GetShiftById(string id)
         {
-            return await _shiftRepository.GetByIdAsync(id);
+            var shift= await _shiftRepository.GetByIdAsync(id);
+            return _mapper.Map<ShiftResponseDTO>(shift);
         }
 
         public async Task UpdateShift(Shift shift)

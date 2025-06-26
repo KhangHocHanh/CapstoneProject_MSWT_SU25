@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MSWT_BussinessObject.Model;
+using MSWT_BussinessObject.RequestDTO;
+using MSWT_BussinessObject.ResponseDTO;
 using MSWT_Services.IServices;
 
 namespace MSWT_API.Controllers
@@ -16,6 +18,15 @@ namespace MSWT_API.Controllers
         }
 
         #region CRUD Category
+        [HttpPost]
+        public async Task<ActionResult<ScheduleResponseDTO>> CreateSchedule([FromBody] ScheduleRequestDTO request)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var createdSchedule = await _scheduleService.CreateScheduleAsync(request);
+            return Ok(createdSchedule);
+        }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Schedule>>> GetAll()
