@@ -27,18 +27,18 @@ namespace MSWT_BussinessObject.ResponseDTO
 
         public string? ShiftId { get; set; }
 
-        public virtual AreaResponseDTO? Area { get; set; }
+        //public virtual AreaResponseDTO? Area { get; set; }
 
-        public virtual Assignment? Assignment { get; set; }
+        //public virtual Assignment? Assignment { get; set; }
 
-        public virtual RestroomResponseDTO? Restroom { get; set; }
+        //public virtual RestroomResponseDTO? Restroom { get; set; }
 
-        public virtual ICollection<ScheduleDetail> ScheduleDetails { get; set; } = new List<ScheduleDetail>();
+        //public virtual ICollection<ScheduleDetail> ScheduleDetails { get; set; } = new List<ScheduleDetail>();
 
-        public virtual Shift? Shift { get; set; }
+        //public virtual Shift? Shift { get; set; }
 
-        public virtual TrashBin? TrashBin { get; set; }
+        //public virtual TrashBin? TrashBin { get; set; }
 
-        public virtual ICollection<Assignment> Assignments { get; set; } = new List<Assignment>();
+        //public virtual ICollection<Assignment> Assignments { get; set; } = new List<Assignment>();
     }
 }
