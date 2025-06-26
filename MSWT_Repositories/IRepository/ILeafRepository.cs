@@ -15,6 +15,8 @@ namespace MSWT_Repositories.IRepository
         Task AddAsync(Leaf Leaf);
         Task DeleteAsync(string id);
         Task UpdateAsync(Leaf Leaf);
+        Task<IEnumerable<Leaf>> GetLeavesByUserId(string userId);
+
         #endregion
     }
 }
