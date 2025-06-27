@@ -46,14 +46,22 @@ namespace MSWT_Services.Services
         }
 
 
-        public async Task<Area> GetAreaById(string id)
+        public async Task<AreaResponseDTO> GetAreaById(string id)
         {
-            return await _areaRepository.GetByIdAsync(id);
+            var area = await _areaRepository.GetByIdAsync(id);
+            return _mapper.Map<AreaResponseDTO>(area);
         }
 
-        public async Task UpdateArea(Area area)
+        public async Task UpdateArea(string areaId, AreaUpdateRequestDTO requestDto)
         {
-            await _areaRepository.UpdateAsync(area);
+            var existingArea = await _areaRepository.GetByIdAsync(areaId);
+            if (existingArea == null)
+                throw new Exception("Area not found");
+
+            // Map updated fields from DTO into the existing entity
+            _mapper.Map(requestDto, existingArea);
+            await _areaRepository.UpdateAsync(existingArea);
         }
+
     }
 }

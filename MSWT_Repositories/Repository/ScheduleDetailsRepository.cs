@@ -34,12 +34,16 @@ namespace MSWT_Repositories.Repository
 
         public async Task<ScheduleDetail> GetByIdAsync(string id)
         {
-            return await _context.ScheduleDetails.FindAsync(id);
+            return await _context.ScheduleDetails
+                .Include(sd => sd.Schedule)
+                .FirstOrDefaultAsync(sd => sd.ScheduleDetailId == id);
         }
 
         async Task<IEnumerable<ScheduleDetail>> IScheduleDetailsRepository.GetAllAsync()
         {
-            return await _context.ScheduleDetails.ToListAsync();
+            return await _context.ScheduleDetails
+                .Include(sd => sd.Schedule)
+                .ToListAsync();
         }
 
         public async Task UpdateAsync(ScheduleDetail scheduleDetail)

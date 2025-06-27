@@ -58,6 +58,21 @@ namespace MSWT_API.Controllers
                 return BadRequest(new { message = ex.Message }); // 400 Bad Request if error
             }
         }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateArea(string id, [FromBody] AreaUpdateRequestDTO requestDto)
+        {
+            try
+            {
+                await _areaService.UpdateArea(id, requestDto);
+                return NoContent(); // Successful update, no content returned
+            }
+            catch (Exception ex)
+            {
+                return NotFound(ex.Message); // Or handle with more detailed error logic
+            }
+        }
+
         #endregion
 
     }
