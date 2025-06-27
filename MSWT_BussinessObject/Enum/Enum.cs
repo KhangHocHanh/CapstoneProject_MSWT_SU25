@@ -76,7 +76,7 @@ namespace MSWT_BussinessObject.Enum
             DangLam = 2, // Đang làm
             HoanTat = 3, // Hoàn tất
             ChuaHoanTat = 4, // Chưa hoàn tất
-          
+        }
         /// <summary>Trạng thái người dùng.</summary>
         public enum UserStatusEnum
         {
@@ -85,6 +85,12 @@ namespace MSWT_BussinessObject.Enum
             Trong = 2, // Đang trống lịch
             DaCoLich = 3, // Đã có lịch
             ThoiViec = 4 // Thôi việc
+        }
+
+        public enum ScheduleStatus
+        {
+            HangNgay = 1,
+            DotXuat = 2,
         }
     }
 }
