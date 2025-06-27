@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MSWT_BussinessObject.Model;
+using MSWT_BussinessObject.RequestDTO;
 using MSWT_Services.IServices;
+using MSWT_Services.Services;
 
 namespace MSWT_API.Controllers
 {
@@ -46,6 +48,14 @@ namespace MSWT_API.Controllers
             }
         }
         #endregion
+        [HttpPost("{scheduleId}/details")]
+        public async Task<IActionResult> CreateScheduleDetail(string scheduleId, [FromBody] ScheduleDetailsRequestDTO detailDto)
+        {
+            var result = await _scheduleDetailsService.CreateScheduleDetailFromScheduleAsync(scheduleId, detailDto);
+            return Ok(result);
+        }
+
+
 
         [HttpPut("user/worker/{id}")]
         public async Task<IActionResult> AssignWorker(string id, [FromBody] string userId)

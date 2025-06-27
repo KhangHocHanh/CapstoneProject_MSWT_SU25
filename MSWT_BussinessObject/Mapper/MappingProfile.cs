@@ -68,13 +68,22 @@ namespace MSWT_BussinessObject.Mapper
     .ForMember(dest => dest.RoleName, opt => opt.MapFrom(src => src.User.Role.RoleName));
 
             #endregion
+
+
             CreateMap<AreaRequestDTO, Area>();
+            CreateMap<AreaUpdateRequestDTO, Area>();
+            CreateMap<ScheduleRequestDTO, Schedule>();
+            CreateMap<ScheduleDetailsRequestDTO, ScheduleDetail>();
+
 
             CreateMap<Restroom, RestroomResponseDTO>();
             CreateMap<Floor, FloorResponseDTO>();
             CreateMap<Area, AreaResponseDTO>()
             .ForMember(dest => dest.FloorNumber, opt => opt.MapFrom(src => src.Floor.FloorNumber));
             CreateMap<Schedule, ScheduleResponseDTO>();
+            CreateMap<ScheduleDetail, ScheduleDetailsResponseDTO>();
+            CreateMap<Shift, ShiftResponseDTO>();
+
             #region User
 
             CreateMap<UserCreateDto, User>()
@@ -92,8 +101,6 @@ namespace MSWT_BussinessObject.Mapper
                 .ForMember(dest => dest.Rating, opt => opt.Ignore())
                 .ForMember(dest => dest.ReasonForLeave, opt => opt.Ignore());
             #endregion
-
-
         }
     }
 }

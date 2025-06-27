@@ -1,4 +1,8 @@
-﻿using MSWT_BussinessObject.Model;
+﻿using AutoMapper;
+using CustomEnum = MSWT_BussinessObject.Enum;
+using MSWT_BussinessObject.Model;
+using MSWT_BussinessObject.RequestDTO;
+using MSWT_BussinessObject.ResponseDTO;
 using MSWT_Repositories.IRepository;
 using MSWT_Repositories.Repository;
 using MSWT_Services.IServices;
@@ -14,31 +18,61 @@ namespace MSWT_Services.Services
     public class ScheduleDetailsService : IScheduleDetailsService
     {
         private readonly IScheduleDetailsRepository _scheduleDetailsRepository;
+        private readonly IScheduleRepository _scheduleRepository;
         private readonly IUserRepository _userRepository;
+        private readonly IMapper _mapper;
 
-        public ScheduleDetailsService(IScheduleDetailsRepository scheduleDetailsRepository, IUserRepository userRepository)
+        public ScheduleDetailsService(IScheduleDetailsRepository scheduleDetailsRepository, IUserRepository userRepository, IScheduleRepository scheduleRepository, IMapper mapper)
         {
             _scheduleDetailsRepository = scheduleDetailsRepository;
             _userRepository = userRepository;
+            _scheduleRepository = scheduleRepository;
+            _mapper = mapper;
         }
-        public async Task AddSchedule(ScheduleDetail scheduleDetail)
+        public async Task<ScheduleDetailsResponseDTO> CreateScheduleDetailFromScheduleAsync(string scheduleId, ScheduleDetailsRequestDTO detailDto)
         {
-            await _scheduleDetailsRepository.AddAsync(scheduleDetail);
+            var schedule = await _scheduleRepository.GetByIdAsync(scheduleId);
+            if (schedule == null)
+                throw new Exception("Schedule not found.");
+
+            var detail = new ScheduleDetail
+            {
+                ScheduleDetailId = Guid.NewGuid().ToString(),
+                ScheduleId = schedule.ScheduleId,
+                Description = detailDto.Description,
+                Date = detailDto.Date ?? schedule.StartDate,
+                Status = CustomEnum.Enum.ScheduleDetailsStatus.SapToi.ToString(), // or whichever value you want to default to
+                SupervisorId = detailDto.SupervisorId,
+                Rating = detailDto.Rating,
+                WorkerId = detailDto.WorkerId,
+                EvidenceImage = detailDto.EvidenceImage,
+                StartTime = detailDto.StartTime,
+                EndTime = detailDto.EndTime,
+                IsBackup = detailDto.IsBackup,
+                BackupForUserId = detailDto.BackupForUserId
+            };
+
+            await _scheduleDetailsRepository.AddAsync(detail);
+            return _mapper.Map<ScheduleDetailsResponseDTO>(detail);
         }
+
+
 
         public async Task DeleteSchedule(string id)
         {
             await _scheduleDetailsRepository.DeleteAsync(id);
         }
 
-        public async Task<IEnumerable<ScheduleDetail>> GetAllSchedule()
+        public async Task<IEnumerable<ScheduleDetailsResponseDTO>> GetAllSchedule()
         {
-            return await _scheduleDetailsRepository.GetAllAsync();
+            var scheduleDetails = await _scheduleDetailsRepository.GetAllAsync();
+            return _mapper.Map<IEnumerable<ScheduleDetailsResponseDTO>>(scheduleDetails);
         }
 
-        public async Task<ScheduleDetail> GetScheduleById(string id)
+        public async Task<ScheduleDetailsResponseDTO> GetScheduleById(string id)
         {
-            return await _scheduleDetailsRepository.GetByIdAsync(id);
+            var scheduleDetails = await _scheduleDetailsRepository.GetByIdAsync(id);
+            return _mapper.Map<ScheduleDetailsResponseDTO>(scheduleDetails);
         }
 
         public async Task UpdateSchedule(ScheduleDetail scheduleDetail)

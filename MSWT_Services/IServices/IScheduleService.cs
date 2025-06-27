@@ -1,4 +1,6 @@
 ﻿using MSWT_BussinessObject.Model;
+using MSWT_BussinessObject.RequestDTO;
+using MSWT_BussinessObject.ResponseDTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,10 +11,10 @@ namespace MSWT_Services.IServices
 {
     public interface IScheduleService
     {
-        Task AddSchedule(Schedule schedule);
+        Task<ScheduleResponseDTO> CreateScheduleAsync(ScheduleRequestDTO request);
         Task DeleteSchedule(string id);
-        Task<IEnumerable<Schedule>> GetAllSchedule();
-        Task<Schedule> GetScheduleById(string id);
+        Task<IEnumerable<ScheduleResponseDTO>> GetAllSchedule();
+        Task<ScheduleResponseDTO> GetScheduleById(string id);
         Task UpdateSchedule(Schedule schedule);
     }
 }
