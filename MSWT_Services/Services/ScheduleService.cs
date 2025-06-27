@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using CustomEnum = MSWT_BussinessObject.Enum;
 using MSWT_BussinessObject.Model;
 using MSWT_BussinessObject.RequestDTO;
 using MSWT_BussinessObject.ResponseDTO;
