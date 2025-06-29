@@ -10,6 +10,8 @@ namespace MSWT_BussinessObject.RequestDTO
     {
         public string? AreaId { get; set; }
 
+        public string? ScheduleName { get; set; }
+
         public string? AssignmentId { get; set; }
 
         public DateOnly? StartDate { get; set; }
