@@ -59,9 +59,13 @@ namespace MSWT_Services.Services
             return _mapper.Map<FloorResponseDTO>(floor);
         }
 
-        public async Task UpdateFloor(Floor floor)
+        public async Task<bool> UpdateFloor(string id, FloorRequestDTO request)
         {
-            await _floorRepository.UpdateAsync(floor);
+                var floor = await _floorRepository.GetByIdAsync(id);
+                _mapper.Map(request, floor);
+
+                await _floorRepository.UpdateAsync(floor);
+                return true;
         }
     }
 }

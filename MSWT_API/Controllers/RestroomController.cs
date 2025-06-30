@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MSWT_BussinessObject.Model;
+using MSWT_BussinessObject.RequestDTO;
+using MSWT_BussinessObject.ResponseDTO;
 using MSWT_Services.IServices;
+using MSWT_Services.Services;
 
 namespace MSWT_API.Controllers
 {
@@ -16,6 +19,15 @@ namespace MSWT_API.Controllers
         }
 
         #region CRUD Category
+        [HttpPost]
+        public async Task<ActionResult<RestroomResponseDTO>> AddRestroom([FromBody] RestroomRequestDTO request)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var createdFloor = await _restroomService.AddRestroom(request);
+            return Ok(createdFloor);
+        }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Restroom>>> GetAll()
@@ -30,6 +42,23 @@ namespace MSWT_API.Controllers
             if (restroom == null)
                 return NotFound();
             return Ok(restroom);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult<RestroomResponseDTO>> UpdateRestroom(string id, [FromBody] RestroomRequestDTO request)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            try
+            {
+                var updatedRestroom = await _restroomService.UpdateRestroom(id, request);
+                return Ok(updatedRestroom);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
 
         [HttpDelete("{id}")]

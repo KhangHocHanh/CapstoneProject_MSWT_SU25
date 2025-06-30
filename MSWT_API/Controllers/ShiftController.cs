@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MSWT_BussinessObject.Model;
+using MSWT_BussinessObject.RequestDTO;
+using MSWT_BussinessObject.ResponseDTO;
 using MSWT_Services.IServices;
 
 namespace MSWT_API.Controllers
@@ -16,6 +18,22 @@ namespace MSWT_API.Controllers
         }
 
         #region CRUD Category
+        [HttpPost]
+        public async Task<ActionResult<ShiftResponseDTO>> AddShift([FromBody] ShiftRequestDTO request)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            try
+            {
+                var result = await _shiftService.AddShift(request);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Shift>>> GetAll()
@@ -30,6 +48,23 @@ namespace MSWT_API.Controllers
             if (shift == null)
                 return NotFound();
             return Ok(shift);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult<ShiftResponseDTO>> UpdateShift(string id, [FromBody] ShiftRequestDTO request)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            try
+            {
+                var result = await _shiftService.UpdateShift(id, request);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
 
         [HttpDelete("{id}")]
