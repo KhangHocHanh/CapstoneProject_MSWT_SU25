@@ -25,9 +25,7 @@ namespace MSWT_API.Controllers
                     return BadRequest(ModelState);
                     
                 var createdFloor = await _floorService.CreateFloorAsync(request);
-
-                // Optionally use CreatedAtAction if you have a GetFloorById method
-            return Ok(createdFloor);
+                return Ok(createdFloor);
             }
 
             [HttpGet]
@@ -45,6 +43,24 @@ namespace MSWT_API.Controllers
                 return Ok(floor);
             }
 
+            [HttpPut("{id}")]
+            public async Task<IActionResult> UpdateFloor(string id, [FromBody] FloorRequestDTO request)
+            {
+                try
+                {
+                    var result = await _floorService.UpdateFloor(id, request);
+                    if (!result)
+                    {
+                        return NotFound($"Floor with ID {id} not found.");
+                    }
+
+                    return Ok(); // or Ok() if you prefer returning a success message
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, $"Internal server error: {ex.Message}");
+                }
+            }
             [HttpDelete("{id}")]
             public async Task<ActionResult> Delete(string id)
             {

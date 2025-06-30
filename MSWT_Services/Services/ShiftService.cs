@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using CustomEnum = MSWT_BussinessObject.Enum;
 using MSWT_BussinessObject.Model;
+using MSWT_BussinessObject.RequestDTO;
 using MSWT_BussinessObject.ResponseDTO;
 using MSWT_Repositories.IRepository;
 using MSWT_Services.IServices;
@@ -20,10 +22,17 @@ namespace MSWT_Services.Services
             _shiftRepository = shiftRepository;
             _mapper = mapper;
         }
-        public async Task AddShift(Shift shift)
+        public async Task<ShiftResponseDTO> AddShift(ShiftRequestDTO request)
         {
+            var shift = _mapper.Map<Shift>(request);
+            shift.ShiftId = Guid.NewGuid().ToString();
+            shift.Status = CustomEnum.Enum.ShiftStatus.IsNotDeleted.ToString();
+
             await _shiftRepository.AddAsync(shift);
+
+            return _mapper.Map<ShiftResponseDTO>(shift);
         }
+
 
         public async Task DeleteShift(string id)
         {
@@ -42,9 +51,20 @@ namespace MSWT_Services.Services
             return _mapper.Map<ShiftResponseDTO>(shift);
         }
 
-        public async Task UpdateShift(Shift shift)
+        public async Task<ShiftResponseDTO> UpdateShift(string shiftId, ShiftRequestDTO request)
         {
-            await _shiftRepository.UpdateAsync(shift);
+            var existingShift = await _shiftRepository.GetByIdAsync(shiftId);
+            if (existingShift == null)
+                throw new Exception("Shift not found.");
+
+            _mapper.Map(request, existingShift);
+            existingShift.ShiftId = shiftId; // Ensure ID is retained
+            existingShift.Status = CustomEnum.Enum.ShiftStatus.IsNotDeleted.ToString();
+
+            await _shiftRepository.UpdateAsync(existingShift);
+
+            return _mapper.Map<ShiftResponseDTO>(existingShift);
         }
+
     }
 }
