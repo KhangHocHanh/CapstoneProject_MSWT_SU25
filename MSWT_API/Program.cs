@@ -119,6 +119,7 @@ builder.Services.AddScoped<ILeafRepository, LeafRepository>();
 builder.Services.AddScoped<IReportRepository, ReportRepository>();
 builder.Services.AddScoped<IScheduleRepository, ScheduleRepository>();
 builder.Services.AddScoped<IScheduleDetailsRepository, ScheduleDetailsRepository>();
+builder.Services.AddScoped<IAlertRepository, AlertRepository>();
 
 // Đăng ký services
 builder.Services.AddScoped<IUserService, UserService>();
@@ -135,6 +136,7 @@ builder.Services.AddScoped<ILeaveService, LeaveService>();
 builder.Services.AddScoped<IReportService, ReportService>();
 builder.Services.AddScoped<IScheduleService, ScheduleService>();
 builder.Services.AddScoped<IScheduleDetailsService, ScheduleDetailsService>();
+builder.Services.AddScoped<IAlertService, AlertService>();
 
 
 builder.Services.AddControllers();
