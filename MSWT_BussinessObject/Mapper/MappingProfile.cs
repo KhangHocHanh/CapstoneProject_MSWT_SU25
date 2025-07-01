@@ -70,10 +70,14 @@ namespace MSWT_BussinessObject.Mapper
             #endregion
 
 
+            CreateMap<FloorRequestDTO, Floor>();
             CreateMap<AreaRequestDTO, Area>();
+            CreateMap<RestroomRequestDTO, Restroom>();
             CreateMap<AreaUpdateRequestDTO, Area>();
             CreateMap<ScheduleRequestDTO, Schedule>();
             CreateMap<ScheduleDetailsRequestDTO, ScheduleDetail>();
+            CreateMap<ShiftRequestDTO, Shift>();
+
 
 
             CreateMap<Restroom, RestroomResponseDTO>();

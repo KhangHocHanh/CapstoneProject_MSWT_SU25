@@ -1,4 +1,5 @@
 ﻿using MSWT_BussinessObject.Model;
+using MSWT_BussinessObject.RequestDTO;
 using MSWT_BussinessObject.ResponseDTO;
 using System;
 using System.Collections.Generic;
@@ -13,8 +14,8 @@ namespace MSWT_Services.IServices
         #region CRUD Category
         Task<IEnumerable<RestroomResponseDTO>> GetAllRestrooms();
         Task<RestroomResponseDTO?> GetRestroomById(string id);
-        Task AddRestroom(Restroom restroom);
-        Task UpdateRestroom(Restroom restroom);
+        Task<RestroomResponseDTO> AddRestroom(RestroomRequestDTO request);
+        Task<RestroomResponseDTO> UpdateRestroom(string restroomId, RestroomRequestDTO request);
         Task DeleteRestroom(string id);
         #endregion
     }

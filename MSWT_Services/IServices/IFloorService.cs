@@ -15,7 +15,7 @@ namespace MSWT_Services.IServices
         Task<IEnumerable<FloorResponseDTO>> GetAllFloors();
         Task<FloorResponseDTO> GetFloorById(string id);
         Task<FloorResponseDTO> CreateFloorAsync(FloorRequestDTO request);
-        Task UpdateFloor(Floor floor);
+        Task<bool> UpdateFloor(string id, FloorRequestDTO request);
         Task DeleteFloor(string id);
         #endregion
     }

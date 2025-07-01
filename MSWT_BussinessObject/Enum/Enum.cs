@@ -92,5 +92,11 @@ namespace MSWT_BussinessObject.Enum
             HangNgay = 1,
             DotXuat = 2,
         }
+
+        public enum ShiftStatus
+        {
+            IsDeleted = 1,
+            IsNotDeleted = 2,
+        }
     }
 }
