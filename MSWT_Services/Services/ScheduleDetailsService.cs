@@ -40,7 +40,7 @@ namespace MSWT_Services.Services
                 ScheduleDetailId = Guid.NewGuid().ToString(),
                 ScheduleId = schedule.ScheduleId,
                 Description = detailDto.Description,
-                Date = detailDto.Date ?? schedule.StartDate,
+                //Date = detailDto.Date ?? schedule.StartDate,
                 Status = CustomEnum.Enum.ScheduleDetailsStatus.SapToi.ToString(), // or whichever value you want to default to
                 StartTime = schedule.Shift.StartTime,
                 EndTime = schedule.Shift.EndTime,

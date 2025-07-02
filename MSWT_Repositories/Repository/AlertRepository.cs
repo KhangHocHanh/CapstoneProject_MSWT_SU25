@@ -1,0 +1,57 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using MSWT_BussinessObject.Model;
+using MSWT_Repositories.IRepository;
+
+namespace MSWT_Repositories.Repository
+{
+    public class AlertRepository : GenericRepository<Alert>, IAlertRepository
+    {
+        public AlertRepository(SmartTrashBinandCleaningStaffManagementContext context) : base(context)
+        {
+            _context = context;
+        }
+        public async Task AddAsync(Alert alert)   
+        {
+            _context.AddAsync(alert);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteAsync(string id)
+        {
+            var alert = await _context.Alerts.FindAsync(id);
+            if (alert != null)
+            {
+                _context.Remove(alert);
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        public async Task<Alert> GetByIdAsync(string id)
+        {
+            return await _context.Alerts
+        .Include(a => a.User)
+        .Include(a => a.TrashBin)
+        .FirstOrDefaultAsync(a => a.AlertId == id);
+        }
+
+        async Task<IEnumerable<Alert>> IAlertRepository.GetAllAsync()
+        {
+            return await _context.Alerts
+                .Include(a => a.User)
+                .Include(a => a.TrashBin)
+                .ToListAsync();
+        }
+
+        async Task IAlertRepository.UpdateAsync(Alert alert)
+        {
+            _context.Alerts.Update(alert);
+            await _context.SaveChangesAsync();
+        }
+    }
+}

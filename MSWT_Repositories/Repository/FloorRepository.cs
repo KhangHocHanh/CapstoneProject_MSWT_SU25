@@ -20,8 +20,7 @@ namespace MSWT_Repositories.Repository
         {
             return await _context.Floors
         .Include(f => f.Areas)
-        .Include(f => f.Restrooms)
-        .Include(f => f.TrashBins)
+
         .FirstOrDefaultAsync(f => f.FloorId == id);
         }
 
@@ -45,8 +44,7 @@ namespace MSWT_Repositories.Repository
         {
             return await _context.Floors
         .Include(f => f.Areas)
-        .Include(f => f.Restrooms)
-        .Include(f => f.TrashBins)
+
         .ToListAsync();
         }
 

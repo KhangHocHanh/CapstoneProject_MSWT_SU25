@@ -7,13 +7,13 @@ public partial class Shift
 {
     public string ShiftId { get; set; } = null!;
 
-    public string? ShiftName { get; set; }
-
-    public TimeOnly StartTime { get; set; }
+    public TimeOnly? StartTime { get; set; }
 
     public TimeOnly EndTime { get; set; }
 
     public string? Status { get; set; }
+
+    public string? ShiftName { get; set; }
 
     public virtual ICollection<Schedule> Schedules { get; set; } = new List<Schedule>();
 }
