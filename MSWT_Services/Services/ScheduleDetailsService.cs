@@ -42,12 +42,8 @@ namespace MSWT_Services.Services
                 Description = detailDto.Description,
                 //Date = detailDto.Date ?? schedule.StartDate,
                 Status = CustomEnum.Enum.ScheduleDetailsStatus.SapToi.ToString(), // or whichever value you want to default to
-                SupervisorId = detailDto.SupervisorId,
-                Rating = detailDto.Rating,
-                WorkerId = detailDto.WorkerId,
-                EvidenceImage = detailDto.EvidenceImage,
-                StartTime = detailDto.StartTime,
-                EndTime = detailDto.EndTime,
+                StartTime = schedule.Shift.StartTime,
+                EndTime = schedule.Shift.EndTime,
                 IsBackup = detailDto.IsBackup,
                 BackupForUserId = detailDto.BackupForUserId
             };
