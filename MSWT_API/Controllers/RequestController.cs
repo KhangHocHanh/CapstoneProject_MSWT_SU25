@@ -23,7 +23,7 @@ namespace MSWT_API.Controllers
         private readonly IRequestService _requestService;
         private readonly IMapper _mapper;
 
-        public RequestController(IRoleService roleService,IRequestService requestService, IMapper mapper )
+        public RequestController(IRoleService roleService, IRequestService requestService, IMapper mapper)
         {
             _roleService = roleService;
             _mapper = mapper;
@@ -65,84 +65,84 @@ namespace MSWT_API.Controllers
         }
 
         // POST api/requests
-        [HttpPost]
-        public async Task<IActionResult> Create([FromBody] RequestDTO.RequestCreateDto dto)
-        {
-            var userId = User.FindFirstValue("User_Id");
+        //[HttpPost]
+        //  public async Task<IActionResult> Create([FromBody] RequestDTO.RequestCreateDto dto)
+        //  {
+        //      var userId = User.FindFirstValue("User_Id");
 
-            var allRequests = await _requestService.GetAllRequests();
-            var nextId = "RQ" + DateTime.UtcNow.Ticks;
+        //      var allRequests = await _requestService.GetAllRequests();
+        //      var nextId = "RQ" + DateTime.UtcNow.Ticks;
 
-            var request = _mapper.Map<Request>(dto);
-            request.RequestId = nextId;
-            request.UserId = userId;
-            request.Status = RequestStatusHelper.ToStringStatus(RequestStatusEnum.DaGui);
-            request.RequestDate = dto.RequestDate ?? DateOnly.FromDateTime(DateTime.Now); // Ngày gửi yêu cầu, nếu không có thì lấy ngày hiện tại
-            request.ResolveDate = null; // Chưa giải quyết
+        //      var request = _mapper.Map<Request>(dto);
+        //      request.RequestId = nextId;
+        //      request.UserId = userId;
+        //      request.Status = RequestStatusHelper.ToStringStatus(RequestStatusEnum.DaGui);
+        //      request.RequestDate = dto.RequestDate ?? DateOnly.FromDateTime(DateTime.Now); // Ngày gửi yêu cầu, nếu không có thì lấy ngày hiện tại
+        //      request.ResolveDate = null; // Chưa giải quyết
 
-            await _requestService.AddRequest(request);
+        //      await _requestService.AddRequest(request);
 
-            var response = new ResponseDTO(
-          Const.SUCCESS_CREATE_CODE,
-          Const.SUCCESS_CREATE_MSG,
-          null 
-      );
+        //      var response = new ResponseDTO(
+        //    Const.SUCCESS_CREATE_CODE,
+        //    Const.SUCCESS_CREATE_MSG,
+        //    null 
+        //);
 
-            return Ok(response);
-        }
+        //    return Ok(response);
+        //}
 
-        // PUT api/request/status
-        [HttpPut("status")]
-        public async Task<IActionResult> UpdateStatus([FromBody] RequestUpdateStatusDto dto)
-        {
-            var request = await _requestService.GetRequestById(dto.RequestId);
-            if (request is null)
-                return NotFound(new ResponseDTO(Const.ERROR_EXCEPTION, "Request không tồn tại"));
+        //// PUT api/request/status
+        //[HttpPut("status")]
+        //public async Task<IActionResult> UpdateStatus([FromBody] RequestUpdateStatusDto dto)
+        //{
+        //    var request = await _requestService.GetRequestById(dto.RequestId);
+        //    if (request is null)
+        //        return NotFound(new ResponseDTO(Const.ERROR_EXCEPTION, "Request không tồn tại"));
 
-            // Chuyển trạng thái hiện tại từ string → enum
-            var currentStatus = RequestStatusHelper.ToEnum(request.Status);
+        //    // Chuyển trạng thái hiện tại từ string → enum
+        //    var currentStatus = RequestStatusHelper.ToEnum(request.Status);
 
-            // Chặn hủy khi đã xử lý
-            if (dto.Status == RequestStatusEnum.DaHuy && currentStatus == RequestStatusEnum.DaXuLy)
-                return BadRequest(new ResponseDTO(Const.ERROR_EXCEPTION, "Không thể hủy Request đã được xử lý"));
+        //    // Chặn hủy khi đã xử lý
+        //    if (dto.Status == RequestStatusEnum.DaHuy && currentStatus == RequestStatusEnum.DaXuLy)
+        //        return BadRequest(new ResponseDTO(Const.ERROR_EXCEPTION, "Không thể hủy Request đã được xử lý"));
 
-            // Cập nhật
-            request.Status = RequestStatusHelper.ToStringStatus(dto.Status);
+        //    // Cập nhật
+        //    request.Status = RequestStatusHelper.ToStringStatus(dto.Status);
 
-            // Nếu chuyển sang Đã xử lý → set ResolveDate
-            if (dto.Status == RequestStatusEnum.DaXuLy && request.ResolveDate is null)
-                request.ResolveDate = DateOnly.FromDateTime(DateTime.UtcNow);
-            // Nếu chuyển sang Đã xử lý → set ResolveDate
-            if (dto.Status == RequestStatusEnum.DaHuy && request.ResolveDate is null)
-                request.ResolveDate = DateOnly.FromDateTime(DateTime.UtcNow);
+        //    // Nếu chuyển sang Đã xử lý → set ResolveDate
+        //    if (dto.Status == RequestStatusEnum.DaXuLy && request.ResolveDate is null)
+        //        request.ResolveDate = DateOnly.FromDateTime(DateTime.UtcNow);
+        //    // Nếu chuyển sang Đã xử lý → set ResolveDate
+        //    if (dto.Status == RequestStatusEnum.DaHuy && request.ResolveDate is null)
+        //        request.ResolveDate = DateOnly.FromDateTime(DateTime.UtcNow);
 
-            await _requestService.UpdateRequest(request);
+        //    await _requestService.UpdateRequest(request);
 
-            return Ok(new ResponseDTO(Const.SUCCESS_UPDATE_CODE, "Cập nhật trạng thái thành công", request));
-        }
+        //    return Ok(new ResponseDTO(Const.SUCCESS_UPDATE_CODE, "Cập nhật trạng thái thành công", request));
+        //}
 
         // PUT api/request/cancel/{id}
-        [HttpPut("cancel/{id}")]
-        public async Task<IActionResult> CancelRequest(string id)
-        {
-            var request = await _requestService.GetRequestById(id);
-            if (request == null)
-                return NotFound(new ResponseDTO(Const.ERROR_EXCEPTION, "Request không tồn tại"));
+        //[HttpPut("cancel/{id}")]
+        //public async Task<IActionResult> CancelRequest(string id)
+        //{
+        //    var request = await _requestService.GetRequestById(id);
+        //    if (request == null)
+        //        return NotFound(new ResponseDTO(Const.ERROR_EXCEPTION, "Request không tồn tại"));
 
-            var currentStatus = RequestStatusHelper.ToEnum(request.Status ?? "");
+        //    var currentStatus = RequestStatusHelper.ToEnum(request.Status ?? "");
 
-            if (currentStatus == RequestStatusEnum.DaXuLy)
-                return BadRequest(new ResponseDTO(Const.ERROR_EXCEPTION, "Không thể hủy Request đã được xử lý"));
+        //    if (currentStatus == RequestStatusEnum.DaXuLy)
+        //        return BadRequest(new ResponseDTO(Const.ERROR_EXCEPTION, "Không thể hủy Request đã được xử lý"));
 
-            request.Status = RequestStatusHelper.ToStringStatus(RequestStatusEnum.DaHuy);
-            request.ResolveDate = DateOnly.FromDateTime(DateTime.UtcNow);
+        //    request.Status = RequestStatusHelper.ToStringStatus(RequestStatusEnum.DaHuy);
+        //    request.ResolveDate = DateOnly.FromDateTime(DateTime.UtcNow);
 
-            await _requestService.UpdateRequest(request);
+        //    await _requestService.UpdateRequest(request);
 
-            return Ok(new ResponseDTO(Const.SUCCESS_UPDATE_CODE, "Hủy Request thành công", request));
-        }
+        //    return Ok(new ResponseDTO(Const.SUCCESS_UPDATE_CODE, "Hủy Request thành công", request));
+        //}
 
         #endregion
-
+    
     }
 }

@@ -15,7 +15,5 @@ public partial class Assignment
 
     public string? AssigmentName { get; set; }
 
-    public virtual ICollection<Schedule> SchedulesNavigation { get; set; } = new List<Schedule>();
-
-    public virtual ICollection<Schedule> Schedules { get; set; } = new List<Schedule>();
+    public virtual ICollection<AssignmentSchedule> AssignmentSchedules { get; set; } = new List<AssignmentSchedule>();
 }

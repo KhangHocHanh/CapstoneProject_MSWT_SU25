@@ -19,9 +19,13 @@ public partial class Area
 
     public string? AreaName { get; set; }
 
+    public string? IsAssigned { get; set; }
+
     public virtual Floor? Floor { get; set; }
 
     public virtual ICollection<Restroom> Restrooms { get; set; } = new List<Restroom>();
 
     public virtual ICollection<Schedule> Schedules { get; set; } = new List<Schedule>();
+
+    public virtual ICollection<TrashBin> TrashBins { get; set; } = new List<TrashBin>();
 }
