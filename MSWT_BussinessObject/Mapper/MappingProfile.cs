@@ -29,7 +29,7 @@ namespace MSWT_BussinessObject.Mapper
             // Map từ DTO → Entity
             CreateMap<RequestCreateDto, Request>()
                 .ForMember(dest => dest.RequestId, opt => opt.Ignore())
-                .ForMember(dest => dest.UserId, opt => opt.Ignore())
+                .ForMember(dest => dest.WorkerId, opt => opt.Ignore())
                 .ForMember(dest => dest.Status, opt => opt.Ignore())
                 .ForMember(dest => dest.RequestDate, opt => opt.Ignore())
                 .ForMember(dest => dest.ResolveDate, opt => opt.Ignore());
@@ -54,7 +54,7 @@ namespace MSWT_BussinessObject.Mapper
                 .ForMember(dest => dest.ReportId, opt => opt.Ignore())
                 .ForMember(dest => dest.UserId, opt => opt.Ignore())
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(_ => ReportStatus.DaGui.ToVietnamese()))
-                .ForMember(dest => dest.Date, opt => opt.MapFrom(_ => DateOnly.FromDateTime(DateTime.Now)))
+                .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(_ => DateOnly.FromDateTime(DateTime.Now)))
                 .ForMember(dest => dest.ReportType, opt => opt.Ignore()) // gán thủ công
                 .ForMember(dest => dest.Priority, opt => opt.MapFrom(src => src.Priority.ToVietnamese()));
 

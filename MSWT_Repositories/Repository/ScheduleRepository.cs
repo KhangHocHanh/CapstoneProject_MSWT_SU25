@@ -20,7 +20,6 @@ namespace MSWT_Repositories.Repository
         {
             return await _context.Schedules
         .Include(s => s.Area)
-        .Include(s => s.Assignment)
         .Include(s => s.Restroom)
         .Include(s => s.TrashBin)
         .Include(s => s.Shift)
@@ -48,7 +47,6 @@ namespace MSWT_Repositories.Repository
         {
             return await _context.Schedules
         .Include(s => s.Area)
-        .Include(s => s.Assignment)
         .Include(s => s.Restroom)
         .Include(s => s.TrashBin)
         .Include(s => s.Shift)

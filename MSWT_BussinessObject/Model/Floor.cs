@@ -16,8 +16,4 @@ public partial class Floor
     public int? FloorNumber { get; set; }
 
     public virtual ICollection<Area> Areas { get; set; } = new List<Area>();
-
-    public virtual ICollection<Restroom> Restrooms { get; set; } = new List<Restroom>();
-
-    public virtual ICollection<TrashBin> TrashBins { get; set; } = new List<TrashBin>();
 }

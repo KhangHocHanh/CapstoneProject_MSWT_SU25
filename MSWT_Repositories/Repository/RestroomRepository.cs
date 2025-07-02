@@ -20,7 +20,7 @@ namespace MSWT_Repositories.Repository
         {
             return await _context.Restrooms
                 .Include(r => r.Area)
-                .Include(r => r.Floor)
+
                 .FirstOrDefaultAsync(r => r.RestroomId == id);
         }
 
@@ -45,7 +45,7 @@ namespace MSWT_Repositories.Repository
         {
             return await _context.Restrooms
                 .Include(r => r.Area)
-                .Include(r => r.Floor)
+
                 .ToListAsync();
         }
 
