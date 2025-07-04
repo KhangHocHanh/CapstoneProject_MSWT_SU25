@@ -3,6 +3,7 @@ using MSWT_BussinessObject.Model;
 using MSWT_BussinessObject.RequestDTO;
 using MSWT_BussinessObject.ResponseDTO;
 using MSWT_Services.IServices;
+using MSWT_Services.Services;
 
 namespace MSWT_API.Controllers
 {
@@ -41,6 +42,23 @@ namespace MSWT_API.Controllers
             if (schedule == null)
                 return NotFound();
             return Ok(schedule);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult<ScheduleResponseDTO>> UpdateSchedule(string id, [FromBody] ScheduleRequestDTO request)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            try
+            {
+                var updatedSchedule = await _scheduleService.UpdateSchedule(id, request);
+                return Ok(updatedSchedule);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
 
         [HttpDelete("{id}")]

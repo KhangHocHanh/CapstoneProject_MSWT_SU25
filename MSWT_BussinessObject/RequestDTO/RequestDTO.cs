@@ -28,7 +28,7 @@ namespace MSWT_BussinessObject.RequestDTO
         {
             public string? Description { get; set; }
             public string? Location { get; set; }
-            public DateOnly? RequestDate { get; set; }
+            public DateTime? RequestDate { get; set; }
         }
         public class RequestUpdateStatusDto
         {
