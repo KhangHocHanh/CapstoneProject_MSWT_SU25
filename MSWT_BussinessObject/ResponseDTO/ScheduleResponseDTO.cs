@@ -15,8 +15,6 @@ namespace MSWT_BussinessObject.ResponseDTO
 
         public string? AreaId { get; set; }
 
-        public string? AssignmentId { get; set; }
-
         public DateOnly? StartDate { get; set; }
 
         public DateOnly? EndDate { get; set; }

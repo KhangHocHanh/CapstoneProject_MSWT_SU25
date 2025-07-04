@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MSWT_BussinessObject.ResponseDTO;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,10 +12,6 @@ namespace MSWT_BussinessObject.RequestDTO
         public string? Description { get; set; }
 
         public string? AreaId { get; set; }
-
-        public string? Status { get; set; }
-
-        public string? FloorId { get; set; }
 
         public string? RestroomNumber { get; set; }
     }
