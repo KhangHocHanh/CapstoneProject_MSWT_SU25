@@ -10,7 +10,7 @@ namespace MSWT_BussinessObject.RequestDTO
     {
         public string? Description { get; set; }
 
-        public DateOnly? Date { get; set; }
+        public DateTime Date { get; set; }
 
         public string? IsBackup { get; set; }
 

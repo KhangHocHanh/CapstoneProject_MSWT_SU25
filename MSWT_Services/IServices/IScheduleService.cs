@@ -15,6 +15,6 @@ namespace MSWT_Services.IServices
         Task DeleteSchedule(string id);
         Task<IEnumerable<ScheduleResponseDTO>> GetAllSchedule();
         Task<ScheduleResponseDTO> GetScheduleById(string id);
-        Task UpdateSchedule(Schedule schedule);
+        Task<ScheduleResponseDTO> UpdateSchedule(string scheduleId, ScheduleRequestDTO request);
     }
 }

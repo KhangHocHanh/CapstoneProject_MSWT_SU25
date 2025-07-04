@@ -98,5 +98,17 @@ namespace MSWT_BussinessObject.Enum
             IsDeleted = 1,
             IsNotDeleted = 2,
         }
+
+        public enum AreaStatus
+        {
+            Assigned = 1,
+            NotAssigned = 2,
+        }
+
+        public enum RestroomStatus
+        {
+            HoatDong = 1,
+            BaoTri = 2,
+        }
     }
 }

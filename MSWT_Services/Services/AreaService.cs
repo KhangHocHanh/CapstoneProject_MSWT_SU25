@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using CustomEnum = MSWT_BussinessObject.Enum;
 using Microsoft.EntityFrameworkCore;
 using MSWT_BussinessObject.Model;
 using MSWT_BussinessObject.RequestDTO;
@@ -11,24 +12,33 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Azure.Core;
 
 namespace MSWT_Services.Services
 {
     public class AreaService : IAreaService
     {
         private readonly IAreaRepository _areaRepository;
+        private readonly IFloorRepository _floorRepository;
         private readonly IMapper _mapper;
-        public AreaService(IAreaRepository areaRepository, IMapper mapper)
+        public AreaService(IAreaRepository areaRepository, IMapper mapper, IFloorRepository floorRepository)
         {
             _areaRepository = areaRepository;
             _mapper = mapper;
+            _floorRepository = floorRepository;
         }
 
         public async Task<AreaResponseDTO> CreateAreaAsync(AreaRequestDTO request)
         {
+            var floor = await _floorRepository.GetByIdAsync(request.FloorId);
+            if (floor == null)
+            {
+                throw new Exception("Floor does not exist.");
+            }
+
             var area = _mapper.Map<Area>(request);
             area.AreaId = Guid.NewGuid().ToString(); // Generate UID
-
+            area.IsAssigned = CustomEnum.Enum.AreaStatus.NotAssigned.ToString();
             await _areaRepository.AddAsync(area);
             return _mapper.Map<AreaResponseDTO>(area);
         }
