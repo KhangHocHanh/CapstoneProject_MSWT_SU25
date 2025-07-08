@@ -30,7 +30,7 @@ namespace MSWT_API.Controllers
         /// Lấy toàn bộ báo cáo.
         /// </summary>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Report>>> GetAll()
+        public async Task<ActionResult<IEnumerable<ResponseDTO>>> GetAll()
         {
             var reports = await _reportService.GetAllReports();
             return Ok(reports);

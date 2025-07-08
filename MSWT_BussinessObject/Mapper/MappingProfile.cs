@@ -12,6 +12,7 @@ using static MSWT_BussinessObject.Enum.Enum;
 using MSWT_BussinessObject.Model;
 using MSWT_BussinessObject.RequestDTO;
 using MSWT_BussinessObject.ResponseDTO;
+using static MSWT_BussinessObject.ResponseDTO.ResponseDTO;
 
 namespace MSWT_BussinessObject.Mapper
 {
@@ -66,6 +67,10 @@ namespace MSWT_BussinessObject.Mapper
     .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.UserName))
     .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.User.FullName))
     .ForMember(dest => dest.RoleName, opt => opt.MapFrom(src => src.User.Role.RoleName));
+
+            CreateMap<Report, ReportWithUserNameDTO>()
+    .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User != null ? src.User.UserName : null));
+
 
             #endregion
 

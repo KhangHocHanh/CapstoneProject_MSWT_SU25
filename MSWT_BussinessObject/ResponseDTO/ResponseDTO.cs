@@ -17,7 +17,22 @@ namespace MSWT_BussinessObject.ResponseDTO
             Message = message;
             Data = data;
         }
+        public class ReportWithUserNameDTO
+        {
+            public string ReportId { get; set; } = null!;
+            public string? ReportType { get; set; }
+            public string? Description { get; set; }
+            public string? Status { get; set; }
+            public string? ReportName { get; set; }
+            public string? UserId { get; set; }
+            public DateTime? CreatedAt { get; set; }
+            public string? Image { get; set; }
+            public string? Priority { get; set; }
+            public DateTime? ResolvedAt { get; set; }
 
-       
+            // Chỉ lấy UserName
+            public string? UserName { get; set; }
+        }
+
     }
 }
