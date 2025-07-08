@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using CustomEnum = MSWT_BussinessObject.Enum;
 using Azure.Core;
 using MSWT_BussinessObject.Model;
 using MSWT_BussinessObject.RequestDTO;
@@ -38,14 +39,9 @@ namespace MSWT_Services.Services
                     throw new Exception("Area does not exist.");
                 }
 
-                // Ensure the area is linked to the correct floor
-                if (area.FloorId != request.FloorId)
-                {
-                    throw new Exception("Area does not belong to the specified floor.");
-                }
-
                 var restroom = _mapper.Map<Restroom>(request);
                 restroom.RestroomId = Guid.NewGuid().ToString();
+                restroom.Status = CustomEnum.Enum.RestroomStatus.HoatDong.ToString();
 
                 await _restroomRepository.AddAsync(restroom);
                 return _mapper.Map<RestroomResponseDTO>(restroom);
@@ -84,16 +80,10 @@ namespace MSWT_Services.Services
                     throw new Exception("Restroom not found.");
                 }
 
-                // Validate Area exists and belongs to the given Floor
                 var area = await _areaRepository.GetByIdAsync(request.AreaId);
                 if (area == null)
                 {
                     throw new Exception("Area does not exist.");
-                }
-
-                if (area.FloorId != request.FloorId)
-                {
-                    throw new Exception("The specified Area does not belong to the given Floor.");
                 }
 
                 _mapper.Map(request, existingRestroom);
