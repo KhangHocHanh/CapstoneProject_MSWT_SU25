@@ -38,7 +38,7 @@ namespace MSWT_Services.Services
 
             var area = _mapper.Map<Area>(request);
             area.AreaId = Guid.NewGuid().ToString(); // Generate UID
-            area.IsAssigned = CustomEnum.Enum.AreaStatus.NotAssigned.ToString();
+            area.IsAssigned = CustomEnum.Enum.AreaStatus.Assigned.ToString();
             await _areaRepository.AddAsync(area);
             return _mapper.Map<AreaResponseDTO>(area);
         }
