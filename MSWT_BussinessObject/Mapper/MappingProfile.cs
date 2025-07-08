@@ -54,7 +54,7 @@ namespace MSWT_BussinessObject.Mapper
                 .ForMember(dest => dest.ReportId, opt => opt.Ignore())
                 .ForMember(dest => dest.UserId, opt => opt.Ignore())
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(_ => ReportStatus.DaGui.ToVietnamese()))
-                .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(_ => DateOnly.FromDateTime(DateTime.Now)))
+                .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(_ => DateTime.Now))
                 .ForMember(dest => dest.ReportType, opt => opt.Ignore()) // gán thủ công
                 .ForMember(dest => dest.Priority, opt => opt.MapFrom(src => src.Priority.ToVietnamese()));
 
