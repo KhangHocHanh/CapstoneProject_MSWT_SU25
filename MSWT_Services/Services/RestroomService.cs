@@ -41,7 +41,6 @@ namespace MSWT_Services.Services
 
                 var restroom = _mapper.Map<Restroom>(request);
                 restroom.RestroomId = Guid.NewGuid().ToString();
-                restroom.Status = CustomEnum.Enum.RestroomStatus.HoatDong.ToString();
 
                 await _restroomRepository.AddAsync(restroom);
                 return _mapper.Map<RestroomResponseDTO>(restroom);
