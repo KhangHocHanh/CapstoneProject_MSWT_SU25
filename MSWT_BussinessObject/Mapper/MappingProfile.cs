@@ -110,6 +110,11 @@ namespace MSWT_BussinessObject.Mapper
                 .ForMember(dest => dest.Rating, opt => opt.Ignore())
                 .ForMember(dest => dest.ReasonForLeave, opt => opt.Ignore());
             #endregion
+
+            #region Trashbin    
+            CreateMap<TrashBin, TrashbinWithAreaNameDTO>()
+    .ForMember(dest => dest.AreaName, opt => opt.MapFrom(src => src.Area != null ? src.Area.AreaName : null));
+            #endregion
         }
     }
 }

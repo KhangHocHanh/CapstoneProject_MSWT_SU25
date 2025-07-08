@@ -3,19 +3,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AutoMapper;
 using MSWT_BussinessObject.Model;
 using MSWT_Repositories;
 using MSWT_Repositories.IRepository;
 using MSWT_Services.IServices;
+using static MSWT_BussinessObject.ResponseDTO.ResponseDTO;
 
 namespace MSWT_Services.Services
 {
     public class TrashBinService : ITrashBinService
     {
         private readonly ITrashBinRepository _TrashBinRepository;
-        public TrashBinService(ITrashBinRepository TrashBinRepository)
+        private readonly IMapper _mapper;
+        public TrashBinService(ITrashBinRepository TrashBinRepository, IMapper mapper)
         {
             _TrashBinRepository = TrashBinRepository;
+            _mapper = mapper;
         }
 
         public async Task AddTrashBin(TrashBin TrashBin)
@@ -28,9 +32,10 @@ namespace MSWT_Services.Services
             await _TrashBinRepository.DeleteAsync(id);
         }
 
-        public async Task<IEnumerable<TrashBin>> GetAllTrashBins()
+        public async Task<IEnumerable<TrashbinWithAreaNameDTO>> GetAllTrashBins()
         {
-            return await _TrashBinRepository.GetAllAsync();
+            var trashbins = await _TrashBinRepository.GetAllAsync();
+            return _mapper.Map<IEnumerable<TrashbinWithAreaNameDTO>>(trashbins);
         }
 
         public async Task<TrashBin> GetTrashBinById(string id)
