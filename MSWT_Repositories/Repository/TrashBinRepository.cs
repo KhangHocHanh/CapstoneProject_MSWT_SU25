@@ -39,7 +39,9 @@ namespace MSWT_Repositories.Repository
 
         public async Task<IEnumerable<TrashBin>> GetAllAsync()
         {
-            return await _context.TrashBins.ToListAsync();
+            return await _context.TrashBins
+                .Include(t => t.Area)
+                .ToListAsync();
         }
 
         public async Task UpdateAsync(TrashBin TrashBin)
