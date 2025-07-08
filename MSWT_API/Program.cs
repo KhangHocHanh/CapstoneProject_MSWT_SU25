@@ -120,6 +120,7 @@ builder.Services.AddScoped<IReportRepository, ReportRepository>();
 builder.Services.AddScoped<IScheduleRepository, ScheduleRepository>();
 builder.Services.AddScoped<IScheduleDetailsRepository, ScheduleDetailsRepository>();
 builder.Services.AddScoped<IAlertRepository, AlertRepository>();
+builder.Services.AddScoped<ISensorBinRepository, SensorBinRepository>();
 
 // Đăng ký services
 builder.Services.AddScoped<IUserService, UserService>();
@@ -137,6 +138,7 @@ builder.Services.AddScoped<IReportService, ReportService>();
 builder.Services.AddScoped<IScheduleService, ScheduleService>();
 builder.Services.AddScoped<IScheduleDetailsService, ScheduleDetailsService>();
 builder.Services.AddScoped<IAlertService, AlertService>();
+builder.Services.AddScoped<ISensorBinService, SensorBinService>();
 
 
 builder.Services.AddControllers();
