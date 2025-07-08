@@ -21,6 +21,22 @@ namespace MSWT_BussinessObject.Enum
             DangHoatDong,// Đang hoạt động
             NgungHoatDong // Ngưng hoạt động
         }
+        public enum SensorStatus
+        {
+            DangHoatDong,// Đang hoạt động
+            NgungHoatDong // Ngưng hoạt động
+        }
+        public enum SensorBinStatus
+        {
+            DangHoatDong,// Đang hoạt động
+            NgungHoatDong // Ngưng hoạt động
+        }
+
+        public enum TrashbinStatus
+        {
+            DangHoatDong,// Đang hoạt động
+            NgungHoatDong // Ngưng hoạt động
+        }
         /// <summary>
         /// Loại nghỉ phép do nhân viên chọn.
         /// </summary>

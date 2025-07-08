@@ -144,5 +144,39 @@ namespace MSWT_BussinessObject.RequestDTO
         }
 
         #endregion
+
+        #region SensorDTO
+        public class SensorCreateDto
+        {
+            [Required(ErrorMessage = "Tên cảm biến không được để trống")]
+            public string? SensorName { get; set; } = null!;
+        }
+
+        #endregion
+
+        #region SensorBinDTO
+        public class SensorBinCreateDto
+        {
+            [Required(ErrorMessage = "ID cảm biến không được để trống")]
+            public string SensorId { get; set; } = null!;
+            [Required(ErrorMessage = "ID thùng rác không được để trống")]
+            public string BinId { get; set; } = null!;
+        }
+
+        #endregion
+
+        #region TrashbinDTO
+        public class TrashbinCreateDto
+        {
+            public string? AreaId { get; set; }
+            [Required(ErrorMessage = "Vị trí thùng rác không được để trống")]
+            public string? Location { get; set; }
+
+            public string? Image { get; set; }
+
+            public string? RestroomId { get; set; }
+        }
+
+        #endregion
     }
 }

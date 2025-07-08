@@ -1,6 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MSWT_BussinessObject.Enum;
 using MSWT_BussinessObject.Model;
 using MSWT_Services.IServices;
+using MSWT_Services.Services;
+using static MSWT_BussinessObject.Enum.Enum;
+using static MSWT_BussinessObject.RequestDTO.RequestDTO;
 
 namespace MSWT_API.Controllers
 {
@@ -44,6 +48,46 @@ namespace MSWT_API.Controllers
             {
                 return BadRequest(new { message = ex.Message }); // 400 Bad Request if error
             }
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<TrashBin>> Create([FromBody] TrashbinCreateDto dto)
+        {
+            var newTrashbin = new TrashBin
+            {
+                TrashBinId = "TB" + DateTime.UtcNow.Ticks,
+                Status = TrashbinStatus.DangHoatDong.ToString(),
+                AreaId = dto.AreaId,
+                Location = dto.Location,
+                Image = dto.Image,
+                RestroomId = dto.RestroomId
+            };
+
+            await _TrashBinService.AddTrashBin(newTrashbin);
+
+            return CreatedAtAction(nameof(GetById),
+                new { id = newTrashbin.TrashBinId }, newTrashbin);
+        }
+        [HttpPut("toggle-status/{id}")]
+        public async Task<IActionResult> ToggleStatus(string id)
+        {
+            var trashbin = await _TrashBinService.GetTrashBinById(id);
+            if (trashbin == null)
+                return NotFound(new { message = "Thùng rác không tồn tại" });
+
+            // Đảo trạng thái
+            if (trashbin.Status == RoleStatus.DangHoatDong.ToDisplayString())
+                trashbin.Status = RoleStatus.NgungHoatDong.ToDisplayString();
+            else
+                trashbin.Status = RoleStatus.DangHoatDong.ToDisplayString();
+
+            await _TrashBinService.UpdateTrashBin(trashbin);
+
+            return Ok(new
+            {
+                message = "Cập nhật trạng thái thành công",
+                newStatus = trashbin.Status
+            });
         }
         #endregion
     }
