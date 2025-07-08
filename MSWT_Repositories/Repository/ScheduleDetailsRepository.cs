@@ -36,6 +36,7 @@ namespace MSWT_Repositories.Repository
         {
             return await _context.ScheduleDetails
                 .Include(sd => sd.Schedule)
+                    .ThenInclude(s => s.Area)
                 .FirstOrDefaultAsync(sd => sd.ScheduleDetailId == id);
         }
 
@@ -43,6 +44,7 @@ namespace MSWT_Repositories.Repository
         {
             return await _context.ScheduleDetails
                 .Include(sd => sd.Schedule)
+                    .ThenInclude(s => s.Area)
                 .ToListAsync();
         }
 

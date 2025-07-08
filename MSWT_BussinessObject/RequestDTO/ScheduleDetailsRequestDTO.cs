@@ -12,6 +12,8 @@ namespace MSWT_BussinessObject.RequestDTO
 
         public DateTime Date { get; set; }
 
+        public string? Status { get; set; }
+
         public string? IsBackup { get; set; }
 
         public string? BackupForUserId { get; set; }
