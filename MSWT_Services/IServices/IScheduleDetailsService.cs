@@ -19,5 +19,6 @@ namespace MSWT_Services.IServices
 
         Task<bool> AddWorkerToSchedule(string id, string workerId);
         Task<bool> AddSupervisorToSchedule(string id, string supervisorId);
+        Task<bool> UpdateRating(string id, string rating);
     }
 }

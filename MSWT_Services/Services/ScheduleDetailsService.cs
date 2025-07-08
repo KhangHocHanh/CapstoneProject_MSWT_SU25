@@ -41,7 +41,7 @@ namespace MSWT_Services.Services
                 ScheduleId = schedule.ScheduleId,
                 Description = detailDto.Description,
                 Date = detailDto.Date,
-                Status = CustomEnum.Enum.ScheduleDetailsStatus.SapToi.ToString(), // or whichever value you want to default to
+                Status = detailDto.Status,
                 StartTime = schedule.Shift.StartTime,
                 EndTime = schedule.Shift.EndTime,
                 IsBackup = detailDto.IsBackup,
@@ -112,6 +112,25 @@ namespace MSWT_Services.Services
                     throw new Exception("Supervisor not found.");
 
                 scheduleDetail.Supervisor = supervisor;
+
+                await _scheduleDetailsRepository.UpdateAsync(scheduleDetail);
+                return true;
+            }
+            catch (Exception e)
+            {
+                throw new Exception($"Error updating schedule detail : {e.Message}", e);
+            }
+        }
+
+        public async Task<bool> UpdateRating(string id, string rating)
+        {
+            try
+            {
+                var scheduleDetail = await _scheduleDetailsRepository.GetByIdAsync(id);
+                if (scheduleDetail == null)
+                    throw new Exception("ScheduleDetail not found.");
+
+                scheduleDetail.Rating = rating.Trim();
 
                 await _scheduleDetailsRepository.UpdateAsync(scheduleDetail);
                 return true;
