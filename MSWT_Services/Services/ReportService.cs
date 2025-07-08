@@ -3,18 +3,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AutoMapper;
 using MSWT_BussinessObject.Model;
 using MSWT_Repositories.IRepository;
 using MSWT_Services.IServices;
+using static MSWT_BussinessObject.ResponseDTO.ResponseDTO;
 
 namespace MSWT_Services.Services
 {
     public class ReportService : IReportService
     {
         private readonly IReportRepository _reportRepository;
-        public ReportService(IReportRepository reportRepository)
+        private readonly IMapper _mapper;
+        public ReportService(IReportRepository reportRepository, IMapper mapper)
         {
             _reportRepository = reportRepository;
+            _mapper = mapper;
         }
         public async Task AddReport(Report report)
         {
@@ -26,9 +30,10 @@ namespace MSWT_Services.Services
             await _reportRepository.DeleteAsync(id);
         }
 
-        public async Task<IEnumerable<Report>> GetAllReports()
+        public async Task<IEnumerable<ReportWithUserNameDTO>> GetAllReports()
         {
-            return await _reportRepository.GetAllAsync();
+            var reports = await _reportRepository.GetAllAsync();
+            return _mapper.Map<IEnumerable<ReportWithUserNameDTO>>(reports);
         }
 
         public async Task<Report> GetReportById(string id)
