@@ -15,6 +15,7 @@ namespace MSWT_Repositories.IRepository
         Task DeleteAsync(string id);
         Task UpdateAsync(ScheduleDetail scheduleDetail);
         Task<IEnumerable<ScheduleDetail>> GetAllAsync();
+        Task<IEnumerable<ScheduleDetail>> SearchByUserIdAsync(string userId);
         #endregion
     }
 }

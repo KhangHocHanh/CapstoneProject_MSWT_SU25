@@ -35,5 +35,9 @@ namespace MSWT_BussinessObject.ResponseDTO
         public string? BackupForUserId { get; set; }
 
         public ScheduleResponseDTO Schedule { get; set; }
+
+        public string? AreaName { get; set; }
+
+        public string? ScheduleName { get; set; }
     }
 }

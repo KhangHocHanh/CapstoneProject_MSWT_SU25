@@ -53,5 +53,17 @@ namespace MSWT_Repositories.Repository
             _context.ScheduleDetails.Update(scheduleDetail);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<IEnumerable<ScheduleDetail>> SearchByUserIdAsync(string userId)
+        {
+            return await _context.ScheduleDetails
+                .Where(sd => sd.WorkerId == userId || sd.SupervisorId == userId)
+                .Include(sd => sd.Schedule)
+                    .ThenInclude(s => s.Area) // To get AreaName
+                .Include(sd => sd.Worker)
+                .Include(sd => sd.Supervisor)
+                .ToListAsync();
+        }
+
     }
 }

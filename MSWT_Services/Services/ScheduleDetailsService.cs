@@ -140,5 +140,27 @@ namespace MSWT_Services.Services
                 throw new Exception($"Error updating schedule detail : {e.Message}", e);
             }
         }
+
+        public async Task<IEnumerable<ScheduleDetailsResponseDTO>> SearchScheduleDetailsByUserIdAsync(string userId)
+        {
+            try
+            {
+                var user = await _userRepository.GetByIdAsync(userId);
+                if (user == null)
+                    throw new Exception("User not found.");
+
+                var results = await _scheduleDetailsRepository.SearchByUserIdAsync(userId);
+
+                if (results == null || !results.Any())
+                    throw new Exception("No schedule details found for the user.");
+
+                return _mapper.Map<IEnumerable<ScheduleDetailsResponseDTO>>(results);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error searching schedule details for user {userId}: {ex.Message}", ex);
+            }
+        }
+
     }
 }

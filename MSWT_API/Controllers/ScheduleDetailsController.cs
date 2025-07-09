@@ -34,6 +34,14 @@ namespace MSWT_API.Controllers
             return Ok(schedule);
         }
 
+        [HttpGet("user/{userId}")]
+        public async Task<IActionResult> SearchScheduleDetailsByUserId(string userId)
+        {
+            var results = await _scheduleDetailsService.SearchScheduleDetailsByUserIdAsync(userId);
+            return Ok(results);
+        }
+
+
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(string id)
         {
