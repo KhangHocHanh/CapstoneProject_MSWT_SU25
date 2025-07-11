@@ -12,6 +12,7 @@ using System.Linq;
 using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
+using static MSWT_BussinessObject.RequestDTO.RequestDTO;
 
 namespace MSWT_Services.Services
 {
@@ -20,14 +21,18 @@ namespace MSWT_Services.Services
         private readonly IScheduleDetailsRepository _scheduleDetailsRepository;
         private readonly IScheduleRepository _scheduleRepository;
         private readonly IUserRepository _userRepository;
+        private readonly IAssignmentRepository _assignmentRepository;
         private readonly IMapper _mapper;
+        private readonly IScheduleDetailRatingRepository _scheduleDetailRatingRepository;
 
-        public ScheduleDetailsService(IScheduleDetailsRepository scheduleDetailsRepository, IUserRepository userRepository, IScheduleRepository scheduleRepository, IMapper mapper)
+        public ScheduleDetailsService(IScheduleDetailsRepository scheduleDetailsRepository, IUserRepository userRepository, IScheduleRepository scheduleRepository, IMapper mapper, IScheduleDetailRatingRepository scheduleDetailRatingRepository, IAssignmentRepository assignmentRepository)
         {
             _scheduleDetailsRepository = scheduleDetailsRepository;
             _userRepository = userRepository;
             _scheduleRepository = scheduleRepository;
             _mapper = mapper;
+            _scheduleDetailRatingRepository = scheduleDetailRatingRepository;
+            _assignmentRepository = assignmentRepository;
         }
         public async Task<ScheduleDetailsResponseDTO> CreateScheduleDetailFromScheduleAsync(string scheduleId, ScheduleDetailsRequestDTO detailDto)
         {
@@ -122,6 +127,30 @@ namespace MSWT_Services.Services
             }
         }
 
+        public async Task<bool> AddAssignmentToSchedule(string id, string assignmentId)
+        {
+            try
+            {
+                var scheduleDetail = await _scheduleDetailsRepository.GetByIdAsync(id);
+                if (scheduleDetail == null)
+                    throw new Exception("ScheduleDetail not found.");
+
+                var assignment = await _assignmentRepository.GetByIdAsync(assignmentId);
+                if (assignment == null)
+                    throw new Exception("Assignment not found.");
+
+                scheduleDetail.Assignment = assignment;
+
+                await _scheduleDetailsRepository.UpdateAsync(scheduleDetail);
+                return true;
+            }
+            catch (Exception e)
+            {
+                throw new Exception($"Error updating schedule detail : {e.Message}", e);
+            }
+        }
+
+
         public async Task<bool> UpdateRating(string id, string rating)
         {
             try
@@ -161,6 +190,36 @@ namespace MSWT_Services.Services
                 throw new Exception($"Error searching schedule details for user {userId}: {ex.Message}", ex);
             }
         }
+
+        public async Task<bool> CreateDailyRatingAsync(string userId, ScheduleDetailRatingCreateDTO dto)
+        {
+            var scheduleDetail = await _scheduleDetailsRepository.GetByIdAsync(dto.ScheduleDetailId);
+            if (scheduleDetail == null)
+                throw new Exception("ScheduleDetail not found.");
+
+            var today = DateTime.UtcNow.Date;
+
+            var existingRating = await _scheduleDetailRatingRepository
+                .GetByScheduleDetailAndDateAsync(dto.ScheduleDetailId, today);
+
+            if (existingRating != null)
+                throw new Exception("This ScheduleDetail has already been rated today.");
+
+            var rating = new ScheduleDetailRating
+            {
+                ScheduleDetailRatingId = Guid.NewGuid().ToString(),
+                ScheduleDetailId = dto.ScheduleDetailId,
+                RatedByUserId = userId,
+                RatingValue = dto.RatingValue,
+                Comment = dto.Comment,
+                RatedAt = DateTime.UtcNow,
+                RatingDate = today
+            };
+
+            await _scheduleDetailRatingRepository.CreateAsync(rating);
+            return true;
+        }
+
 
     }
 }

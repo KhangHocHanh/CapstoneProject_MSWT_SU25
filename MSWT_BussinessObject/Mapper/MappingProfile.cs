@@ -82,9 +82,10 @@ namespace MSWT_BussinessObject.Mapper
             CreateMap<ScheduleRequestDTO, Schedule>();
             CreateMap<ScheduleDetailsRequestDTO, ScheduleDetail>();
             CreateMap<ShiftRequestDTO, Shift>();
+            CreateMap<AssignmentRequestDTO, Assignment>();
 
 
-
+            CreateMap<Assignment, AssignmentResponseDTO>();
             CreateMap<Restroom, RestroomResponseDTO>();
             CreateMap<Floor, FloorResponseDTO>();
             CreateMap<Area, AreaResponseDTO>()
@@ -94,7 +95,8 @@ namespace MSWT_BussinessObject.Mapper
                 .ForMember(dest => dest.AreaName, opt => opt.MapFrom(src => src.Area.AreaName));
             CreateMap<ScheduleDetail, ScheduleDetailsResponseDTO>()
                 .ForMember(dest => dest.AreaName, opt => opt.MapFrom(src => src.Schedule.Area.AreaName))
-                .ForMember(dest => dest.ScheduleName, opt => opt.MapFrom(src => src.Schedule.ScheduleName));
+                .ForMember(dest => dest.ScheduleName, opt => opt.MapFrom(src => src.Schedule.ScheduleName))
+                .ForMember(dest => dest.AssignmentName, opt => opt.MapFrom(src => src.Assignment.AssigmentName));
             CreateMap<Shift, ShiftResponseDTO>();
 
             #region User

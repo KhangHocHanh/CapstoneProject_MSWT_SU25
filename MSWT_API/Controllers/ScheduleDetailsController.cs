@@ -1,8 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc;
 using MSWT_BussinessObject.Model;
 using MSWT_BussinessObject.RequestDTO;
 using MSWT_Services.IServices;
 using MSWT_Services.Services;
+using static MSWT_BussinessObject.RequestDTO.RequestDTO;
 
 namespace MSWT_API.Controllers
 {
@@ -63,6 +66,22 @@ namespace MSWT_API.Controllers
             return Ok(result);
         }
 
+        [HttpPut("{id}/assignments/{assignmentId}")]
+        public async Task<IActionResult> AddAssignmentToSchedule(string id, string assignmentId)
+        {
+            try
+            {
+                var success = await _scheduleDetailsService.AddAssignmentToSchedule(id, assignmentId);
+                if (success)
+                    return Ok(new { message = "Assignment added to schedule detail successfully." });
+
+                return BadRequest("Could not assign the assignment.");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+        }
 
 
         [HttpPut("user/worker/{id}")]
@@ -115,6 +134,25 @@ namespace MSWT_API.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
+
+        [HttpPost("schedule-detail/rating")]
+        [Authorize(Roles = "Supervisor")] // hoặc bỏ nếu mọi role đều có quyền
+        public async Task<IActionResult> CreateDailyRating([FromBody] ScheduleDetailRatingCreateDTO dto)
+        {
+            var userId = User.FindFirstValue("User_Id");
+            if (userId == null) return Unauthorized();
+
+            try
+            {
+                await _scheduleDetailsService.CreateDailyRatingAsync(userId, dto);
+                return Ok(new { message = "Rating submitted." });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
 
     }
 }

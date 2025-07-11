@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static MSWT_BussinessObject.RequestDTO.RequestDTO;
 
 namespace MSWT_Services.IServices
 {
@@ -21,5 +22,7 @@ namespace MSWT_Services.IServices
         Task<bool> AddSupervisorToSchedule(string id, string supervisorId);
         Task<bool> UpdateRating(string id, string rating);
         Task<IEnumerable<ScheduleDetailsResponseDTO>> SearchScheduleDetailsByUserIdAsync(string userId);
+        Task<bool> AddAssignmentToSchedule(string id, string assignmentId);
+        Task<bool> CreateDailyRatingAsync(string userId, ScheduleDetailRatingCreateDTO dto);
     }
 }

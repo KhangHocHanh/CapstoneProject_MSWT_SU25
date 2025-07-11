@@ -178,5 +178,13 @@ namespace MSWT_BussinessObject.RequestDTO
         }
 
         #endregion
+
+        public class ScheduleDetailRatingCreateDTO
+        {
+            public string ScheduleDetailId { get; set; } = null!;
+            public int RatingValue { get; set; }
+            public string? Comment { get; set; }
+        }
+
     }
 }
