@@ -23,6 +23,8 @@ namespace MSWT_BussinessObject.ResponseDTO
 
         public string? RestroomId { get; set; }
 
+        public string? RestroomNumber { get; set; }
+
         public string? ScheduleType { get; set; }
 
         public string? ShiftId { get; set; }

@@ -90,7 +90,8 @@ namespace MSWT_BussinessObject.Mapper
             CreateMap<Area, AreaResponseDTO>()
             .ForMember(dest => dest.FloorNumber, opt => opt.MapFrom(src => src.Floor.FloorNumber));
             CreateMap<Schedule, ScheduleResponseDTO>()
-            .ForMember(dest => dest.AreaName, opt => opt.MapFrom(src => src.Area.AreaName));
+                .ForMember(dest => dest.RestroomNumber, opt => opt.MapFrom(src => src.Restroom.RestroomNumber))
+                .ForMember(dest => dest.AreaName, opt => opt.MapFrom(src => src.Area.AreaName));
             CreateMap<ScheduleDetail, ScheduleDetailsResponseDTO>()
                 .ForMember(dest => dest.AreaName, opt => opt.MapFrom(src => src.Schedule.Area.AreaName))
                 .ForMember(dest => dest.ScheduleName, opt => opt.MapFrom(src => src.Schedule.ScheduleName));
@@ -112,6 +113,11 @@ namespace MSWT_BussinessObject.Mapper
                 .ForMember(dest => dest.Password, opt => opt.Ignore()) // không cập nhật pass
                 .ForMember(dest => dest.Rating, opt => opt.Ignore())
                 .ForMember(dest => dest.ReasonForLeave, opt => opt.Ignore());
+            #endregion
+
+            #region Trashbin    
+            CreateMap<TrashBin, TrashbinWithAreaNameDTO>()
+    .ForMember(dest => dest.AreaName, opt => opt.MapFrom(src => src.Area != null ? src.Area.AreaName : null));
             #endregion
         }
     }

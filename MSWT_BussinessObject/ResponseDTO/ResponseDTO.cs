@@ -34,5 +34,18 @@ namespace MSWT_BussinessObject.ResponseDTO
             public string? UserName { get; set; }
         }
 
+        public class TrashbinWithAreaNameDTO
+        {
+            public string TrashBinId { get; set; } = null!;
+            public string? AreaId { get; set; }
+            public string? Description { get; set; }
+            public string? Status { get; set; }
+            public string? TrashBinName { get; set; }
+            public string? AreaName { get; set; }
+            public DateTime? CreatedAt { get; set; }
+            public DateTime? UpdatedAt { get; set; }
+
+        }
+
     }
 }
