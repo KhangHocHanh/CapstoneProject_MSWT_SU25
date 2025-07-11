@@ -82,9 +82,10 @@ namespace MSWT_BussinessObject.Mapper
             CreateMap<ScheduleRequestDTO, Schedule>();
             CreateMap<ScheduleDetailsRequestDTO, ScheduleDetail>();
             CreateMap<ShiftRequestDTO, Shift>();
+            CreateMap<AssignmentRequestDTO, Assignment>();
 
 
-
+            CreateMap<Assignment, AssignmentResponseDTO>();
             CreateMap<Restroom, RestroomResponseDTO>();
             CreateMap<Floor, FloorResponseDTO>();
             CreateMap<Area, AreaResponseDTO>()
