@@ -40,4 +40,6 @@ public partial class ScheduleDetail
     public virtual User? Supervisor { get; set; }
 
     public virtual User? Worker { get; set; }
+    public virtual ICollection<ScheduleDetailRating>? Ratings { get; set; }
+
 }
