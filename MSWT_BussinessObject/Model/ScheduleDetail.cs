@@ -31,6 +31,8 @@ public partial class ScheduleDetail
 
     public string? IsBackup { get; set; }
 
+    public string? AssignmentId { get; set; }
+
     public virtual User? BackupForUser { get; set; }
 
     public virtual Schedule? Schedule { get; set; }
