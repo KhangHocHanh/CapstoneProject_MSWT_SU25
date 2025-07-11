@@ -49,6 +49,7 @@ public partial class SmartTrashBinandCleaningStaffManagementContext : DbContext
     public virtual DbSet<TrashBin> TrashBins { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
+    public virtual DbSet<ScheduleDetailRating> ScheduleDetailRatings { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -423,6 +424,29 @@ public partial class SmartTrashBinandCleaningStaffManagementContext : DbContext
         });
 
         OnModelCreatingPartial(modelBuilder);
+        modelBuilder.Entity<ScheduleDetailRating>(entity =>
+        {
+            entity.HasKey(e => e.ScheduleDetailRatingId).HasName("PK_ScheduleDetailRating");
+
+            entity.Property(e => e.ScheduleDetailRatingId)
+                .HasMaxLength(50)
+                .HasDefaultValueSql("(newid())");
+
+            entity.Property(e => e.ScheduleDetailId).HasMaxLength(50);
+            entity.Property(e => e.RatedByUserId).HasMaxLength(50);
+            entity.Property(e => e.RatingDate).HasColumnType("date");
+            entity.Property(e => e.RatedAt).HasColumnType("datetime");
+            entity.Property(e => e.Comment).HasMaxLength(200);
+            entity.Property(e => e.RatingValue).HasColumnType("int");
+
+            entity.HasOne(d => d.ScheduleDetail)
+                .WithMany(p => p.Ratings)
+                .HasForeignKey(d => d.ScheduleDetailId)
+                .HasConstraintName("FK_ScheduleDetailRatings_ScheduleDetail");
+
+            entity.HasIndex(e => new { e.ScheduleDetailId, e.RatingDate }).IsUnique();
+        });
+
     }
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
