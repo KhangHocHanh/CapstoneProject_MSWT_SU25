@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MSWT_BussinessObject.Model;
+using MSWT_BussinessObject.RequestDTO;
 using MSWT_Services.IServices;
 using MSWT_Services.Services;
 
@@ -17,6 +18,12 @@ namespace MSWT_API.Controllers
         }
 
         #region CRUD Category
+        [HttpPost]
+        public async Task<IActionResult> CreateAssignment([FromBody] AssignmentRequestDTO request)
+        {
+            var result = await _assignmentService.CreateAssignmentAsync(request);
+            return Ok(result);
+        }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Assignment>>> GetAll()
@@ -27,7 +34,7 @@ namespace MSWT_API.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Assignment>> GetById(string id)
         {
-            var assignment = await _assignmentService.GetAssigmentById(id);
+            var assignment = await _assignmentService.GetAssignmentById(id);
             if (assignment == null)
                 return NotFound();
             return Ok(assignment);
