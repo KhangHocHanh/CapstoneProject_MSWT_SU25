@@ -12,6 +12,10 @@ namespace MSWT_BussinessObject.ResponseDTO
 
         public string? ScheduleId { get; set; }
 
+        public string? AssignmentId { get; set; }
+
+        public string? AssignmentName { get; set; }
+
         public string? Description { get; set; }
 
         public DateTime? Date { get; set; }

@@ -21,16 +21,18 @@ namespace MSWT_Services.Services
         private readonly IScheduleDetailsRepository _scheduleDetailsRepository;
         private readonly IScheduleRepository _scheduleRepository;
         private readonly IUserRepository _userRepository;
+        private readonly IAssignmentRepository _assignmentRepository;
         private readonly IMapper _mapper;
         private readonly IScheduleDetailRatingRepository _scheduleDetailRatingRepository;
 
-        public ScheduleDetailsService(IScheduleDetailsRepository scheduleDetailsRepository, IUserRepository userRepository, IScheduleRepository scheduleRepository, IMapper mapper, IScheduleDetailRatingRepository scheduleDetailRatingRepository)
+        public ScheduleDetailsService(IScheduleDetailsRepository scheduleDetailsRepository, IUserRepository userRepository, IScheduleRepository scheduleRepository, IMapper mapper, IScheduleDetailRatingRepository scheduleDetailRatingRepository, IAssignmentRepository assignmentRepository)
         {
             _scheduleDetailsRepository = scheduleDetailsRepository;
             _userRepository = userRepository;
             _scheduleRepository = scheduleRepository;
             _mapper = mapper;
             _scheduleDetailRatingRepository = scheduleDetailRatingRepository;
+            _assignmentRepository = assignmentRepository;
         }
         public async Task<ScheduleDetailsResponseDTO> CreateScheduleDetailFromScheduleAsync(string scheduleId, ScheduleDetailsRequestDTO detailDto)
         {
@@ -124,6 +126,30 @@ namespace MSWT_Services.Services
                 throw new Exception($"Error updating schedule detail : {e.Message}", e);
             }
         }
+
+        public async Task<bool> AddAssignmentToSchedule(string id, string assignmentId)
+        {
+            try
+            {
+                var scheduleDetail = await _scheduleDetailsRepository.GetByIdAsync(id);
+                if (scheduleDetail == null)
+                    throw new Exception("ScheduleDetail not found.");
+
+                var assignment = await _assignmentRepository.GetByIdAsync(assignmentId);
+                if (assignment == null)
+                    throw new Exception("Assignment not found.");
+
+                scheduleDetail.Assignment = assignment;
+
+                await _scheduleDetailsRepository.UpdateAsync(scheduleDetail);
+                return true;
+            }
+            catch (Exception e)
+            {
+                throw new Exception($"Error updating schedule detail : {e.Message}", e);
+            }
+        }
+
 
         public async Task<bool> UpdateRating(string id, string rating)
         {
