@@ -66,6 +66,22 @@ namespace MSWT_API.Controllers
             return Ok(result);
         }
 
+        [HttpPut("{id}/assignments/{assignmentId}")]
+        public async Task<IActionResult> AddAssignmentToSchedule(string id, string assignmentId)
+        {
+            try
+            {
+                var success = await _scheduleDetailsService.AddAssignmentToSchedule(id, assignmentId);
+                if (success)
+                    return Ok(new { message = "Assignment added to schedule detail successfully." });
+
+                return BadRequest("Could not assign the assignment.");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+        }
 
 
         [HttpPut("user/worker/{id}")]
