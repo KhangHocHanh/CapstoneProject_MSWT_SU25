@@ -14,6 +14,12 @@ namespace MSWT_BussinessObject.RequestDTO
 
         public string? Status { get; set; }
 
+        public string? SupervisorId { get; set; }
+
+        public string? WorkerId { get; set; }
+
+        public string? AssignmentId { get; set; }
+
         public string? IsBackup { get; set; }
 
         public string? BackupForUserId { get; set; }
