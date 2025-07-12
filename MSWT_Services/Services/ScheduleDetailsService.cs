@@ -13,6 +13,7 @@ using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 using static MSWT_BussinessObject.RequestDTO.RequestDTO;
+using Microsoft.EntityFrameworkCore;
 
 namespace MSWT_Services.Services
 {
@@ -40,11 +41,39 @@ namespace MSWT_Services.Services
             if (schedule == null)
                 throw new Exception("Schedule not found.");
 
+            // Load supervisor with Role
+            var supervisor = await _userRepository.GetAll()
+                .Include(u => u.Role)
+                .FirstOrDefaultAsync(u => u.UserId == detailDto.SupervisorId);
+            if (supervisor == null)
+                throw new Exception("Supervisor not found.");
+            if (supervisor.Role?.RoleName?.ToLower() != "supervisor")
+                throw new Exception("The selected user does not have the 'Supervisor' role.");
+
+            // Load worker with Role
+            var worker = await _userRepository.GetAll()
+                .Include(u => u.Role)
+                .FirstOrDefaultAsync(u => u.UserId == detailDto.WorkerId);
+            if (worker == null)
+                throw new Exception("Worker not found.");
+            if (worker.Role?.RoleName?.ToLower() != "worker")
+                throw new Exception("The selected user does not have the 'Worker' role.");
+
+            if (!string.IsNullOrEmpty(detailDto.AssignmentId))
+            {
+                var assignment = await _assignmentRepository.GetByIdAsync(detailDto.AssignmentId);
+                if (assignment == null)
+                    throw new Exception("Assignment not found.");
+            }
+
             var detail = new ScheduleDetail
             {
                 ScheduleDetailId = Guid.NewGuid().ToString(),
                 ScheduleId = schedule.ScheduleId,
                 Description = detailDto.Description,
+                WorkerId = detailDto.WorkerId,
+                SupervisorId = detailDto.SupervisorId,
+                AssignmentId = detailDto.AssignmentId,
                 Date = detailDto.Date,
                 Status = detailDto.Status,
                 StartTime = schedule.Shift.StartTime,
@@ -56,6 +85,7 @@ namespace MSWT_Services.Services
             await _scheduleDetailsRepository.AddAsync(detail);
             return _mapper.Map<ScheduleDetailsResponseDTO>(detail);
         }
+
 
 
 
