@@ -41,7 +41,11 @@ namespace MSWT_BussinessObject.ResponseDTO
 
         //public virtual Shift? Shift { get; set; }
 
-        //public virtual TrashBin? TrashBin { get; set; }
+        //public AreaResponseDTO? Area { get; set; }
+
+        public TrashBinResponseDTO? TrashBin { get; set; }
+
+        public RestroomResponseDTO? Restroom { get; set; }
 
         //public virtual ICollection<Assignment> Assignments { get; set; } = new List<Assignment>();
     }
