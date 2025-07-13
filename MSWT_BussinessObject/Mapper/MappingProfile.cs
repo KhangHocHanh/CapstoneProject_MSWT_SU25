@@ -86,7 +86,8 @@ namespace MSWT_BussinessObject.Mapper
 
 
             CreateMap<Assignment, AssignmentResponseDTO>();
-            CreateMap<Restroom, RestroomResponseDTO>();
+            CreateMap<Restroom, RestroomResponseDTO>()
+                .ForMember(dest => dest.AreaName, opt => opt.MapFrom(src => src.Area.AreaName));
             CreateMap<Floor, FloorResponseDTO>();
             CreateMap<Area, AreaResponseDTO>()
             .ForMember(dest => dest.FloorNumber, opt => opt.MapFrom(src => src.Floor.FloorNumber));
