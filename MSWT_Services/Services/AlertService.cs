@@ -3,18 +3,26 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AutoMapper;
 using MSWT_BussinessObject.Model;
+using MSWT_BussinessObject.RequestDTO;
+using MSWT_BussinessObject.ResponseDTO;
 using MSWT_Repositories.IRepository;
+using MSWT_Repositories.Repository;
 using MSWT_Services.IServices;
+using static MSWT_BussinessObject.RequestDTO.RequestDTO;
+using static MSWT_BussinessObject.ResponseDTO.ResponseDTO;
 
 namespace MSWT_Services.Services
 {
     public class AlertService : IAlertService
     {
         private readonly IAlertRepository _alertRepository;
-        public AlertService(IAlertRepository alertRepository)
+        private readonly IMapper _mapper;
+        public AlertService(IAlertRepository alertRepository,IMapper mapper)
         {
             _alertRepository = alertRepository;
+            _mapper = mapper;
         }
         public async Task<IEnumerable<Alert>> GetAllAlerts()
         {
@@ -27,6 +35,11 @@ namespace MSWT_Services.Services
         public async Task DeleteAlert(string id)
         {
             await _alertRepository.DeleteAsync(id);
+        }
+
+        public async Task CreateAlertAsync(Alert request)
+        {
+            await _alertRepository.AddAsync(request);
         }
     }
 }
