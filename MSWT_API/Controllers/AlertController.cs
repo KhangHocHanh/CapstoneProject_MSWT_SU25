@@ -1,8 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MSWT_BussinessObject.Model;
 using MSWT_BussinessObject.RequestDTO;
 using MSWT_BussinessObject.ResponseDTO;
 using MSWT_Services.IServices;
 using MSWT_Services.Services;
+using static MSWT_BussinessObject.Enum.Enum;
+using static MSWT_BussinessObject.RequestDTO.RequestDTO;
+using static MSWT_BussinessObject.ResponseDTO.ResponseDTO;
 
 namespace MSWT_API.Controllers
 {
@@ -45,36 +49,24 @@ namespace MSWT_API.Controllers
                 return BadRequest(new { message = ex.Message }); // 400 Bad Request if error
             }
         }
-        //#region CRUD Category
-        //[HttpPost]
-        //public async Task<ActionResult<FloorResponseDTO>> CreateFloor([FromBody] FloorRequestDTO request)
-        //{
-        //    if (!ModelState.IsValid)
-        //        return BadRequest(ModelState);
+        [HttpPost]
+        public async Task<ActionResult<Alert>> Create([FromBody] AlertRequestDTO dto)
+        {
+            var newAlert = new Alert
+            {
+                AlertId = "AL" + DateTime.UtcNow.Ticks,
+                TrashBinId = dto.TrashBinId,
+                TimeSend = DateTime.UtcNow,
+                Status = "Cần được xử lý",
+                UserId = null
+            };
+           
 
-        //    var createdFloor = await _floorService.CreateFloorAsync(request);
-        //    return Ok(createdFloor);
-        //}
+            await _alertService.CreateAlertAsync(newAlert);
 
-        //[HttpPut("{id}")]
-        //public async Task<IActionResult> UpdateFloor(string id, [FromBody] FloorRequestDTO request)
-        //{
-        //    try
-        //    {
-        //        var result = await _floorService.UpdateFloor(id, request);
-        //        if (!result)
-        //        {
-        //            return NotFound($"Floor with ID {id} not found.");
-        //        }
-
-        //        return Ok(); // or Ok() if you prefer returning a success message
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(500, $"Internal server error: {ex.Message}");
-        //    }
-        //}
-
-#endregion
+            return CreatedAtAction(nameof(GetById),
+                new { id = newAlert.TrashBinId }, newAlert);
+        }
+        #endregion
     }
 }

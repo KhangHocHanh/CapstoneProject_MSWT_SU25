@@ -18,7 +18,11 @@ namespace MSWT_BussinessObject.RequestDTO
             public string Password { get; set; }
         }
 
+        public class AlertRequestDTO
+        {
 
+            public string? TrashBinId { get; set; }
+        }
 
 
 

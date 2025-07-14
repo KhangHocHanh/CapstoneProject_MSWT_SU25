@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using MSWT_BussinessObject.Model;
 using MSWT_Repositories.IRepository;
+using static MSWT_BussinessObject.RequestDTO.RequestDTO;
 
 namespace MSWT_Repositories.Repository
 {
