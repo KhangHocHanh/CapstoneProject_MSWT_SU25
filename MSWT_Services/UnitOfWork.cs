@@ -88,22 +88,21 @@ namespace MSWT_Services
             try
             {
                 await _context.SaveChangesAsync();
-                await _transaction.CommitAsync();
+
+                if (_transaction != null)
+                {
+                    await _transaction.CommitAsync();
+                    await _transaction.DisposeAsync();
+                    _transaction = null;
+                }
             }
             catch
             {
                 await RollbackAsync();
                 throw;
             }
-            finally
-            {
-                if (_transaction != null)
-                {
-                    await _transaction.DisposeAsync();
-                    _transaction = null;
-                }
-            }
         }
+
 
         public async Task RollbackAsync()
         {

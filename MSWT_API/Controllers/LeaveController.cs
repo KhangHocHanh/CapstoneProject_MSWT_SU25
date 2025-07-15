@@ -84,7 +84,8 @@ namespace MSWT_API.Controllers
             var userId = User.FindFirstValue("User_Id");
             var userRole = User.FindFirstValue(ClaimTypes.Role);
 
-            var leaves = await _leaveService.GetLeaves(userId, userRole);
+            //var leaves = await _leaveService.GetLeaves(userId, userRole);
+            var leaves = await _leaveService.GetAllLeafs();
             return Ok(new ResponseDTO(Const.SUCCESS_READ_CODE, "Danh sách đơn nghỉ phép", leaves));
         }
 
