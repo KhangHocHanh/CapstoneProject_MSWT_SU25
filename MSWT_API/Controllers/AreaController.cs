@@ -73,6 +73,22 @@ namespace MSWT_API.Controllers
             }
         }
 
+        [HttpPut("{areaId}/{floorId}")]
+        public async Task<IActionResult> AddFloorToArea(string areaId, string floorId)
+        {
+            try
+            {
+                var result = await _areaService.AddFloorToArea(areaId, floorId);
+                if (!result)
+                    return BadRequest("Failed to add floor to area.");
+
+                return Ok("Floor successfully added to area.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
         #endregion
 
     }
