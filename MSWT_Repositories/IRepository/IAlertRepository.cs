@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MSWT_BussinessObject.Model;
+using static MSWT_BussinessObject.RequestDTO.RequestDTO;
 
 namespace MSWT_Repositories.IRepository
 {

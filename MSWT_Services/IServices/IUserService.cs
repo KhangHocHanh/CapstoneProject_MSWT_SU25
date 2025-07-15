@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using MSWT_BussinessObject.Model;
 using MSWT_BussinessObject.ResponseDTO;
 using static MSWT_BussinessObject.RequestDTO.RequestDTO;
+using static MSWT_BussinessObject.ResponseDTO.ResponseDTO;
 
 namespace MSWT_Services.IServices
 {
@@ -25,11 +26,12 @@ namespace MSWT_Services.IServices
 
 
         Task<ResponseDTO> Login(LoginRequestDTO userDto);
-        //Task<ResponseDTO> ChangePassword(ChangePasswordDTO userDto);
+        Task<ResponseDTO> ChangePasswordAsync(string userId, ChangePasswordDto dto);
+
         //Task<string> GoogleLoginAsync(string idToken);
         Task RecoverUser(string id);
         //Task<ResponseDTO> GetUserProfile();
         //Task<ResponseDTO> UpdateUserProfile(UserUpdateDTO userDto);
-
+        Task<IEnumerable<UserWithRoleDTO>> GetAllUserWithRoleAsync();
     }
 }

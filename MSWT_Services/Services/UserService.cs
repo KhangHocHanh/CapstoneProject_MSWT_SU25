@@ -14,6 +14,7 @@ using MSWT_Repositories.IRepository;
 using MSWT_Services.IServices;
 using static MSWT_BussinessObject.Enum.Enum;
 using static MSWT_BussinessObject.RequestDTO.RequestDTO;
+using static MSWT_BussinessObject.ResponseDTO.ResponseDTO;
 
 namespace MSWT_Services.Services
 {
@@ -24,14 +25,16 @@ namespace MSWT_Services.Services
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IJWTService _jWTService;
         private readonly AutoMapper.IMapper _mapper;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public UserService(IUserRepository userRepository, IRoleRepository roleRepository, IHttpContextAccessor httpContextAccessor, IJWTService jWTService, AutoMapper.IMapper mapper)
+        public UserService(IUserRepository userRepository, IRoleRepository roleRepository, IHttpContextAccessor httpContextAccessor, IJWTService jWTService, AutoMapper.IMapper mapper, IUnitOfWork unitOfWork)
         {
             _userRepository = userRepository;
             _roleRepository = roleRepository;
             _httpContextAccessor = httpContextAccessor;
             _jWTService = jWTService;
             _mapper = mapper;
+            _unitOfWork = unitOfWork;
         }
 
         #region CRUD User
@@ -92,13 +95,13 @@ namespace MSWT_Services.Services
                 }
 
                 var jwt = _jWTService.GenerateToken(account);
-        
+
                 var claims = new JwtSecurityTokenHandler().ReadJwtToken(jwt).Claims;
                 foreach (var claim in claims)
                 {
                     Console.WriteLine($"Claim Type: {claim.Type}, Claim Value: {claim.Value}");
                 }
-               
+
 
                 return new ResponseDTO(Const.SUCCESS_READ_CODE, "Login successful", jwt);
             }
@@ -141,5 +144,33 @@ namespace MSWT_Services.Services
 
             return new ResponseDTO(Const.SUCCESS_UPDATE_CODE, "Đã cập nhật trạng thái sang 'Thôi việc'.");
         }
+        public async Task<IEnumerable<UserWithRoleDTO>> GetAllUserWithRoleAsync()
+        {
+            var users = await _userRepository.GetAllAsync();
+            return _mapper.Map<IEnumerable<UserWithRoleDTO>>(users);
+
+        }
+        public async Task<ResponseDTO> ChangePasswordAsync(string userId, ChangePasswordDto dto)
+        {
+            var user = await _userRepository.GetByIdAsync(userId);
+            if (user == null)
+                return new ResponseDTO(Const.FAIL_READ_CODE, "Không tìm thấy người dùng.");
+
+            // Kiểm tra mật khẩu cũ
+            if (user.Password != dto.OldPassword) // Nếu có hash: !Verify(dto.OldPassword, user.Password)
+                return new ResponseDTO(Const.FAIL_UPDATE_CODE, "Mật khẩu cũ không chính xác.");
+
+            // Kiểm tra mật khẩu mới khớp nhau
+            if (dto.NewPassword != dto.ConfirmNewPassword)
+                return new ResponseDTO(Const.FAIL_UPDATE_CODE, "Mật khẩu mới không khớp nhau.");
+
+            // Cập nhật mật khẩu
+            user.Password = dto.NewPassword; // Nếu có hash: Hash(dto.NewPassword)
+            await _userRepository.UpdateAsync(user);
+            await _unitOfWork.CommitAsync();
+
+            return new ResponseDTO(Const.SUCCESS_UPDATE_CODE, "Đổi mật khẩu thành công.");
+        }
+
     }
 }

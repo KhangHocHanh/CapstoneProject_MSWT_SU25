@@ -18,7 +18,11 @@ namespace MSWT_BussinessObject.RequestDTO
             public string Password { get; set; }
         }
 
+        public class AlertRequestDTO
+        {
 
+            public string? TrashBinId { get; set; }
+        }
 
 
 
@@ -142,6 +146,17 @@ namespace MSWT_BussinessObject.RequestDTO
             public string? Address { get; set; }
             public string? Image { get; set; }
         }
+
+        public class ChangePasswordDto
+        {
+            [Required(ErrorMessage = "Mật khẩu cũ không được để trống")]
+            public string OldPassword { get; set; } = null!;
+            [Required(ErrorMessage = "Mật khẩu mới không được để trống")]
+            public string NewPassword { get; set; } = null!;
+            [Required(ErrorMessage = "Xác nhận mật khẩu mới không được để trống")]  
+            public string ConfirmNewPassword { get; set; } = null!;
+        }
+
 
         #endregion
 

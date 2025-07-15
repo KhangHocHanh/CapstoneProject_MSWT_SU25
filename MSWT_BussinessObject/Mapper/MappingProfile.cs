@@ -83,7 +83,8 @@ namespace MSWT_BussinessObject.Mapper
             CreateMap<ScheduleDetailsRequestDTO, ScheduleDetail>();
             CreateMap<ShiftRequestDTO, Shift>();
             CreateMap<AssignmentRequestDTO, Assignment>();
-
+            CreateMap<AlertRequestDTO, Alert>();
+            CreateMap<AlertResponseDTO, Alert>();
 
             CreateMap<Assignment, AssignmentResponseDTO>();
             CreateMap<Restroom, RestroomResponseDTO>()
@@ -122,6 +123,10 @@ namespace MSWT_BussinessObject.Mapper
                 .ForMember(dest => dest.Password, opt => opt.Ignore()) // không cập nhật pass
                 .ForMember(dest => dest.Rating, opt => opt.Ignore())
                 .ForMember(dest => dest.ReasonForLeave, opt => opt.Ignore());
+
+            CreateMap<User, UserWithRoleDTO>()
+                .ForMember(dest => dest.RoleName, opt => opt.MapFrom(src => src.Role.RoleName))
+                .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Role.Description));
             #endregion
 
             #region Trashbin    
