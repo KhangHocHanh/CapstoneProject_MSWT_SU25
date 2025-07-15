@@ -47,6 +47,9 @@ namespace MSWT_BussinessObject.ResponseDTO
 
         public RestroomResponseDTO? Restroom { get; set; }
 
+        public List<RestroomResponseDTO>? AreaRestrooms { get; set; }
+        public List<TrashBinResponseDTO>? AreaTrashBins { get; set; }
+
         //public virtual ICollection<Assignment> Assignments { get; set; } = new List<Assignment>();
     }
 }
