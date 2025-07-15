@@ -8,8 +8,6 @@ namespace MSWT_BussinessObject.RequestDTO
 {
     public class AreaRequestDTO
     {
-        public string? FloorId { get; set; }
-
         public string? Description { get; set; }
 
         public string? Status { get; set; }
