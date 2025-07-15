@@ -27,7 +27,7 @@ namespace MSWT_API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<User>>> GetAll()
         {
-            return Ok(await _userService.GetAllUsers());
+            return Ok(await _userService.GetAllUserWithRoleAsync());
         }
 
         [HttpGet("{id}")]
@@ -121,6 +121,22 @@ namespace MSWT_API.Controllers
                 await HttpContext.SignOutAsync(); 
                 return Ok(new { message = "Logout successful." });
             }
-        
+
+        [HttpPut("change-password")]
+        [Authorize]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDto dto)
+        {
+            var userId = User.FindFirstValue("User_Id");
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized("Không xác định được người dùng.");
+
+            var result = await _userService.ChangePasswordAsync(userId, dto);
+            if (result.Status != Const.SUCCESS_UPDATE_CODE)
+                return BadRequest(result);
+
+            return Ok(result);
+        }
+
+
     }
 }

@@ -61,5 +61,37 @@ namespace MSWT_BussinessObject.ResponseDTO
             public string? Status { get; set; }
         }
 
+        public class UserWithRoleDTO
+        {
+            public string UserId { get; set; } = null!;
+
+            public string? UserName { get; set; }
+
+            public string? Password { get; set; }
+
+            public string? FullName { get; set; }
+
+            public string? Email { get; set; }
+
+            public string? Phone { get; set; }
+
+            public DateOnly? CreateAt { get; set; }
+
+            public string? Status { get; set; }
+
+            public string? Address { get; set; }
+
+            public string? Image { get; set; }
+
+            public string? RoleId { get; set; }
+
+            public double? Rating { get; set; }
+
+            public string? ReasonForLeave { get; set; }
+            public string? RoleName { get; set; }
+
+            public string? Description { get; set; }
+        }
+
     }
 }

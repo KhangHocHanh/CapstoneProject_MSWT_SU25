@@ -147,6 +147,17 @@ namespace MSWT_BussinessObject.RequestDTO
             public string? Image { get; set; }
         }
 
+        public class ChangePasswordDto
+        {
+            [Required(ErrorMessage = "Mật khẩu cũ không được để trống")]
+            public string OldPassword { get; set; } = null!;
+            [Required(ErrorMessage = "Mật khẩu mới không được để trống")]
+            public string NewPassword { get; set; } = null!;
+            [Required(ErrorMessage = "Xác nhận mật khẩu mới không được để trống")]  
+            public string ConfirmNewPassword { get; set; } = null!;
+        }
+
+
         #endregion
 
         #region SensorDTO
