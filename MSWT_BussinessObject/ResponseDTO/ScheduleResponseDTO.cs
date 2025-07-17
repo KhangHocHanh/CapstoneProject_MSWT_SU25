@@ -29,6 +29,8 @@ namespace MSWT_BussinessObject.ResponseDTO
 
         public string? ShiftId { get; set; }
 
+        public string? SupervisorId { get; set; }
+
         public string? AreaName { get; set; }
 
         //public virtual AreaResponseDTO? Area { get; set; }
