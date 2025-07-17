@@ -14,7 +14,7 @@ namespace MSWT_BussinessObject.RequestDTO
 
         public string? Status { get; set; }
 
-        public string? SupervisorId { get; set; }
+        //public string? SupervisorId { get; set; }
 
         public string? WorkerId { get; set; }
 

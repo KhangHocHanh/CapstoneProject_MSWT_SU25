@@ -23,6 +23,8 @@ public partial class Schedule
 
     public string? ScheduleName { get; set; }
 
+    public string? SupervisorId { get; set; }
+
     public virtual Area? Area { get; set; }
 
     public virtual ICollection<AssignmentSchedule> AssignmentSchedules { get; set; } = new List<AssignmentSchedule>();
