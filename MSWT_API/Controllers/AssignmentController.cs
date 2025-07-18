@@ -53,6 +53,19 @@ namespace MSWT_API.Controllers
                 return BadRequest(new { message = ex.Message }); // 400 Bad Request if error
             }
         }
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateAssignment(string id, [FromBody] AssignmentRequestDTO requestDto)
+        {
+            try
+            {
+                await _assignmentService.UpdateAssigment(id, requestDto);
+                return NoContent(); // Successful update, no content returned
+            }
+            catch (Exception ex)
+            {
+                return NotFound(ex.Message); // Or handle with more detailed error logic
+            }
+        }
         #endregion
 
     }
