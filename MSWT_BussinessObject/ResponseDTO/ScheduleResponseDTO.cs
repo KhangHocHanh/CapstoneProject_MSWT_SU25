@@ -29,6 +29,8 @@ namespace MSWT_BussinessObject.ResponseDTO
 
         public string? ShiftId { get; set; }
 
+        public string? SupervisorId { get; set; }
+
         public string? AreaName { get; set; }
 
         //public virtual AreaResponseDTO? Area { get; set; }
@@ -46,6 +48,9 @@ namespace MSWT_BussinessObject.ResponseDTO
         public TrashBinResponseDTO? TrashBin { get; set; }
 
         public RestroomResponseDTO? Restroom { get; set; }
+
+        public List<RestroomResponseDTO>? AreaRestrooms { get; set; }
+        public List<TrashBinResponseDTO>? AreaTrashBins { get; set; }
 
         //public virtual ICollection<Assignment> Assignments { get; set; } = new List<Assignment>();
     }

@@ -44,7 +44,7 @@ namespace MSWT_Services.Services
             // Load supervisor with Role
             var supervisor = await _userRepository.GetAll()
                 .Include(u => u.Role)
-                .FirstOrDefaultAsync(u => u.UserId == detailDto.SupervisorId);
+                .FirstOrDefaultAsync(u => u.UserId == schedule.SupervisorId);
             if (supervisor == null)
                 throw new Exception("Supervisor not found.");
             if (supervisor.Role?.RoleName?.ToLower() != "supervisor")
@@ -72,7 +72,7 @@ namespace MSWT_Services.Services
                 ScheduleId = schedule.ScheduleId,
                 Description = detailDto.Description,
                 WorkerId = detailDto.WorkerId,
-                SupervisorId = detailDto.SupervisorId,
+                SupervisorId = schedule.SupervisorId,
                 AssignmentId = detailDto.AssignmentId,
                 Date = detailDto.Date,
                 Status = detailDto.Status,

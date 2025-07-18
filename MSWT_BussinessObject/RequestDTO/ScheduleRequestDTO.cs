@@ -23,5 +23,8 @@ namespace MSWT_BussinessObject.RequestDTO
         public string? ScheduleType { get; set; }
 
         public string? ShiftId { get; set; }
+
+        public string? SupervisorId { get; set; }
+
     }
 }

@@ -16,6 +16,7 @@ namespace MSWT_BussinessObject.ResponseDTO
 
         public List<AreaResponseDTO>? Areas { get; set; }
         public List<RestroomResponseDTO>? Restrooms { get; set; }
+
         //public List<TrashBinResponseDTO>? TrashBins { get; set; }
     }
 

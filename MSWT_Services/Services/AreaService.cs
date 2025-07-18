@@ -30,12 +30,6 @@ namespace MSWT_Services.Services
 
         public async Task<AreaResponseDTO> CreateAreaAsync(AreaRequestDTO request)
         {
-            var floor = await _floorRepository.GetByIdAsync(request.FloorId);
-            if (floor == null)
-            {
-                throw new Exception("Floor does not exist.");
-            }
-
             var area = _mapper.Map<Area>(request);
             area.AreaId = Guid.NewGuid().ToString(); // Generate UID
             area.IsAssigned = CustomEnum.Enum.AreaStatus.Assigned.ToString();
@@ -73,5 +67,27 @@ namespace MSWT_Services.Services
             await _areaRepository.UpdateAsync(existingArea);
         }
 
+        public async Task<bool> AddFloorToArea(string id, string floorId)
+        {
+            try
+            {
+                var area = await _areaRepository.GetByIdAsync(id);
+                if (area == null)
+                    throw new Exception("Area not found.");
+
+                var floor = await _floorRepository.GetByIdAsync(floorId);
+                if (floor == null)
+                    throw new Exception("Floor not found.");
+
+                area.Floor = floor;
+                area.IsAssigned = "yes";
+                await _areaRepository.UpdateAsync(area);
+                return true;
+            }
+            catch (Exception e)
+            {
+                throw new Exception($"Error updating area detail : {e.Message}", e);
+            }
+        }
     }
 }
