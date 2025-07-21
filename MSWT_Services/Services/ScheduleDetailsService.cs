@@ -25,8 +25,9 @@ namespace MSWT_Services.Services
         private readonly IAssignmentRepository _assignmentRepository;
         private readonly IMapper _mapper;
         private readonly IScheduleDetailRatingRepository _scheduleDetailRatingRepository;
+        private readonly ICloudinaryService _cloudinary;
 
-        public ScheduleDetailsService(IScheduleDetailsRepository scheduleDetailsRepository, IUserRepository userRepository, IScheduleRepository scheduleRepository, IMapper mapper, IScheduleDetailRatingRepository scheduleDetailRatingRepository, IAssignmentRepository assignmentRepository)
+        public ScheduleDetailsService(IScheduleDetailsRepository scheduleDetailsRepository, IUserRepository userRepository, IScheduleRepository scheduleRepository, IMapper mapper, IScheduleDetailRatingRepository scheduleDetailRatingRepository, IAssignmentRepository assignmentRepository, ICloudinaryService cloudinary)
         {
             _scheduleDetailsRepository = scheduleDetailsRepository;
             _userRepository = userRepository;
@@ -34,6 +35,7 @@ namespace MSWT_Services.Services
             _mapper = mapper;
             _scheduleDetailRatingRepository = scheduleDetailRatingRepository;
             _assignmentRepository = assignmentRepository;
+            _cloudinary = cloudinary;
         }
         public async Task<ScheduleDetailsResponseDTO> CreateScheduleDetailFromScheduleAsync(string scheduleId, ScheduleDetailsRequestDTO detailDto)
         {
@@ -66,6 +68,12 @@ namespace MSWT_Services.Services
                     throw new Exception("Assignment not found.");
             }
 
+            string? evidenceImageUrl = null;
+            if (detailDto.EvidenceImageFile != null)
+            {
+                evidenceImageUrl = await _cloudinary.UploadFile(detailDto.EvidenceImageFile);
+            }
+
             var detail = new ScheduleDetail
             {
                 ScheduleDetailId = Guid.NewGuid().ToString(),
@@ -79,7 +87,8 @@ namespace MSWT_Services.Services
                 StartTime = schedule.Shift.StartTime,
                 EndTime = schedule.Shift.EndTime,
                 IsBackup = detailDto.IsBackup,
-                BackupForUserId = detailDto.BackupForUserId
+                BackupForUserId = detailDto.BackupForUserId,
+                EvidenceImage = evidenceImageUrl
             };
 
             await _scheduleDetailsRepository.AddAsync(detail);

@@ -140,8 +140,10 @@ builder.Services.AddScoped<IScheduleService, ScheduleService>();
 builder.Services.AddScoped<IScheduleDetailsService, ScheduleDetailsService>();
 builder.Services.AddScoped<IAlertService, AlertService>();
 builder.Services.AddScoped<ISensorBinService, SensorBinService>();
+builder.Services.AddScoped<ICloudinaryService, CloudinaryService>();
 
-
+builder.Services.Configure<CloudinarySettings>(
+    builder.Configuration.GetSection("CloudinarySettings"));
 
 builder.Services.AddControllers();
 
