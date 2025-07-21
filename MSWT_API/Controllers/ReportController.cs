@@ -162,5 +162,20 @@ namespace MSWT_API.Controllers
             return Ok(reportDtos);
         }
 
+        [HttpGet("with-leader-role")]
+        public async Task<ActionResult<IEnumerable<ReportWithRoleDto>>> GetAllWithLeaderRole()
+        {
+            var reports = await _reportService.GetAllReportsWithUserAndRole();
+
+            // Lọc theo Role là "Leader"
+            var leaderReports = reports
+               .Where(r => string.Equals(r.User.RoleId, "RL02", StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
+            var reportDtos = _mapper.Map<List<ReportWithRoleDto>>(leaderReports);
+
+            return Ok(reportDtos);
+        }
+
     }
 }

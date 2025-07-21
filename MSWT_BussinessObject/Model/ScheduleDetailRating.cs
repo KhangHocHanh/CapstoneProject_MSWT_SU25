@@ -20,5 +20,6 @@ namespace MSWT_BussinessObject.Model
         public string? Comment { get; set; }
 
         public virtual ScheduleDetail? ScheduleDetail { get; set; }
+        public virtual User? RatedByUser { get; set; }
     }
 }
