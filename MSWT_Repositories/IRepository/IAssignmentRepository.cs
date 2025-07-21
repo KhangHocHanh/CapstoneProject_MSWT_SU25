@@ -14,7 +14,7 @@ namespace MSWT_Repositories.IRepository
         Task<Assignment> GetByIdAsync(string id);
         Task AddAsync(Assignment assignment);
         Task DeleteAsync(string id);
-        Task UpdateAsync(Assignment assignment);
+        Task UpdateAsync(string assignmentId, Assignment assignment);
         #endregion
     }
 }

@@ -3,6 +3,7 @@ using MSWT_BussinessObject.Model;
 using MSWT_BussinessObject.RequestDTO;
 using MSWT_BussinessObject.ResponseDTO;
 using MSWT_Repositories.IRepository;
+using MSWT_Repositories.Repository;
 using MSWT_Services.IServices;
 using System;
 using System.Collections.Generic;
@@ -52,9 +53,15 @@ namespace MSWT_Services.Services
         }
 
 
-        public async Task UpdateAssigment(Assignment assignment)
+        public async Task UpdateAssigment(string assignmentId, AssignmentRequestDTO assignment)
         {
-            await _assignmentRepository.UpdateAsync(assignment);
+            var existingAss = await _assignmentRepository.GetByIdAsync(assignmentId);
+            if (existingAss == null)
+                throw new Exception("Area not found");
+
+            // Map updated fields from DTO into the existing entity
+            _mapper.Map(assignment, existingAss);
+            await _assignmentRepository.UpdateAsync(existingAss);
         }
     }
 }

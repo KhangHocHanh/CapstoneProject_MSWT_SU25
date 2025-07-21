@@ -15,6 +15,6 @@ namespace MSWT_Services.IServices
         Task DeleteAssigment(string id);
         Task<IEnumerable<AssignmentResponseDTO>> GetAllAssigments();
         Task<AssignmentResponseDTO> GetAssignmentById(string id);
-        Task UpdateAssigment(Assignment assignment);
+        Task UpdateAssigment(string assignmentId, AssignmentRequestDTO assignment);
     }
 }

@@ -42,8 +42,12 @@ namespace MSWT_Repositories.Repository
             return await _context.Assignments.ToListAsync();
         }
 
-        public async Task UpdateAsync(Assignment assignment)
+        public async Task UpdateAsync(string assignmentId, Assignment assignment)
         {
+            if (assignmentId != assignment.AssignmentId)
+            {
+                throw new ArgumentException("Không tìm thấy công việc để chỉnh sửa");
+            }
             _context.Assignments.Update(assignment);
             await _context.SaveChangesAsync();
         }
