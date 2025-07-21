@@ -60,7 +60,7 @@ namespace MSWT_API.Controllers
         }
         #endregion
         [HttpPost("{scheduleId}/details")]
-        public async Task<IActionResult> CreateScheduleDetail(string scheduleId, [FromBody] ScheduleDetailsRequestDTO detailDto)
+        public async Task<IActionResult> CreateScheduleDetail(string scheduleId, [FromForm] ScheduleDetailsRequestDTO detailDto)
         {
             var result = await _scheduleDetailsService.CreateScheduleDetailFromScheduleAsync(scheduleId, detailDto);
             return Ok(result);

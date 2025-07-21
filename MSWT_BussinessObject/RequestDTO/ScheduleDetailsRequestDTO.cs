@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,5 +24,7 @@ namespace MSWT_BussinessObject.RequestDTO
         public string? IsBackup { get; set; }
 
         public string? BackupForUserId { get; set; }
+
+        public IFormFile? EvidenceImageFile { get; set; }
     }
 }

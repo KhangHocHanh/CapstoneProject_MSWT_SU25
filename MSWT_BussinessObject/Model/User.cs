@@ -31,6 +31,8 @@ public partial class User
 
     public string? ReasonForLeave { get; set; }
 
+    public string? IsAssigned { get; set; }
+
     public virtual ICollection<Alert> Alerts { get; set; } = new List<Alert>();
 
     public virtual ICollection<Leaf> LeafApprovedByNavigations { get; set; } = new List<Leaf>();
