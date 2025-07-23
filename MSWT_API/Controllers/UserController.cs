@@ -137,6 +137,11 @@ namespace MSWT_API.Controllers
             return Ok(result);
         }
 
-
+        [HttpPut("{id}/avatar")]
+        public async Task<IActionResult> UpdateAccountAvatar(string id, IFormFile avatarFile)
+        {
+                var result = await _userService.UpdateAvatarUrl(id, avatarFile);
+                return Ok(result);   
+        }
     }
 }
