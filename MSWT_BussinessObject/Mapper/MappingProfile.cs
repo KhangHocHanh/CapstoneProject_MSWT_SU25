@@ -104,7 +104,7 @@ namespace MSWT_BussinessObject.Mapper
                 .ForMember(dest => dest.AreaName, opt => opt.MapFrom(src => src.Schedule.Area.AreaName))
                 .ForMember(dest => dest.ScheduleName, opt => opt.MapFrom(src => src.Schedule.ScheduleName))
                 .ForMember(dest => dest.AssignmentName, opt => opt.MapFrom(src => src.Assignment.AssigmentName))
-                
+                .ForMember(dest => dest.WorkerName, opt => opt.MapFrom(src => src.Worker.FullName))
                 .ForMember(dest => dest.Schedule, opt => opt.MapFrom(src => src.Schedule));
             CreateMap<Shift, ShiftResponseDTO>();
             CreateMap<TrashBin, TrashBinResponseDTO>();

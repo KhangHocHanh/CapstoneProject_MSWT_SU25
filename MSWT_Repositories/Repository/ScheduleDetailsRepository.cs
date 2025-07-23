@@ -56,6 +56,7 @@ namespace MSWT_Repositories.Repository
                 .Include(sd => sd.Schedule)
                     .ThenInclude(s => s.TrashBin)
                 .Include(sd => sd.Assignment)
+                .Include(sd => sd.Worker)
                 .ToListAsync();
         }
 
