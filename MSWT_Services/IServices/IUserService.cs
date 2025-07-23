@@ -4,6 +4,7 @@ using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using MSWT_BussinessObject.Model;
 using MSWT_BussinessObject.ResponseDTO;
 using static MSWT_BussinessObject.RequestDTO.RequestDTO;
@@ -33,5 +34,7 @@ namespace MSWT_Services.IServices
         //Task<ResponseDTO> GetUserProfile();
         //Task<ResponseDTO> UpdateUserProfile(UserUpdateDTO userDto);
         Task<IEnumerable<UserWithRoleDTO>> GetAllUserWithRoleAsync();
+
+        Task<string> UpdateAvatarUrl(string id, IFormFile avatarFile);
     }
 }
