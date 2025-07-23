@@ -29,6 +29,8 @@ namespace MSWT_BussinessObject.ResponseDTO
 
         public string? WorkerId { get; set; }
 
+        public string? WorkerName { get; set; }
+
         public string? EvidenceImage { get; set; }
 
         public TimeOnly? StartTime { get; set; }
