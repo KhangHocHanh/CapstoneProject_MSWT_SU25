@@ -81,6 +81,17 @@ namespace MSWT_Repositories.Repository
                     .ThenInclude(s => s.TrashBin)
                 .ToListAsync();
         }
+        public async Task<ScheduleDetail?> GetByUserAndDateAsync(string userId, DateOnly targetDate)
+        {
+            return await _context.ScheduleDetails
+                .Include(sd => sd.Schedule)
+                .Include(sd => sd.WorkerId) // Nếu cần thông tin User
+                .FirstOrDefaultAsync(sd =>
+                    sd.WorkerId == userId &&
+                    sd.Schedule != null &&
+                    sd.Schedule.StartDate <= targetDate &&
+                    sd.Schedule.EndDate >= targetDate);
+        }
 
     }
 }
