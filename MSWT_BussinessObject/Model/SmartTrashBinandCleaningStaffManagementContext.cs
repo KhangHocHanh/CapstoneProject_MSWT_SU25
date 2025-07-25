@@ -50,6 +50,7 @@ public partial class SmartTrashBinandCleaningStaffManagementContext : DbContext
 
     public virtual DbSet<User> Users { get; set; }
     public virtual DbSet<ScheduleDetailRating> ScheduleDetailRatings { get; set; }
+    public virtual DbSet<ShiftSwapRequest> ShiftSwapRequests { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -345,6 +346,8 @@ public partial class SmartTrashBinandCleaningStaffManagementContext : DbContext
             entity.Property(e => e.SensorId).HasMaxLength(50);
             entity.Property(e => e.BinId).HasMaxLength(50);
             entity.Property(e => e.Status).HasMaxLength(50);
+            entity.Property(e => e.FillLevel).HasColumnType("float");
+            entity.Property(e => e.MeasuredAt).HasColumnType("datetime").HasDefaultValueSql("getdate()");
 
             entity.HasOne(d => d.Bin).WithMany(p => p.SensorBins)
                 .HasForeignKey(d => d.BinId)
@@ -447,6 +450,75 @@ public partial class SmartTrashBinandCleaningStaffManagementContext : DbContext
             entity.HasIndex(e => new { e.ScheduleDetailId, e.RatingDate }).IsUnique();
         });
 
+        modelBuilder.Entity<ShiftSwapRequest>(entity =>
+        {
+            entity.HasKey(e => e.SwapRequestId).HasName("PK_ShiftSwapRequest");
+
+            entity.Property(e => e.SwapRequestId)
+                .HasDefaultValueSql("(newid())");
+
+            entity.Property(e => e.RequestDate)
+                .IsRequired();
+
+            entity.Property(e => e.RequesterId)
+                .HasMaxLength(50)
+                .IsRequired();
+
+            entity.Property(e => e.TargetUserId)
+                .HasMaxLength(50);
+
+            entity.Property(e => e.TargetUserPhone)
+                .HasMaxLength(20)
+                .IsRequired();
+
+            entity.Property(e => e.RequesterScheduleDetailId)
+                .HasMaxLength(50)
+                .IsRequired();
+
+            entity.Property(e => e.TargetScheduleDetailId)
+                .HasMaxLength(50)
+                .IsRequired();
+
+            entity.Property(e => e.Status)
+                .HasMaxLength(50)
+                .IsRequired();
+
+            entity.Property(e => e.Reason)
+                .HasMaxLength(500);
+
+            entity.Property(e => e.Month)
+                .IsRequired();
+
+            entity.Property(e => e.Year)
+                .IsRequired();
+
+    
+            entity.HasOne(d => d.RequesterScheduleDetail)
+                .WithMany()
+                .HasForeignKey(d => d.RequesterScheduleDetailId)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("FK_ShiftSwapRequest_RequesterScheduleDetail");
+
+          
+            entity.HasOne(d => d.TargetScheduleDetail)
+                .WithMany()
+                .HasForeignKey(d => d.TargetScheduleDetailId)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("FK_ShiftSwapRequest_TargetScheduleDetail");
+
+   
+            entity.HasOne(d => d.Requester)
+                .WithMany()
+                .HasForeignKey(d => d.RequesterId)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("FK_ShiftSwapRequest_Requester");
+
+            entity.HasOne(d => d.TargetUser)
+                .WithMany()
+                .HasForeignKey(d => d.TargetUserId)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("FK_ShiftSwapRequest_TargetUser");
+        });
     }
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);

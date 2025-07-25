@@ -5,6 +5,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using CloudinaryDotNet;
 using Microsoft.AspNetCore.Http;
 using MSWT_BussinessObject;
 using MSWT_BussinessObject.Enum;
@@ -26,8 +27,9 @@ namespace MSWT_Services.Services
         private readonly IJWTService _jWTService;
         private readonly AutoMapper.IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly ICloudinaryService _cloudinary;
 
-        public UserService(IUserRepository userRepository, IRoleRepository roleRepository, IHttpContextAccessor httpContextAccessor, IJWTService jWTService, AutoMapper.IMapper mapper, IUnitOfWork unitOfWork)
+        public UserService(IUserRepository userRepository, IRoleRepository roleRepository, IHttpContextAccessor httpContextAccessor, IJWTService jWTService, AutoMapper.IMapper mapper, IUnitOfWork unitOfWork, ICloudinaryService cloudinary)
         {
             _userRepository = userRepository;
             _roleRepository = roleRepository;
@@ -35,6 +37,7 @@ namespace MSWT_Services.Services
             _jWTService = jWTService;
             _mapper = mapper;
             _unitOfWork = unitOfWork;
+            _cloudinary = cloudinary;
         }
 
         #region CRUD User
@@ -170,6 +173,33 @@ namespace MSWT_Services.Services
             await _unitOfWork.CommitAsync();
 
             return new ResponseDTO(Const.SUCCESS_UPDATE_CODE, "Đổi mật khẩu thành công.");
+        }
+
+        public async Task<string> UpdateAvatarUrl(string id, IFormFile avatarFile)
+        {
+            try
+            {
+                if (avatarFile == null || avatarFile.Length == 0)
+                    throw new Exception("No file provided.");
+
+                var uploadResult = await _cloudinary.UploadFile(avatarFile);
+                if (uploadResult == null || string.IsNullOrEmpty(uploadResult))
+                    throw new Exception("Cloudinary upload failed.");
+
+                var user = await _userRepository.GetByIdAsync(id);
+                if (user == null)
+                    throw new Exception("User not found.");
+
+                user.Image = uploadResult;
+                await _userRepository.UpdateAsync(user);
+
+                return user.Image;
+            }
+            catch (Exception ex)
+            {
+                // Log exception if needed
+                throw new Exception($"Error updating image: {ex.Message}", ex);
+            }
         }
 
     }

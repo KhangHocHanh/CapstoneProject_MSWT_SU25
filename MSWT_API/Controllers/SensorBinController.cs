@@ -5,6 +5,7 @@ using MSWT_Services.IServices;
 using MSWT_Services.Services;
 using static MSWT_BussinessObject.Enum.Enum;
 using static MSWT_BussinessObject.RequestDTO.RequestDTO;
+using static MSWT_BussinessObject.ResponseDTO.ResponseDTO;
 
 namespace MSWT_API.Controllers
 {
@@ -87,7 +88,25 @@ namespace MSWT_API.Controllers
                 newStatus = sensorBin.Status
             });
         }
+        [HttpPost("measure")]
+        public async Task<IActionResult> MeasureFillLevel([FromBody] SensorMeasurementDto dto)
+        {
+            var sensorBin = await _sensorBinService.GetSensorBinById(dto.SensorId);
+            if (sensorBin == null)
+                return NotFound(new { message = "Sensor không tồn tại" });
+
+            sensorBin.FillLevel = dto.FillLevel;
+            sensorBin.MeasuredAt = DateTime.UtcNow;
+            await _sensorBinService.UpdateSensorBin(sensorBin);
+
+            return Ok(new
+            {
+                message = "Mức độ thùng rác đã được cập nhật",
+                currentFill = sensorBin.FillLevel
+            });
+        }
         #endregion
+
 
     }
 }
