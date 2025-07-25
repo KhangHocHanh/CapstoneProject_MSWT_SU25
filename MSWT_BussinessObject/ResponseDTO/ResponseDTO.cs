@@ -92,6 +92,11 @@ namespace MSWT_BussinessObject.ResponseDTO
 
             public string? Description { get; set; }
         }
+        public class SensorMeasurementDto
+        {
+            public string SensorId { get; set; } = null!;
+            public float FillLevel { get; set; }
+        }
 
     }
 }

@@ -346,6 +346,8 @@ public partial class SmartTrashBinandCleaningStaffManagementContext : DbContext
             entity.Property(e => e.SensorId).HasMaxLength(50);
             entity.Property(e => e.BinId).HasMaxLength(50);
             entity.Property(e => e.Status).HasMaxLength(50);
+            entity.Property(e => e.FillLevel).HasColumnType("float");
+            entity.Property(e => e.MeasuredAt).HasColumnType("datetime").HasDefaultValueSql("getdate()");
 
             entity.HasOne(d => d.Bin).WithMany(p => p.SensorBins)
                 .HasForeignKey(d => d.BinId)
