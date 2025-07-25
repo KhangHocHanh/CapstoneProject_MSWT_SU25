@@ -200,6 +200,31 @@ namespace MSWT_BussinessObject.RequestDTO
             public int RatingValue { get; set; }
             public string? Comment { get; set; }
         }
+        public class ShiftSwapRequestCreateDTO
+        {
+            public DateTime RequesterScheduleDate { get; set; }
+            public string TargetPhoneNumber { get; set; } = null!;
+            public DateTime TargetScheduleDate { get; set; }
+            public string? Reason { get; set; }
+        }
+        public class SwapRequestDTO
+        {
+            public class SwapRequestInput
+            {
+                public string RequesterId { get; set; } = null!;
+                public DateOnly RequesterDate { get; set; }
+                public string TargetPhoneNumber { get; set; } = null!;
+                public DateOnly TargetDate { get; set; }
+            }
+
+            public class SwapRespondInput
+            {
+                public Guid RequestId { get; set; }
+                public bool IsAccepted { get; set; }
+                public string? Reason { get; set; }
+            }
+        }
+
 
     }
 }

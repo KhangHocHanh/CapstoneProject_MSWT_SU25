@@ -122,6 +122,7 @@ builder.Services.AddScoped<IScheduleDetailsRepository, ScheduleDetailsRepository
 builder.Services.AddScoped<IAlertRepository, AlertRepository>();
 builder.Services.AddScoped<ISensorBinRepository, SensorBinRepository>();
 builder.Services.AddScoped<IScheduleDetailRatingRepository, ScheduleDetailRatingRepository>();
+builder.Services.AddScoped<IShiftSwapRepository, ShiftSwapRepository>();
 
 // Đăng ký services
 builder.Services.AddScoped<IUserService, UserService>();
@@ -141,6 +142,7 @@ builder.Services.AddScoped<IScheduleDetailsService, ScheduleDetailsService>();
 builder.Services.AddScoped<IAlertService, AlertService>();
 builder.Services.AddScoped<ISensorBinService, SensorBinService>();
 builder.Services.AddScoped<ICloudinaryService, CloudinaryService>();
+builder.Services.AddScoped<IShiftSwapService, ShiftSwapService>();
 
 builder.Services.Configure<CloudinarySettings>(
     builder.Configuration.GetSection("CloudinarySettings"));
