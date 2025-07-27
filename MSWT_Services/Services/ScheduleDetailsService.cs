@@ -259,6 +259,25 @@ namespace MSWT_Services.Services
             return true;
         }
 
+        public async Task UpdateScheduleDetailStatusesAsync()
+        {
+            var allScheduleDetails = await _scheduleDetailsRepository.GetAllAsync();
+
+            var now = DateTime.Now;
+
+            var toUpdate = allScheduleDetails
+                .Where(detail =>
+                    detail.Status == "Sắp tới" &&
+                    detail.Date.HasValue &&
+                    detail.Date.Value <= now)
+                .ToList();
+
+            foreach (var detail in toUpdate)
+            {
+                detail.Status = "Đang làm";
+                await _scheduleDetailsRepository.UpdateAsync(detail);
+            }
+        }
 
     }
 }

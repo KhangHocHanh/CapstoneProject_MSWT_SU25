@@ -143,6 +143,8 @@ builder.Services.AddScoped<IAlertService, AlertService>();
 builder.Services.AddScoped<ISensorBinService, SensorBinService>();
 builder.Services.AddScoped<ICloudinaryService, CloudinaryService>();
 builder.Services.AddScoped<IShiftSwapService, ShiftSwapService>();
+builder.Services.AddHostedService<ScheduleDetailsStatusUpdateService>();
+
 
 builder.Services.Configure<CloudinarySettings>(
     builder.Configuration.GetSection("CloudinarySettings"));
