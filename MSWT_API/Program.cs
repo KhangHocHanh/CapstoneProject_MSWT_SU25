@@ -102,6 +102,9 @@ builder.Services.AddDbContext<SmartTrashBinandCleaningStaffManagementContext>(op
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IJWTService, JWTService>();
 builder.Services.AddHostedService<LeaveStatusUpdateService>();
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole(); // hoặc AddFile, AddDebug, tùy nhu cầu
+
 
 
 // Đăng ký repositories

@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using MSWT_Services.IServices;
-using static MSWT_BussinessObject.RequestDTO.RequestDTO.SwapRequestDTO;
+using static MSWT_BussinessObject.RequestDTO.RequestDTO;
+using static MSWT_BussinessObject.ResponseDTO.ResponseDTO;
 
 namespace MSWT_API.Controllers
 {
@@ -8,50 +10,46 @@ namespace MSWT_API.Controllers
     [ApiController]
     public class ShiftSwapController : ControllerBase
     {
-        private readonly IShiftSwapService _shiftSwapService;
+        private readonly IShiftSwapService _service;
 
         public ShiftSwapController(IShiftSwapService shiftSwapService)
         {
-            _shiftSwapService = shiftSwapService;
+            _service = shiftSwapService;
+
         }
-        // 1. Gửi yêu cầu hoán đổi
         [HttpPost("request")]
-        public async Task<IActionResult> RequestSwap([FromBody] SwapRequestInput request)
+        [Authorize]
+        public async Task<IActionResult> RequestSwap([FromBody] ShiftSwapRequestDTO dto)
         {
-            var success = await _shiftSwapService.RequestSwapAsync(
-                request.RequesterId,
-                request.RequesterDate,
-                request.TargetPhoneNumber,
-                request.TargetDate);
+            var requesterId = User.FindFirst("User_Id")?.Value;
+            if (string.IsNullOrEmpty(requesterId)) return Unauthorized();
 
-            if (!success)
-                return BadRequest("Gửi yêu cầu hoán đổi thất bại. Vui lòng kiểm tra dữ liệu đầu vào.");
-
-            return Ok("Yêu cầu hoán đổi đã được gửi.");
+            var result = await _service.RequestSwapAsync(requesterId, dto);
+            return Ok(result);
         }
 
-        // 2. Duyệt hoặc từ chối yêu cầu hoán đổi
+        [HttpGet("my-requests")]
+        [Authorize]
+        public async Task<IActionResult> GetMyRequests()
+        {
+            var userId = User.FindFirst("User_Id")?.Value;
+            if (string.IsNullOrEmpty(userId)) return Unauthorized();
+
+            var result = await _service.GetUserRequestsAsync(userId);
+            return Ok(result);
+        }
+
         [HttpPost("respond")]
-        public async Task<IActionResult> RespondSwap([FromBody] SwapRespondInput input)
+        [Authorize]
+        public async Task<IActionResult> RespondSwap([FromBody] ShiftSwapRespondDTO dto)
         {
-            var success = await _shiftSwapService.RespondToSwapAsync(
-                input.RequestId,
-                input.IsAccepted,
-                input.Reason);
+            var userId = User.FindFirst("User_Id")?.Value;
+            if (string.IsNullOrEmpty(userId)) return Unauthorized();
 
-            if (!success)
-                return BadRequest("Không thể xử lý yêu cầu hoán đổi. Vui lòng kiểm tra lại.");
+            var result = await _service.RespondSwapAsync(userId, dto);
+            if (result == null) return NotFound("Request not found or not allowed to respond.");
 
-            return Ok("Đã cập nhật trạng thái yêu cầu hoán đổi.");
+            return Ok(result);
         }
-
-        // 3. Lấy danh sách yêu cầu đã gửi
-        [HttpGet("my-requests/{userId}")]
-        public async Task<IActionResult> GetMyRequests(string userId)
-        {
-            var requests = await _shiftSwapService.GetMySwapRequestsAsync(userId);
-            return Ok(requests);
-        }
-
     }
 }
