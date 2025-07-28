@@ -3,93 +3,98 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using MSWT_BussinessObject.Model;
 using MSWT_Repositories.IRepository;
 using MSWT_Services.IServices;
 using static MSWT_BussinessObject.Enum.Enum;
+using static MSWT_BussinessObject.RequestDTO.RequestDTO;
+using static MSWT_BussinessObject.ResponseDTO.ResponseDTO;
 
 namespace MSWT_Services.Services
 {
     public class ShiftSwapService : IShiftSwapService
     {
-        private readonly IShiftSwapRepository _swapRepo;
+        private readonly IShiftSwapRepository _repo;
         private readonly IUserRepository _userRepo;
         private readonly IScheduleDetailsRepository _scheduleRepo;
+        private readonly ILogger<ShiftSwapService> _logger;
+        private readonly SmartTrashBinandCleaningStaffManagementContext _context;
+        private readonly IMapper _mapper;
 
-        public ShiftSwapService(IShiftSwapRepository swapRepo, IUserRepository userRepo, IScheduleDetailsRepository scheduleRepo)
+        public ShiftSwapService(IShiftSwapRepository swapRepo, IUserRepository userRepo, IScheduleDetailsRepository scheduleRepo, ILogger<ShiftSwapService> logger, SmartTrashBinandCleaningStaffManagementContext context, IMapper mapper)
         {
-            _swapRepo = swapRepo;
+            _repo = swapRepo;
             _userRepo = userRepo;
             _scheduleRepo = scheduleRepo;
+            _logger = logger;
+            _context = context;
+            _mapper = mapper;
         }
 
-        public async Task<List<ShiftSwapRequest>> GetMySwapRequestsAsync(string userId)
+        public async Task<ShiftSwapRequest> RequestSwapAsync(string requesterId, ShiftSwapRequestDTO dto)
         {
-            return await _swapRepo.GetRequestsByUserIdAsync(userId);
-        }
-
-        public async Task<bool> RequestSwapAsync(string requesterId, DateOnly requesterDate, string targetPhone, DateOnly targetDate)
-        {
-            var requester = await _userRepo.GetByIdAsync(requesterId);
-            var targetUser = await _userRepo.GetByPhoneAsync(targetPhone);
-
-            if (requester == null || targetUser == null) return false;
-            if (!Enum.TryParse<UserStatusEnum>(requester.Status, out var requesterStatus) ||
-                !Enum.TryParse<UserStatusEnum>(targetUser.Status, out var targetStatus)) return false;
-            if (requesterStatus != UserStatusEnum.DaCoLich || targetStatus != UserStatusEnum.DaCoLich) return false;
-
-            var requesterSchedule = await _scheduleRepo.GetByUserAndDateAsync(requesterId, requesterDate);
-            var targetSchedule = await _scheduleRepo.GetByUserAndDateAsync(targetUser.UserId, targetDate);
-            if (requesterSchedule == null || targetSchedule == null) return false;
-
-            int swapCount = await _swapRepo.GetSwapCountInMonthAsync(targetUser.UserId, targetDate.Month, targetDate.Year);
-            if (swapCount >= 2) return false;
-
             var request = new ShiftSwapRequest
             {
                 SwapRequestId = Guid.NewGuid(),
-                RequestDate = DateTime.Now,
+                RequestDate = DateTime.UtcNow,
                 RequesterId = requesterId,
-                TargetUserId = targetUser.UserId,
-                TargetUserPhone = targetPhone,
-                RequesterScheduleDetailId = requesterSchedule.ScheduleDetailId,
-                TargetScheduleDetailId = targetSchedule.ScheduleDetailId,
-                Status = "Pending",
-                Month = targetDate.Month,
-                Year = targetDate.Year
+                TargetUserId = dto.ToUserId,
+                TargetUserPhone = dto.TargetUserPhone,
+                Month = dto.Month,
+                Year = dto.Year,
+                Reason = dto.Reason,
+                Status = "Đã gửi"
             };
 
-            await _swapRepo.AddAsync(request);
-            await _swapRepo.SaveChangesAsync();
-
-            return true;
+            return await _repo.CreateRequestAsync(request);
         }
 
-        public async Task<bool> RespondToSwapAsync(Guid requestId, bool isAccepted, string? reason = null)
+        public async Task<List<ShiftSwapResponseDTO>> GetUserRequestsAsync(string userId)
         {
-            var request = await _swapRepo.GetByIdAsync(requestId);
-            if (request == null || request.Status != "Đã gửi") return false;
+            var requests = await _repo.GetRequestsForUserAsync(userId);
+            return _mapper.Map<List<ShiftSwapResponseDTO>>(requests);
+        }
 
-            request.Status = isAccepted ? "Đồng ý" : "Từ chối";
-            request.ConfirmedDate = DateTime.Now;
-            request.Reason = reason;
+        public async Task<ShiftSwapRequest?> RespondSwapAsync(string userId, ShiftSwapRespondDTO dto)
+        {
+            var request = await _repo.GetByIdAsync(dto.RequestId);
+            if (request == null || request.TargetUserId != userId || request.Status != "Đã gửi")
+                return null;
 
-            if (isAccepted)
+            if (!dto.IsAccepted)
             {
-                // Hoán đổi ScheduleDetail
-                var requesterSchedule = request.RequesterScheduleDetail;
-                var targetSchedule = request.TargetScheduleDetail;
-
-                // Hoán đổi UserId
-                var temp = requesterSchedule.WorkerId;
-                requesterSchedule.WorkerId = targetSchedule.WorkerId;
-                targetSchedule.WorkerId = temp;
-
-                request.SwapExecuted = true;
+                request.Status = "Từ chối";
+                request.ConfirmedDate = DateTime.UtcNow;
+                await _repo.SaveChangesAsync();
+                return request;
             }
 
-            await _swapRepo.SaveChangesAsync();
-            return true;
+            var startDate = new DateTime(request.Year, request.Month, 1);
+            var endDate = startDate.AddMonths(1);
+
+            var fromDetails = await _context.ScheduleDetails
+                .Where(s => s.WorkerId == request.RequesterId && s.Date >= startDate && s.Date < endDate)
+                .ToListAsync();
+
+            var toDetails = await _context.ScheduleDetails
+                .Where(s => s.WorkerId == request.TargetUserId && s.Date >= startDate && s.Date < endDate)
+                .ToListAsync();
+
+            foreach (var detail in fromDetails)
+                detail.WorkerId = request.TargetUserId;
+
+            foreach (var detail in toDetails)
+                detail.WorkerId = request.RequesterId;
+
+            request.Status = "Đồng ý";
+            request.ConfirmedDate = DateTime.UtcNow;
+            request.SwapExecuted = true;
+
+            await _repo.SaveChangesAsync();
+            return request;
         }
     }
 }

@@ -471,14 +471,6 @@ public partial class SmartTrashBinandCleaningStaffManagementContext : DbContext
                 .HasMaxLength(20)
                 .IsRequired();
 
-            entity.Property(e => e.RequesterScheduleDetailId)
-                .HasMaxLength(50)
-                .IsRequired();
-
-            entity.Property(e => e.TargetScheduleDetailId)
-                .HasMaxLength(50)
-                .IsRequired();
-
             entity.Property(e => e.Status)
                 .HasMaxLength(50)
                 .IsRequired();
@@ -491,20 +483,6 @@ public partial class SmartTrashBinandCleaningStaffManagementContext : DbContext
 
             entity.Property(e => e.Year)
                 .IsRequired();
-
-    
-            entity.HasOne(d => d.RequesterScheduleDetail)
-                .WithMany()
-                .HasForeignKey(d => d.RequesterScheduleDetailId)
-                .OnDelete(DeleteBehavior.Restrict)
-                .HasConstraintName("FK_ShiftSwapRequest_RequesterScheduleDetail");
-
-          
-            entity.HasOne(d => d.TargetScheduleDetail)
-                .WithMany()
-                .HasForeignKey(d => d.TargetScheduleDetailId)
-                .OnDelete(DeleteBehavior.Restrict)
-                .HasConstraintName("FK_ShiftSwapRequest_TargetScheduleDetail");
 
    
             entity.HasOne(d => d.Requester)

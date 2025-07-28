@@ -85,7 +85,7 @@ namespace MSWT_Repositories.Repository
         {
             return await _context.ScheduleDetails
                 .Include(sd => sd.Schedule)
-                .Include(sd => sd.WorkerId) // Nếu cần thông tin User
+                .Include(sd => sd.Worker) // Nếu cần thông tin User
                 .FirstOrDefaultAsync(sd =>
                     sd.WorkerId == userId &&
                     sd.Schedule != null &&

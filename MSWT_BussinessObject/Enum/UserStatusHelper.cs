@@ -30,7 +30,7 @@ namespace MSWT_BussinessObject.Enum
                 "chưa xác thực" => UserStatusEnum.ChuaXacThuc,
                 "đang nghỉ phép" => UserStatusEnum.NghiPhep,
                 "đang trống lịch" => UserStatusEnum.Trong,
-                "đã có lịch" => UserStatusEnum.DaCoLich,
+                "Đã có lịch" => UserStatusEnum.DaCoLich,
                 "đã thôi việc" => UserStatusEnum.ThoiViec,
                 _ => throw new ArgumentException("Trạng thái không hợp lệ", nameof(status))
             };

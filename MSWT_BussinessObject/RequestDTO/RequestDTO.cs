@@ -207,22 +207,13 @@ namespace MSWT_BussinessObject.RequestDTO
             public DateTime TargetScheduleDate { get; set; }
             public string? Reason { get; set; }
         }
-        public class SwapRequestDTO
+        public class ShiftSwapRequestDTO
         {
-            public class SwapRequestInput
-            {
-                public string RequesterId { get; set; } = null!;
-                public DateOnly RequesterDate { get; set; }
-                public string TargetPhoneNumber { get; set; } = null!;
-                public DateOnly TargetDate { get; set; }
-            }
-
-            public class SwapRespondInput
-            {
-                public Guid RequestId { get; set; }
-                public bool IsAccepted { get; set; }
-                public string? Reason { get; set; }
-            }
+            public string ToUserId { get; set; } = null!;
+            public string? TargetUserPhone { get; set; } = null!;
+            public string? Reason { get; set; }
+            public int Month { get; set; }
+            public int Year { get; set; }
         }
 
 

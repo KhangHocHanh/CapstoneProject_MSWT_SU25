@@ -108,7 +108,12 @@ namespace MSWT_BussinessObject.Mapper
                 .ForMember(dest => dest.Schedule, opt => opt.MapFrom(src => src.Schedule));
             CreateMap<Shift, ShiftResponseDTO>();
             CreateMap<TrashBin, TrashBinResponseDTO>();
-
+            CreateMap<ShiftSwapRequest, ShiftSwapResponseDTO>()
+    .ForMember(dest => dest.TargetUserId, opt => opt.MapFrom(src => src.TargetUserId ?? string.Empty))
+    .ForMember(dest => dest.TargetUserPhone, opt => opt.MapFrom(src => src.TargetUserPhone ?? string.Empty))
+    .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status ?? string.Empty))
+    .ForMember(dest => dest.Reason, opt => opt.MapFrom(src => src.Reason ?? string.Empty));
+            CreateMap<ShiftSwapRequest, ShiftSwapResponseDTO>();
             #region User
 
             CreateMap<UserCreateDto, User>()
