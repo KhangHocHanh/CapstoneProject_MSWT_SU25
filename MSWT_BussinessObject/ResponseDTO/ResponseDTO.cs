@@ -97,6 +97,27 @@ namespace MSWT_BussinessObject.ResponseDTO
             public string SensorId { get; set; } = null!;
             public float FillLevel { get; set; }
         }
+        public class ShiftSwapRespondDTO
+        {
+            public Guid RequestId { get; set; }
+            public bool IsAccepted { get; set; }
+        }
+        public class ShiftSwapResponseDTO
+        {
+            public Guid SwapRequestId { get; set; }
+            public DateTime RequestDate { get; set; }
+            public string RequesterId { get; set; }
+            public string TargetUserId { get; set; } = string.Empty;
+            public string TargetUserPhone { get; set; } = string.Empty;
+            public string RequesterScheduleDetailId { get; set; } = string.Empty;
+            public string TargetScheduleDetailId { get; set; } = string.Empty;
+            public string Status { get; set; } = string.Empty;
+            public DateTime? ConfirmedDate { get; set; }
+            public string Reason { get; set; } = string.Empty;
+            public bool? SwapExecuted { get; set; }
+            public int Month { get; set; }
+            public int Year { get; set; }
+        }
 
     }
 }

@@ -42,10 +42,7 @@ namespace MSWT_Repositories.Repository
 
         async Task<IEnumerable<SensorBin>> ISensorBinRepository.GetAllAsync()
         {
-            return await _context.SensorBins
-                .Include(s => s.Bin)
-                .Include(s => s.Sensor)
-                .ToListAsync();
+            return await _context.SensorBins.Include(b => b.Bin).ToListAsync();
         }
 
         public async Task UpdateAsync(SensorBin sensorBin)

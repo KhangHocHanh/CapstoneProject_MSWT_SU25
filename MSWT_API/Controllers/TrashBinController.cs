@@ -56,7 +56,7 @@ namespace MSWT_API.Controllers
             var newTrashbin = new TrashBin
             {
                 TrashBinId = "TB" + DateTime.UtcNow.Ticks,
-                Status = TrashbinStatus.DangHoatDong.ToString(),
+                Status = TrashbinStatus.DangHoatDong.ToDisplayString(),
                 AreaId = dto.AreaId,
                 Location = dto.Location,
                 Image = dto.Image,
