@@ -24,5 +24,6 @@ namespace MSWT_Services.IServices
         Task<IEnumerable<ScheduleDetailsResponseDTO>> SearchScheduleDetailsByUserIdAsync(string userId);
         Task<bool> AddAssignmentToSchedule(string id, string assignmentId);
         Task<bool> CreateDailyRatingAsync(string userId, ScheduleDetailRatingCreateDTO dto);
+        Task UpdateScheduleDetailStatusesAsync();
     }
 }
