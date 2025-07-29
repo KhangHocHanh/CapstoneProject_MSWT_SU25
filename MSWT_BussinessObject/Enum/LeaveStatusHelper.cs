@@ -13,9 +13,11 @@ namespace MSWT_BussinessObject.Enum
         {
             return type switch
             {
-                LeaveTypeEnum.NghiBenh => "Nghỉ bệnh",
-                LeaveTypeEnum.NghiPhep => "Nghỉ phép",
-                LeaveTypeEnum.NghiViecCaNhan => "Nghỉ việc cá nhân",
+                LeaveTypeEnum.NghiPhepNam => "Nghỉ phép năm",
+                LeaveTypeEnum.NghiOm => "Nghỉ ốm",
+                LeaveTypeEnum.NghiViecRieng => "Nghỉ việc riêng",
+                LeaveTypeEnum.NghiKhongLuong => "Nghỉ không lương",
+                LeaveTypeEnum.NghiThaiSan => "Nghỉ thai sản",
                 _ => "Không xác định"
             };
         }

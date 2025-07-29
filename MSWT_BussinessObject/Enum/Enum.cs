@@ -43,13 +43,18 @@ namespace MSWT_BussinessObject.Enum
         public enum LeaveTypeEnum
         {
             /// <summary>Nghỉ do ốm đau, bệnh tật.</summary>
-            NghiBenh = 1,
+            NghiPhepNam = 1,
 
             /// <summary>Nghỉ phép hằng năm.</summary>
-            NghiPhep = 2,
+            NghiOm = 2,
 
             /// <summary>Nghỉ việc cá nhân (việc nhà, đám tiệc, …).</summary>
-            NghiViecCaNhan = 3
+            NghiViecRieng = 3,
+
+            /// <summary>Nghỉ việc không lương.</summary>
+            NghiKhongLuong = 4,
+            /// <summary>Nghỉ thai sản.</summary>
+            NghiThaiSan = 5
         }
 
         /// <summary>
