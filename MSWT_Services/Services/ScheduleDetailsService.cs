@@ -279,5 +279,23 @@ namespace MSWT_Services.Services
             }
         }
 
+        public async Task<bool> UpdateScheduleDetailStatusToComplete(string scheduleDetailId, string currentUserId)
+        {
+            var detail = await _scheduleDetailsRepository.GetByIdAsync(scheduleDetailId);
+            if (detail == null)
+                throw new Exception("ScheduleDetail không tồn tại.");
+
+            if (detail.Status == "Sắp tới")
+                throw new Exception("Không thể hoàn thành công việc khi nó chưa bắt đầu.");
+
+            if (detail.WorkerId != currentUserId)
+                throw new Exception("Bạn không có quyền cập nhật công việc này.");
+
+            detail.Status = "Hoàn thành";
+            await _scheduleDetailsRepository.UpdateAsync(detail);
+
+            return true;
+        }
+
     }
 }

@@ -25,5 +25,6 @@ namespace MSWT_Services.IServices
         Task<bool> AddAssignmentToSchedule(string id, string assignmentId);
         Task<bool> CreateDailyRatingAsync(string userId, ScheduleDetailRatingCreateDTO dto);
         Task UpdateScheduleDetailStatusesAsync();
+        Task<bool> UpdateScheduleDetailStatusToComplete(string scheduleDetailId, string currentUserId);
     }
 }
