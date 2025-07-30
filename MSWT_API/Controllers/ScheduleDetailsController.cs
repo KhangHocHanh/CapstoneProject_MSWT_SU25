@@ -153,6 +153,23 @@ namespace MSWT_API.Controllers
             }
         }
 
+        [HttpPut("schedule-details/{id}/status")]
+        [Authorize(Roles = "Worker")]
+        public async Task<IActionResult> MarkScheduleDetailAsComplete(string id)
+        {
+            try
+            {
+                var userId = User.FindFirst("User_Id")?.Value;
+                if (string.IsNullOrEmpty(userId))
+                    return Unauthorized("Không thể xác định người dùng.");
 
+                var result = await _scheduleDetailsService.UpdateScheduleDetailStatusToComplete(id, userId);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
     }
 }
