@@ -119,5 +119,22 @@ namespace MSWT_BussinessObject.ResponseDTO
             public int Year { get; set; }
         }
 
+        public class TrashBinWithSensorDTO
+        {
+            public string TrashBinId { get; set; } = null!;
+            public string? Status { get; set; }
+            public string? AreaId { get; set; }
+            public string? Location { get; set; }
+            public string? Image { get; set; }
+            public string? RestroomId { get; set; }
+
+            public List<SensorInfoDTO> Sensors { get; set; } = new();
+        }
+        public class SensorInfoDTO
+        {
+            public string SensorId { get; set; } = null!;
+            public string? SensorName { get; set; } = null!;
+
+        }
     }
 }
