@@ -47,5 +47,9 @@ namespace MSWT_Services.Services
         {
             await _TrashBinRepository.UpdateAsync(TrashBin);
         }
+        public async Task<List<TrashBinWithSensorDTO>> GetTrashBinsWithSensorsAsync()
+        {
+            return await _TrashBinRepository.GetTrashBinsWithSensorsAsync();
+        }
     }
 }
