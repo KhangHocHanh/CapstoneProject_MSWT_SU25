@@ -215,7 +215,35 @@ namespace MSWT_BussinessObject.RequestDTO
             public int Month { get; set; }
             public int Year { get; set; }
         }
+        #region AttendanceRecordDTO
+        public class AttendanceRecordDTO
+        {
+            public string Id { get; set; }
+            public string EmployeeId { get; set; } = null!;
+            public DateOnly AttendanceDate { get; set; }
+            public DateTime? CheckInTime { get; set; }
+            public DateTime? CheckOutTime { get; set; }
+            public string? Status { get; set; }
+            public string? Note { get; set; }
+        }
 
+        public class CreateAttendanceRequest
+        {
+            public string EmployeeId { get; set; } = null!;
+            public DateOnly AttendanceDate { get; set; }
+        }
+
+        public class CheckInRequest
+        {
+            public string EmployeeId { get; set; } = null!;
+        }
+
+        public class CheckOutRequest
+        {
+            public string EmployeeId { get; set; } = null!;
+        }
+
+        #endregion
 
     }
 }
