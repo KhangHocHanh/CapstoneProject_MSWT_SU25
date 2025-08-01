@@ -16,6 +16,7 @@ namespace MSWT_Services.IServices
         Task AddTrashBin(TrashBin TrashBin);
         Task UpdateTrashBin(TrashBin TrashBin);
         Task DeleteTrashBin(string id);
+        Task<List<TrashBinWithSensorDTO>> GetTrashBinsWithSensorsAsync();
         #endregion
     }
 }

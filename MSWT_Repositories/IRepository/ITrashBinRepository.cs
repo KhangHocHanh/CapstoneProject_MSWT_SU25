@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MSWT_BussinessObject.Model;
+using static MSWT_BussinessObject.ResponseDTO.ResponseDTO;
 
 namespace MSWT_Repositories.IRepository
 {
@@ -15,6 +16,7 @@ namespace MSWT_Repositories.IRepository
         Task AddAsync(TrashBin TrashBin);
         Task DeleteAsync(string id);
         Task UpdateAsync(TrashBin TrashBin);
+        Task<List<TrashBinWithSensorDTO>> GetTrashBinsWithSensorsAsync();
         #endregion
     }
 }

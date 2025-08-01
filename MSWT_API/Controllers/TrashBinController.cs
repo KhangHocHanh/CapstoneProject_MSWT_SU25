@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MSWT_BussinessObject.Enum;
 using MSWT_BussinessObject.Model;
+using MSWT_BussinessObject.ResponseDTO;
 using MSWT_Services.IServices;
 using MSWT_Services.Services;
 using static MSWT_BussinessObject.Enum.Enum;
 using static MSWT_BussinessObject.RequestDTO.RequestDTO;
+using static MSWT_BussinessObject.ResponseDTO.ResponseDTO;
 
 namespace MSWT_API.Controllers
 {
@@ -88,6 +90,13 @@ namespace MSWT_API.Controllers
                 message = "Cập nhật trạng thái thành công",
                 newStatus = trashbin.Status
             });
+        }
+        [HttpGet("with-sensors")]
+        public async Task<IActionResult> GetTrashBinsWithSensors()
+        {
+            var data = await _TrashBinService.GetTrashBinsWithSensorsAsync();
+
+            return Ok(new ResponseDTO(200, "Lấy dữ liệu thành công", data));
         }
         #endregion
     }
