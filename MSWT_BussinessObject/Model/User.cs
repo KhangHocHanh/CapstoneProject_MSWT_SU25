@@ -52,4 +52,6 @@ public partial class User
     public virtual ICollection<ScheduleDetail> ScheduleDetailSupervisors { get; set; } = new List<ScheduleDetail>();
 
     public virtual ICollection<ScheduleDetail> ScheduleDetailWorkers { get; set; } = new List<ScheduleDetail>();
+    public virtual ICollection<AttendanceRecord> AttendanceRecords { get; set; } = new List<AttendanceRecord>();
+
 }

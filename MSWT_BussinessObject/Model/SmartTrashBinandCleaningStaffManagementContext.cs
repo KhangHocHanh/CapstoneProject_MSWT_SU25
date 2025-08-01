@@ -51,6 +51,7 @@ public partial class SmartTrashBinandCleaningStaffManagementContext : DbContext
     public virtual DbSet<User> Users { get; set; }
     public virtual DbSet<ScheduleDetailRating> ScheduleDetailRatings { get; set; }
     public virtual DbSet<ShiftSwapRequest> ShiftSwapRequests { get; set; }
+    public virtual DbSet<AttendanceRecord> AttendanceRecords { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -497,6 +498,45 @@ public partial class SmartTrashBinandCleaningStaffManagementContext : DbContext
                 .OnDelete(DeleteBehavior.Restrict)
                 .HasConstraintName("FK_ShiftSwapRequest_TargetUser");
         });
+        modelBuilder.Entity<AttendanceRecord>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK_AttendanceRecord");
+
+            entity.Property(e => e.Id)
+                .HasMaxLength(50)
+                .HasDefaultValueSql("(newid())");
+
+            entity.Property(e => e.EmployeeId)
+                .HasMaxLength(50);
+
+            entity.Property(e => e.AttendanceDate)
+                .HasColumnType("date");
+
+            entity.Property(e => e.CheckInTime)
+                .HasColumnType("datetime");
+
+            entity.Property(e => e.CheckOutTime)
+                .HasColumnType("datetime");
+
+            entity.Property(e => e.Status)
+                .HasMaxLength(50);
+
+            entity.Property(e => e.Note)
+                .HasMaxLength(500);
+
+            entity.Property(e => e.CreatedAt)
+                .HasColumnType("datetime")
+                .HasDefaultValueSql("GETDATE()");
+
+            entity.Property(e => e.UpdatedAt)
+                .HasColumnType("datetime");
+
+            entity.HasOne(e => e.User)
+                .WithMany(u => u.AttendanceRecords)
+                .HasForeignKey(e => e.EmployeeId)
+                .HasConstraintName("FK_AttendanceRecords_Users");
+        });
+
     }
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
