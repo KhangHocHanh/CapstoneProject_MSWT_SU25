@@ -1,0 +1,20 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using MSWT_BussinessObject.Model;
+using static MSWT_BussinessObject.RequestDTO.RequestDTO;
+
+namespace MSWT_Services.IServices
+{
+    public interface IAttendanceRecordService
+    {
+        Task<(bool IsSuccess, string Message)> CheckInAsync(string userId);
+        Task<(bool IsSuccess, string Message)> CheckOutAsync(string userId);
+        Task<List<AttendanceRecord>> GetAttendanceRecordsByUserAsync(string userId);
+        Task<List<AttendanceRecord>> GetAllAttendanceRecordsAsync();
+        Task<List<AttendanceRecord>> GetRecordsByDateAsync(DateOnly date);
+        
+    }
+}
