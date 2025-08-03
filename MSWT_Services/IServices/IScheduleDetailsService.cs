@@ -1,4 +1,5 @@
-﻿using MSWT_BussinessObject.Model;
+﻿using Microsoft.AspNetCore.Http;
+using MSWT_BussinessObject.Model;
 using MSWT_BussinessObject.RequestDTO;
 using MSWT_BussinessObject.ResponseDTO;
 using System;
@@ -12,7 +13,7 @@ namespace MSWT_Services.IServices
 {
     public interface IScheduleDetailsService
     {
-        Task<ScheduleDetailsResponseDTO> CreateScheduleDetailFromScheduleAsync(string scheduleId, ScheduleDetailsRequestDTO detailDto);
+        Task<List<ScheduleDetailsResponseDTO>> CreateScheduleDetailFromScheduleAsync(string scheduleId, ScheduleDetailsRequestDTO detailDto);
         Task DeleteSchedule(string id);
         Task<IEnumerable<ScheduleDetailsResponseDTO>> GetAllSchedule();
         Task<ScheduleDetailsResponseDTO> GetScheduleById(string id);
@@ -25,6 +26,6 @@ namespace MSWT_Services.IServices
         Task<bool> AddAssignmentToSchedule(string id, string assignmentId);
         Task<bool> CreateDailyRatingAsync(string userId, ScheduleDetailRatingCreateDTO dto);
         Task UpdateScheduleDetailStatusesAsync();
-        Task<bool> UpdateScheduleDetailStatusToComplete(string scheduleDetailId, string currentUserId);
+        Task<bool> UpdateScheduleDetailStatusToComplete(string scheduleDetailId, string currentUserId, IFormFile? newEvidenceImage = null);
     }
 }
