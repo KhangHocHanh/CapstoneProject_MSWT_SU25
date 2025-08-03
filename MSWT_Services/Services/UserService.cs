@@ -167,6 +167,12 @@ namespace MSWT_Services.Services
             if (dto.NewPassword != dto.ConfirmNewPassword)
                 return new ResponseDTO(Const.FAIL_UPDATE_CODE, "Mật khẩu mới không khớp nhau.");
 
+            if (UserStatusHelper.ToEnum(user.Status) == UserStatusEnum.ChuaXacThuc)
+            {
+                user.Status = UserStatusHelper.ToStringStatus(UserStatusEnum.HoatDong);
+            }
+
+
             // Cập nhật mật khẩu
             user.Password = dto.NewPassword; // Nếu có hash: Hash(dto.NewPassword)
             await _userRepository.UpdateAsync(user);

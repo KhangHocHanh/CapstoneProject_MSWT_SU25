@@ -18,6 +18,7 @@ namespace MSWT_BussinessObject.Enum
                 UserStatusEnum.Trong => "Đang trống lịch",
                 UserStatusEnum.DaCoLich => "Đã có lịch",
                 UserStatusEnum.ThoiViec => "Đã thôi việc",
+                UserStatusEnum.HoatDong => "Hoạt động",
                 _ => "Không xác định"
             };
         }
@@ -30,8 +31,9 @@ namespace MSWT_BussinessObject.Enum
                 "chưa xác thực" => UserStatusEnum.ChuaXacThuc,
                 "đang nghỉ phép" => UserStatusEnum.NghiPhep,
                 "đang trống lịch" => UserStatusEnum.Trong,
-                "Đã có lịch" => UserStatusEnum.DaCoLich,
+                "đã có lịch" => UserStatusEnum.DaCoLich,
                 "đã thôi việc" => UserStatusEnum.ThoiViec,
+                "hoạt động" => UserStatusEnum.HoatDong,
                 _ => throw new ArgumentException("Trạng thái không hợp lệ", nameof(status))
             };
         }
