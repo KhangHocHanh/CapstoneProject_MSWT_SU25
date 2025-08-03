@@ -105,7 +105,8 @@ namespace MSWT_BussinessObject.Enum
             NghiPhep = 1, // Đang nghỉ phép
             Trong = 2, // Đang trống lịch
             DaCoLich = 3, // Đã có lịch
-            ThoiViec = 4 // Thôi việc
+            ThoiViec = 4, // Thôi việc
+            HoatDong = 5, // Hoạt động
         }
 
         public enum ScheduleStatus
