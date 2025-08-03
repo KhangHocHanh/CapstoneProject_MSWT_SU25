@@ -27,7 +27,8 @@ namespace MSWT_Services.Services
         public async Task<(bool IsSuccess, string Message)> CheckInAsync(string userId)
         {
             var today = DateOnly.FromDateTime(DateTime.Today);
-            var now = DateTime.Now;
+            //var now = DateTime.Now;
+            var now = TimeHelper.GetNowInVietnamTime();
 
             var existing = await _repo.GetByUserAndDateAsync(userId, today);
             if (existing != null)
