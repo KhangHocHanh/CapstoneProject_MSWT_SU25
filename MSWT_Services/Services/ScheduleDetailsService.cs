@@ -14,6 +14,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static MSWT_BussinessObject.RequestDTO.RequestDTO;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http;
 
 namespace MSWT_Services.Services
 {
@@ -37,13 +38,12 @@ namespace MSWT_Services.Services
             _assignmentRepository = assignmentRepository;
             _cloudinary = cloudinary;
         }
-        public async Task<ScheduleDetailsResponseDTO> CreateScheduleDetailFromScheduleAsync(string scheduleId, ScheduleDetailsRequestDTO detailDto)
+        public async Task<List<ScheduleDetailsResponseDTO>> CreateScheduleDetailFromScheduleAsync(string scheduleId, ScheduleDetailsRequestDTO detailDto)
         {
             var schedule = await _scheduleRepository.GetByIdAsync(scheduleId);
             if (schedule == null)
                 throw new Exception("Schedule not found.");
 
-            // Load supervisor with Role
             var supervisor = await _userRepository.GetAll()
                 .Include(u => u.Role)
                 .FirstOrDefaultAsync(u => u.UserId == schedule.SupervisorId);
@@ -52,7 +52,6 @@ namespace MSWT_Services.Services
             if (supervisor.Role?.RoleName?.ToLower() != "supervisor")
                 throw new Exception("The selected user does not have the 'Supervisor' role.");
 
-            // Load worker with Role
             var worker = await _userRepository.GetAll()
                 .Include(u => u.Role)
                 .FirstOrDefaultAsync(u => u.UserId == detailDto.WorkerId);
@@ -74,26 +73,41 @@ namespace MSWT_Services.Services
                 evidenceImageUrl = await _cloudinary.UploadFile(detailDto.EvidenceImageFile);
             }
 
-            var detail = new ScheduleDetail
-            {
-                ScheduleDetailId = Guid.NewGuid().ToString(),
-                ScheduleId = schedule.ScheduleId,
-                Description = detailDto.Description,
-                WorkerId = detailDto.WorkerId,
-                SupervisorId = schedule.SupervisorId,
-                AssignmentId = detailDto.AssignmentId,
-                Date = detailDto.Date,
-                Status = detailDto.Status,
-                StartTime = schedule.Shift.StartTime,
-                EndTime = schedule.Shift.EndTime,
-                IsBackup = detailDto.IsBackup,
-                BackupForUserId = detailDto.BackupForUserId,
-                EvidenceImage = evidenceImageUrl
-            };
+            var startDate = schedule.StartDate.GetValueOrDefault();
+            var endDate = schedule.EndDate.GetValueOrDefault();
 
-            await _scheduleDetailsRepository.AddAsync(detail);
-            return _mapper.Map<ScheduleDetailsResponseDTO>(detail);
+            var createdDetails = new List<ScheduleDetailsResponseDTO>();
+
+            for (var date = startDate; date <= endDate; date = date.AddDays(1))
+            {
+                if (date.DayOfWeek == DayOfWeek.Sunday) continue;
+
+                var detail = new ScheduleDetail
+                {
+                    ScheduleDetailId = Guid.NewGuid().ToString(),
+                    ScheduleId = schedule.ScheduleId,
+                    Description = detailDto.Description,
+                    WorkerId = detailDto.WorkerId,
+                    SupervisorId = schedule.SupervisorId,
+                    AssignmentId = detailDto.AssignmentId,
+                    Date = date.ToDateTime(new TimeOnly(0, 0)), // convert DateOnly to DateTime
+                    Status = detailDto.Status ?? "Sắp tới",
+                    StartTime = schedule.Shift.StartTime,
+                    EndTime = schedule.Shift.EndTime,
+                    IsBackup = detailDto.IsBackup,
+                    BackupForUserId = detailDto.BackupForUserId,
+                    EvidenceImage = evidenceImageUrl
+                };
+
+                await _scheduleDetailsRepository.AddAsync(detail);
+
+                // Add to response list
+                createdDetails.Add(_mapper.Map<ScheduleDetailsResponseDTO>(detail));
+            }
+
+            return createdDetails;
         }
+
 
 
 
@@ -279,7 +293,7 @@ namespace MSWT_Services.Services
             }
         }
 
-        public async Task<bool> UpdateScheduleDetailStatusToComplete(string scheduleDetailId, string currentUserId)
+        public async Task<bool> UpdateScheduleDetailStatusToComplete(string scheduleDetailId, string currentUserId, IFormFile? newEvidenceImage = null)
         {
             var detail = await _scheduleDetailsRepository.GetByIdAsync(scheduleDetailId);
             if (detail == null)
@@ -291,11 +305,18 @@ namespace MSWT_Services.Services
             if (detail.WorkerId != currentUserId)
                 throw new Exception("Bạn không có quyền cập nhật công việc này.");
 
+            if (newEvidenceImage != null)
+            {
+                var uploadedUrl = await _cloudinary.UploadFile(newEvidenceImage);
+                detail.EvidenceImage = uploadedUrl;
+            }
+
             detail.Status = "Hoàn thành";
             await _scheduleDetailsRepository.UpdateAsync(detail);
 
             return true;
         }
+
 
     }
 }

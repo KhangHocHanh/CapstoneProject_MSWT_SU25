@@ -155,7 +155,7 @@ namespace MSWT_API.Controllers
 
         [HttpPut("schedule-details/{id}/status")]
         [Authorize(Roles = "Worker")]
-        public async Task<IActionResult> MarkScheduleDetailAsComplete(string id)
+        public async Task<IActionResult> MarkScheduleDetailAsComplete(string id, IFormFile? evidenceImage)
         {
             try
             {
@@ -163,7 +163,7 @@ namespace MSWT_API.Controllers
                 if (string.IsNullOrEmpty(userId))
                     return Unauthorized("Không thể xác định người dùng.");
 
-                var result = await _scheduleDetailsService.UpdateScheduleDetailStatusToComplete(id, userId);
+                var result = await _scheduleDetailsService.UpdateScheduleDetailStatusToComplete(id, userId, evidenceImage);
                 return Ok(result);
             }
             catch (Exception ex)
@@ -171,5 +171,6 @@ namespace MSWT_API.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
+
     }
 }
