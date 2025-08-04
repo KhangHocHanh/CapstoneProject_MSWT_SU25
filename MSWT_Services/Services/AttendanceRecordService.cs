@@ -85,7 +85,7 @@ namespace MSWT_Services.Services
             if (record.CheckOutTime != null)
                 return (false, "Bạn đã check out rồi.");
 
-            var now = DateTime.Now;
+            var now = TimeHelper.GetNowInVietnamTime();
             var hour = now.TimeOfDay;
 
             // Phân ca dựa vào thời gian CheckIn

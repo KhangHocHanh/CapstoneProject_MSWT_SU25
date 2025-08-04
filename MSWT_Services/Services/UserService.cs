@@ -166,6 +166,10 @@ namespace MSWT_Services.Services
             // Kiểm tra mật khẩu mới khớp nhau
             if (dto.NewPassword != dto.ConfirmNewPassword)
                 return new ResponseDTO(Const.FAIL_UPDATE_CODE, "Mật khẩu mới không khớp nhau.");
+            // Kiểm tra điều kiện mật khẩu mới
+            if (!IsValidPassword(dto.NewPassword))
+                return new ResponseDTO(Const.FAIL_UPDATE_CODE, "Mật khẩu phải bắt đầu bằng chữ hoa, có số và tối thiểu 7 ký tự.");
+
 
             if (UserStatusHelper.ToEnum(user.Status) == UserStatusEnum.ChuaXacThuc)
             {
@@ -207,6 +211,14 @@ namespace MSWT_Services.Services
                 throw new Exception($"Error updating image: {ex.Message}", ex);
             }
         }
+        private bool IsValidPassword(string password)
+        {
+            if (password.Length < 7) return false;
+            if (!char.IsUpper(password[0])) return false;
+            if (!password.Any(char.IsDigit)) return false;
+            return true;
+        }
+
 
     }
 }
