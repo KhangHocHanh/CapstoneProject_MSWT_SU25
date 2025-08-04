@@ -20,7 +20,7 @@ namespace MSWT_BussinessObject.RequestDTO
 
         public class AlertRequestDTO
         {
-
+            [Required(ErrorMessage = "Id thùng rác không được để trống")]
             public string? TrashBinId { get; set; }
         }
 
@@ -30,7 +30,9 @@ namespace MSWT_BussinessObject.RequestDTO
 
         public class RequestCreateDto
         {
+            [Required(ErrorMessage = "Mô tả không được để trống")]
             public string? Description { get; set; }
+            [Required(ErrorMessage = "Vị trí không được để trống")]
             public string? Location { get; set; }
             public DateTime? RequestDate { get; set; }
         }
@@ -47,7 +49,7 @@ namespace MSWT_BussinessObject.RequestDTO
         #region RoleDTO
         public class RoleCreateDto
         {
-            [Required(ErrorMessage = "RoleName không được để trống")]
+            [Required(ErrorMessage = "Tên vai trò không được để trống")]
             public string RoleName { get; set; } = null!;
             public string? Description { get; set; }
         }
@@ -72,15 +74,38 @@ namespace MSWT_BussinessObject.RequestDTO
         #endregion
 
         #region LeaveDTO
-        public class LeaveCreateDto
+        public class LeaveCreateDto : IValidatableObject
         {
+            [Required(ErrorMessage = "Loại nghỉ phép không được để trống.")]
+            [EnumDataType(typeof(LeaveTypeEnum), ErrorMessage = "Loại nghỉ phép không hợp lệ.")]
             public LeaveTypeEnum LeaveType { get; set; }
-
+            [Required(ErrorMessage = "Ngày bắt đầu không được để trống.")]
             public DateOnly StartDate { get; set; }
-
+            [Required(ErrorMessage = "Ngày bắt đầu không được để trống.")]
             public DateOnly EndDate { get; set; }
-
+            [Required(ErrorMessage = "Lý do không được để trống.")]
+            [MinLength(1, ErrorMessage = "Lý do không được để trống.")]
             public string? Reason { get; set; }
+            public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+            {
+                if (StartDate > EndDate)
+                {
+                    yield return new ValidationResult(
+                        "Ngày bắt đầu phải nhỏ hơn hoặc bằng ngày kết thúc.",
+                        new[] { nameof(StartDate), nameof(EndDate) }
+                    );
+                }
+
+                if (string.IsNullOrWhiteSpace(Reason))
+                {
+                    yield return new ValidationResult(
+                        "Lý do không được để trống hoặc chỉ chứa khoảng trắng.",
+                        new[] { nameof(Reason) }
+                    );
+                }
+
+            }
+
         }
         public class LeaveApprovalDto
         {
