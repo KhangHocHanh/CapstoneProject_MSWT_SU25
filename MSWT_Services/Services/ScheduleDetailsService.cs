@@ -38,6 +38,7 @@ namespace MSWT_Services.Services
             _assignmentRepository = assignmentRepository;
             _cloudinary = cloudinary;
         }
+
         public async Task<List<ScheduleDetailsResponseDTO>> CreateScheduleDetailFromScheduleAsync(string scheduleId, ScheduleDetailsRequestDTO detailDto)
         {
             var schedule = await _scheduleRepository.GetByIdAsync(scheduleId);
@@ -276,22 +277,29 @@ namespace MSWT_Services.Services
         public async Task UpdateScheduleDetailStatusesAsync()
         {
             var allScheduleDetails = await _scheduleDetailsRepository.GetAllAsync();
-
             var now = DateTime.Now;
 
-            var toUpdate = allScheduleDetails
-                .Where(detail =>
-                    detail.Status == "Sắp tới" &&
+            foreach (var detail in allScheduleDetails)
+            {
+                if (detail.Status == "Sắp tới" &&
                     detail.Date.HasValue &&
                     detail.Date.Value <= now)
-                .ToList();
+                {
+                    detail.Status = "Đang làm";
+                    await _scheduleDetailsRepository.UpdateAsync(detail);
+                }
 
-            foreach (var detail in toUpdate)
-            {
-                detail.Status = "Đang làm";
-                await _scheduleDetailsRepository.UpdateAsync(detail);
+                else if (detail.Status == "Đang làm" &&
+                         detail.Date.HasValue &&
+                         now >= detail.Date.Value.AddDays(1) &&
+                         detail.Status != "Hoàn thành")
+                {
+                    detail.Status = "Chưa hoàn thành";
+                    await _scheduleDetailsRepository.UpdateAsync(detail);
+                }
             }
         }
+
 
         public async Task<bool> UpdateScheduleDetailStatusToComplete(string scheduleDetailId, string currentUserId, IFormFile? newEvidenceImage = null)
         {
