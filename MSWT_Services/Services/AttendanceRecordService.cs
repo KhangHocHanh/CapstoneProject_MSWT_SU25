@@ -94,26 +94,26 @@ namespace MSWT_Services.Services
                 //var checkInHour = record.CheckInTime.Value.TimeOfDay;
                 var checkInHour = TimeZoneInfo.ConvertTimeFromUtc(record.CheckInTime.Value.ToUniversalTime(), TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time")).TimeOfDay;
 
-                //// Nếu thuộc ca 1 thì yêu cầu check out sau 13:00
-                //if (checkInHour >= TimeSpan.FromHours(5) && checkInHour < TimeSpan.FromHours(13))
-                //{
-                //    if (hour < TimeSpan.FromHours(13))
-                //    {
-                //        return (false, "Bạn chỉ có thể check out sau 13:00 cho ca sáng.");
-                //    }
-                //}
-                //// Nếu thuộc ca 2 thì yêu cầu check out sau 21:00
-                //else if (checkInHour >= TimeSpan.FromHours(13))
-                //{
-                //    if (hour < TimeSpan.FromHours(21))
-                //    {
-                //        return (false, "Bạn chỉ có thể check out sau 21:00 cho ca chiều.");
-                //    }
-                //}
-                //else
-                //{
-                //    return (false, "Không xác định được ca làm việc.");
-                //}
+                // Nếu thuộc ca 1 thì yêu cầu check out sau 13:00
+                if (checkInHour >= TimeSpan.FromHours(5) && checkInHour < TimeSpan.FromHours(13))
+                {
+                    if (hour < TimeSpan.FromHours(13))
+                    {
+                        return (false, "Bạn chỉ có thể check out sau 13:00 cho ca sáng.");
+                    }
+                }
+                // Nếu thuộc ca 2 thì yêu cầu check out sau 21:00
+                else if (checkInHour >= TimeSpan.FromHours(13))
+                {
+                    if (hour < TimeSpan.FromHours(21))
+                    {
+                        return (false, "Bạn chỉ có thể check out sau 21:00 cho ca chiều.");
+                    }
+                }
+                else
+                {
+                    return (false, "Không xác định được ca làm việc.");
+                }
             }
             else
             {
