@@ -28,8 +28,9 @@ namespace MSWT_Services.Services
         private readonly AutoMapper.IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ICloudinaryService _cloudinary;
+        private readonly IScheduleDetailsRepository _scheduleDetailsRepository;
 
-        public UserService(IUserRepository userRepository, IRoleRepository roleRepository, IHttpContextAccessor httpContextAccessor, IJWTService jWTService, AutoMapper.IMapper mapper, IUnitOfWork unitOfWork, ICloudinaryService cloudinary)
+        public UserService(IUserRepository userRepository, IRoleRepository roleRepository, IHttpContextAccessor httpContextAccessor, IJWTService jWTService, AutoMapper.IMapper mapper, IUnitOfWork unitOfWork, ICloudinaryService cloudinary, IScheduleDetailsRepository scheduleDetailsRepository)
         {
             _userRepository = userRepository;
             _roleRepository = roleRepository;
@@ -38,6 +39,7 @@ namespace MSWT_Services.Services
             _mapper = mapper;
             _unitOfWork = unitOfWork;
             _cloudinary = cloudinary;
+            _scheduleDetailsRepository = scheduleDetailsRepository;
         }
 
         #region CRUD User
