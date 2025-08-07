@@ -41,5 +41,18 @@ namespace MSWT_Services.Services
         {
             await _alertRepository.AddAsync(request);
         }
+        public async Task<IEnumerable<Alert>> GetAlertsByUser(string userId)
+        {
+            return await _alertRepository.GetAlertsByUserId(userId);
+        }
+        public async Task UpdateAlertStatusAsync(string alertId)
+        {
+            var alert = await _alertRepository.GetByIdAsync(alertId);
+            if (alert != null)
+            {
+                alert.Status = "Đã xử lý"; 
+                await _alertRepository.UpdateAsync(alert);
+            }
+        }
     }
 }

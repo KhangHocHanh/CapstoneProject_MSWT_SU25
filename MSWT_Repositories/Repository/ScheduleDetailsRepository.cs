@@ -92,6 +92,28 @@ namespace MSWT_Repositories.Repository
                     sd.Schedule.StartDate <= targetDate &&
                     sd.Schedule.EndDate >= targetDate);
         }
+        public async Task<double?> GetAverageRatingForMonthAsync(string workerId, int year, int month)
+        {
+            var today = DateTime.Today;
+
+            var ratings = await _context.ScheduleDetails
+                .Where(sd => sd.WorkerId == workerId
+                             && sd.Date.HasValue
+                             && sd.Date.Value.Year == year
+                             && sd.Date.Value.Month == month
+                             && sd.Date <= today
+                             && !string.IsNullOrEmpty(sd.Rating))
+                .ToListAsync(); // Truy vấn SQL trước
+
+            var parsedRatings = ratings
+                .Select(sd => double.TryParse(sd.Rating, out var r) ? (double?)r : null)
+                .Where(r => r.HasValue)
+                .Select(r => r.Value)
+                .ToList();
+
+            return parsedRatings.Any() ? parsedRatings.Average() : null;
+        }
+
 
     }
 }
