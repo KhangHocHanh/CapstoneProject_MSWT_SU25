@@ -27,5 +27,6 @@ namespace MSWT_Services.IServices
         Task<bool> CreateDailyRatingAsync(string userId, ScheduleDetailRatingCreateDTO dto);
         Task UpdateScheduleDetailStatusesAsync();
         Task<bool> UpdateScheduleDetailStatusToComplete(string scheduleDetailId, string currentUserId, IFormFile? newEvidenceImage = null);
+        Task<double?> GetAverageRatingForMonthAsync(string workerId, int year, int month);
     }
 }

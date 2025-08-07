@@ -20,6 +20,8 @@ namespace MSWT_Services.IServices
         //Task<bool> UpdateAlert(string id, FloorRequestDTO request);
         Task CreateAlertAsync(Alert request);
         Task DeleteAlert(string id);
+        Task<IEnumerable<Alert>> GetAlertsByUser(string userId);
+        Task UpdateAlertStatusAsync(string alertId);
         #endregion
 
     }

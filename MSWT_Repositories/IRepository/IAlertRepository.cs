@@ -16,6 +16,7 @@ namespace MSWT_Repositories.IRepository
         Task AddAsync(Alert alert);
         Task DeleteAsync(string id);
         Task UpdateAsync(Alert alert);
+        Task<IEnumerable<Alert>> GetAlertsByUserId(string userId);
         #endregion
     }
 }

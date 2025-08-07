@@ -172,5 +172,23 @@ namespace MSWT_API.Controllers
             }
         }
 
+        [HttpGet("average-rating")]
+        public async Task<IActionResult> GetAverageRating([FromQuery] int year, [FromQuery] int month)
+        {
+            try
+            {
+                var userId = User.FindFirst("User_Id")?.Value;
+                if (string.IsNullOrEmpty(userId))
+                    return Unauthorized("Không thể xác định người dùng.");
+
+                var result = await _scheduleDetailsService.GetAverageRatingForMonthAsync(userId,year,month);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+
+        }
     }
 }
