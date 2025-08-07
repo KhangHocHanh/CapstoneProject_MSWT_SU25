@@ -54,5 +54,12 @@ namespace MSWT_Repositories.Repository
             _context.Alerts.Update(alert);
             await _context.SaveChangesAsync();
         }
+        public async Task<IEnumerable<Alert>> GetAlertsByUserId(string userId)
+        { 
+            return await _context.Alerts
+                .Where(l => l.UserId == userId)
+                .OrderByDescending(l => l.TimeSend)
+                .ToListAsync();
+        }
     }
 }

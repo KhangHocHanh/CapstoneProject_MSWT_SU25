@@ -17,6 +17,7 @@ namespace MSWT_Repositories.IRepository
         Task<IEnumerable<ScheduleDetail>> GetAllAsync();
         Task<IEnumerable<ScheduleDetail>> SearchByUserIdAsync(string userId);
         Task<ScheduleDetail?> GetByUserAndDateAsync(string userId, DateOnly targetDate);
+        Task<double?> GetAverageRatingForMonthAsync(string workerId, int year, int month);
 
         #endregion
     }

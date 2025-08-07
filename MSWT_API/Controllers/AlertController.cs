@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc;
 using MSWT_BussinessObject.Model;
 using MSWT_BussinessObject.RequestDTO;
 using MSWT_BussinessObject.ResponseDTO;
@@ -66,6 +68,34 @@ namespace MSWT_API.Controllers
 
             return CreatedAtAction(nameof(GetById),
                 new { id = newAlert.TrashBinId }, newAlert);
+        }
+        [HttpGet("my-alerts")]
+        [Authorize]
+        public async Task<IActionResult> GetMyAlertsHistory()
+        {
+            var userId = User.FindFirstValue("User_Id");
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized("Không thể xác định người dùng.");
+
+            var leaves = await _alertService.GetAlertsByUser(userId);
+            return Ok(leaves);
+        }
+        [HttpPut("{alertId}/resolve")]
+        [Authorize]
+        public async Task<IActionResult> UpdateAlertStatus(string alertId)
+        {
+            var userId = User.FindFirstValue("User_Id");
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized("Không thể xác định người dùng.");
+            try
+            {
+                await _alertService.UpdateAlertStatusAsync(alertId);
+                return Ok(new { message = "Cập nhật trạng thái cảnh báo thành công." });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
         #endregion
     }

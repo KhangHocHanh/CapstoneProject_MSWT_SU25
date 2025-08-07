@@ -324,6 +324,10 @@ namespace MSWT_Services.Services
 
             return true;
         }
+        public Task<double?> GetAverageRatingForMonthAsync(string workerId, int year, int month)
+        {
+            return _scheduleDetailsRepository.GetAverageRatingForMonthAsync(workerId, year, month);
+        }
 
 
     }

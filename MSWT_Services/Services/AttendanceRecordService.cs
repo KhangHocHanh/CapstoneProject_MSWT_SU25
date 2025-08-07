@@ -91,7 +91,8 @@ namespace MSWT_Services.Services
             // Phân ca dựa vào thời gian CheckIn
             if (record.CheckInTime.HasValue)
             {
-                var checkInHour = record.CheckInTime.Value.TimeOfDay;
+                //var checkInHour = record.CheckInTime.Value.TimeOfDay;
+                var checkInHour = TimeZoneInfo.ConvertTimeFromUtc(record.CheckInTime.Value.ToUniversalTime(), TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time")).TimeOfDay;
 
                 // Nếu thuộc ca 1 thì yêu cầu check out sau 13:00
                 if (checkInHour >= TimeSpan.FromHours(5) && checkInHour < TimeSpan.FromHours(13))
