@@ -114,6 +114,31 @@ namespace MSWT_Repositories.Repository
             return parsedRatings.Any() ? parsedRatings.Average() : null;
         }
 
+        public async Task<(int workedDays, int totalDays, double percentage)> GetWorkStatsInMonthAsync(string workerId, int month, int year)
+        {
+            // Tổng số ngày có lịch làm
+            var totalDays = await _context.ScheduleDetails
+                .Where(d => d.WorkerId == workerId &&
+                            d.Date.Value.Month == month &&
+                            d.Date.Value.Year == year)
+                .Select(d => d.Date.Value.Date) // lấy phần ngày (bỏ giờ)
+                .Distinct()
+                .CountAsync();
 
+            // Số ngày đã hoàn thành
+            var workedDays = await _context.ScheduleDetails
+                .Where(d => d.WorkerId == workerId &&
+                            d.Status == "Hoàn thành" &&
+                            d.Date.Value.Month == month &&
+                            d.Date.Value.Year== year)
+                .Select(d => d.Date.Value.Date)
+                .Distinct()
+                .CountAsync();
+
+            // Tính phần trăm
+            double percentage = totalDays > 0 ? (workedDays * 100.0 / totalDays) : 0;
+
+            return (workedDays, totalDays, percentage);
+        }
     }
 }

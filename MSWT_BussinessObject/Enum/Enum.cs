@@ -132,5 +132,11 @@ namespace MSWT_BussinessObject.Enum
             HoatDong = 1,
             BaoTri = 2,
         }
+        public enum AlertStatus
+        {
+            ChuaXuLy = 1, // Chưa xử lý
+            DaXuLy = 2, // Đã xử lý
+            DaHuy = 3, // Đã hủy
+        }
     }
 }

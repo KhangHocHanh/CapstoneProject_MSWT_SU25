@@ -126,6 +126,32 @@ namespace MSWT_API.Controllers
             var leaves = await _leaveService.GetLeavesByUser(userId);
             return Ok(leaves);
         }
+        /// <summary>
+        /// Lấy danh sách các ngày nghỉ trong tháng
+        /// </summary>
+        [HttpGet("days-off")]
+        [Authorize]
+        public async Task<IActionResult> GetDaysOffInMonth(int year, int month)
+        {
+            // Lấy tất cả đơn nghỉ đã duyệt trong tháng
+            var leaves = await _leaveService.GetApprovedLeavesInMonth(year, month);
+
+            // Lấy tất cả ngày nghỉ từ StartDate đến EndDate
+            var daysOff = new List<DateOnly>();
+            foreach (var leave in leaves)
+            {
+                var currentDate = leave.StartDate;
+                while (currentDate <= leave.EndDate)
+                {
+                    daysOff.Add(currentDate);
+                    currentDate = currentDate.AddDays(1);
+                }
+            }
+
+            return Ok(new ResponseDTO(Const.SUCCESS_READ_CODE,
+                $"Danh sách ngày nghỉ trong {month}/{year}", daysOff));
+        }
+
 
     }
 }

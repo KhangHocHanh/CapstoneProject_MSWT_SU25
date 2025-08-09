@@ -61,5 +61,22 @@ namespace MSWT_Repositories.Repository
                 .OrderByDescending(l => l.TimeSend)
                 .ToListAsync();
         }
+        public async Task<string?> GetUserIdForTrashBinAtTimeAsync(string trashBinId, DateTime alertTime)
+        {
+            var alertDateOnly = DateOnly.FromDateTime(alertTime);
+
+            return await (
+                from s in _context.Schedules
+                join sd in _context.ScheduleDetails on s.ScheduleId equals sd.ScheduleId
+                where s.TrashBinId == trashBinId
+                      && s.StartDate.HasValue && s.EndDate.HasValue
+                      && s.StartDate.Value <= alertDateOnly
+                      && s.EndDate.Value >= alertDateOnly
+                select sd.WorkerId
+            ).FirstOrDefaultAsync();
+        }
+
+
+
     }
 }
