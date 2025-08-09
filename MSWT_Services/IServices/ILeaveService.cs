@@ -21,6 +21,8 @@ namespace MSWT_Services.IServices
         Task<Leaf?> GetLeaveById(string id);
         Task<bool> DeleteLeave(string id);
         Task<IEnumerable<Leaf>> GetLeavesByUser(string userId);
+        Task<List<Leaf>> GetApprovedLeavesInMonth(int year, int month);
+
 
 
         #endregion

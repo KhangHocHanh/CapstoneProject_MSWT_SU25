@@ -190,5 +190,24 @@ namespace MSWT_API.Controllers
             }
 
         }
+        [HttpGet("my-work-stats")]
+        [Authorize]
+        public async Task<IActionResult> GetMyWorkStats([FromQuery] int month, [FromQuery] int year)
+        {
+            var userId = User.FindFirstValue("User_Id");
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized("Không thể xác định người dùng.");
+
+            var (workedDays, totalDays, percentage) = await _scheduleDetailsService.GetWorkStatsInMonthAsync(userId, month, year);
+
+            return Ok(new
+            {
+                Month = month,
+                Year = year,
+                WorkedDays = workedDays,
+                TotalDays = totalDays,
+                Percentage = Math.Round(percentage, 2)
+            });
+        }
     }
 }

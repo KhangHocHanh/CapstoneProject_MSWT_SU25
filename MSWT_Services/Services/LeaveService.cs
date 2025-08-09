@@ -87,6 +87,15 @@ namespace MSWT_Services.Services
         {
             return await _leafRepository.GetLeavesByUserId(userId);
         }
-
+        public async Task<List<Leaf>> GetApprovedLeavesInMonth(int year, int month)
+        {
+            var allLeaves = await _leafRepository.GetAllAsync();
+            return allLeaves
+                .Where(l => l.ApprovalStatus == ApprovalStatusEnum.DaDuyet.ToVietnamese() &&
+                            l.ApprovalDate.HasValue &&
+                            l.ApprovalDate.Value.Year == year &&
+                            l.ApprovalDate.Value.Month == month)
+                .ToList();
+        }
     }
 }
