@@ -328,7 +328,10 @@ namespace MSWT_Services.Services
         {
             return _scheduleDetailsRepository.GetAverageRatingForMonthAsync(workerId, year, month);
         }
-
+        public async Task<(int workedDays, int totalDays, double percentage)> GetWorkStatsInMonthAsync(string workerId, int month, int year)
+        {
+            return await _scheduleDetailsRepository.GetWorkStatsInMonthAsync(workerId, month, year);
+        }
 
     }
 }

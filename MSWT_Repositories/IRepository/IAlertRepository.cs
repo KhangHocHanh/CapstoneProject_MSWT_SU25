@@ -17,6 +17,7 @@ namespace MSWT_Repositories.IRepository
         Task DeleteAsync(string id);
         Task UpdateAsync(Alert alert);
         Task<IEnumerable<Alert>> GetAlertsByUserId(string userId);
+        Task<string?> GetUserIdForTrashBinAtTimeAsync(string trashBinId, DateTime alertTime);
         #endregion
     }
 }

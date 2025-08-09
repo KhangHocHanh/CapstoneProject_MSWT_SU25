@@ -9,6 +9,8 @@ using MSWT_Services.Services;
 using static MSWT_BussinessObject.Enum.Enum;
 using static MSWT_BussinessObject.RequestDTO.RequestDTO;
 using static MSWT_BussinessObject.ResponseDTO.ResponseDTO;
+using MSWT_BussinessObject.Enum;
+using MSWT_Services;
 
 namespace MSWT_API.Controllers
 {
@@ -54,20 +56,29 @@ namespace MSWT_API.Controllers
         [HttpPost]
         public async Task<ActionResult<Alert>> Create([FromBody] AlertRequestDTO dto)
         {
+            // Kiểm tra xem đã có cảnh báo chưa xử lý cho thùng rác này chưa
+            var existingAlert = await _alertService
+                .GetAlertByTrashBinIdAsync(dto.TrashBinId, AlertStatus.ChuaXuLy.ToDisplayString());
+
+            if (existingAlert != null)
+            {
+                // Đã có thông báo cần xử lý => Không tạo mới
+                return Conflict(new { message = "Thùng rác này đã có thông báo cần xử lý." });
+            }
+
             var newAlert = new Alert
             {
                 AlertId = "AL" + DateTime.UtcNow.Ticks,
                 TrashBinId = dto.TrashBinId,
-                TimeSend = DateTime.UtcNow,
-                Status = "Cần được xử lý",
+                TimeSend = TimeHelper.GetNowInVietnamTime(),
+                Status = AlertStatus.ChuaXuLy.ToDisplayString(),
                 UserId = null
             };
-           
 
             await _alertService.CreateAlertAsync(newAlert);
 
             return CreatedAtAction(nameof(GetById),
-                new { id = newAlert.TrashBinId }, newAlert);
+                new { id = newAlert.AlertId }, newAlert);
         }
         [HttpGet("my-alerts")]
         [Authorize]
