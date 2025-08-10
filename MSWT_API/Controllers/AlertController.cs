@@ -88,7 +88,7 @@ namespace MSWT_API.Controllers
             if (string.IsNullOrEmpty(userId))
                 return Unauthorized("Không thể xác định người dùng.");
 
-            var leaves = await _alertService.GetAlertsByUser(userId);
+            var leaves = await _alertService.GetAllAlertsByUserIdAsync(userId);
             return Ok(leaves);
         }
         [HttpPut("{alertId}/resolve")]

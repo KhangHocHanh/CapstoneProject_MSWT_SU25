@@ -57,6 +57,8 @@ namespace MSWT_Repositories.Repository
         public async Task<IEnumerable<Alert>> GetAlertsByUserId(string userId)
         { 
             return await _context.Alerts
+                .Include(a => a.TrashBin)
+                .ThenInclude(tb => tb.Area)
                 .Where(l => l.UserId == userId)
                 .OrderByDescending(l => l.TimeSend)
                 .ToListAsync();

@@ -136,5 +136,20 @@ namespace MSWT_BussinessObject.ResponseDTO
             public string? SensorName { get; set; } = null!;
 
         }
+        public class AlertTrashBinDTO
+        {
+            public string AlertId { get; set; } = null!;
+
+            public string? TrashBinId { get; set; }
+
+            public DateTime TimeSend { get; set; }
+
+            public DateTime? ResolvedAt { get; set; }
+
+            public string? UserId { get; set; }
+
+            public string? Status { get; set; }
+            public string? AreaName { get; set; }
+        }
     }
 }

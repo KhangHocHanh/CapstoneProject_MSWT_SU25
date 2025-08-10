@@ -85,6 +85,8 @@ namespace MSWT_BussinessObject.Mapper
             CreateMap<AssignmentRequestDTO, Assignment>();
             CreateMap<AlertRequestDTO, Alert>();
             CreateMap<AlertResponseDTO, Alert>();
+            CreateMap<Alert, AlertTrashBinDTO>()
+                .ForMember(dest => dest.AreaName, opt => opt.MapFrom(src => src.TrashBin.Area.AreaName));
 
             CreateMap<Assignment, AssignmentResponseDTO>();
             CreateMap<Restroom, RestroomResponseDTO>()
