@@ -23,6 +23,7 @@ namespace MSWT_Services.IServices
         Task<IEnumerable<Alert>> GetAlertsByUser(string userId);
         Task UpdateAlertStatusAsync(string alertId);
         Task<Alert?> GetAlertByTrashBinIdAsync(string trashBinId, string status);
+        Task<IEnumerable<AlertTrashBinDTO>> GetAllAlertsByUserIdAsync(string userId);
         #endregion
 
     }

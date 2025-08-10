@@ -70,5 +70,10 @@ namespace MSWT_Services.Services
                 .GetAll()
                 .FirstOrDefaultAsync(a => a.TrashBinId == trashBinId && a.Status == status);
         }
+        public async Task<IEnumerable<AlertTrashBinDTO>> GetAllAlertsByUserIdAsync(string userId)
+        {
+            var alerts = await _alertRepository.GetAlertsByUserId(userId);
+            return _mapper.Map<IEnumerable<AlertTrashBinDTO>>(alerts);
+        }
     }
 }
