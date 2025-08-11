@@ -119,11 +119,11 @@ namespace MSWT_API.Controllers
         }
 
         [HttpPut("scheduledetails/rating/{id}")]
-        public async Task<IActionResult> UpdateRating(string id, [FromBody] string rating)
+        public async Task<IActionResult> UpdateRating(string id, [FromBody] ScheduleDetailsUpdateRatingRequestDTO request)
         {
             try
             {
-                var result = await _scheduleDetailsService.UpdateRating(id, rating);
+                var result = await _scheduleDetailsService.UpdateRating(id, request);
                 if (!result)
                     return BadRequest(new { message = "Failed to rate scheduleDetails." });
 

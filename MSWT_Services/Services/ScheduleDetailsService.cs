@@ -26,9 +26,10 @@ namespace MSWT_Services.Services
         private readonly IAssignmentRepository _assignmentRepository;
         private readonly IMapper _mapper;
         private readonly IScheduleDetailRatingRepository _scheduleDetailRatingRepository;
+        private readonly IHolidayRepository _holidayRepository;
         private readonly ICloudinaryService _cloudinary;
 
-        public ScheduleDetailsService(IScheduleDetailsRepository scheduleDetailsRepository, IUserRepository userRepository, IScheduleRepository scheduleRepository, IMapper mapper, IScheduleDetailRatingRepository scheduleDetailRatingRepository, IAssignmentRepository assignmentRepository, ICloudinaryService cloudinary)
+        public ScheduleDetailsService(IScheduleDetailsRepository scheduleDetailsRepository, IUserRepository userRepository, IScheduleRepository scheduleRepository, IMapper mapper, IScheduleDetailRatingRepository scheduleDetailRatingRepository, IAssignmentRepository assignmentRepository, ICloudinaryService cloudinary, IHolidayRepository holidayRepository)
         {
             _scheduleDetailsRepository = scheduleDetailsRepository;
             _userRepository = userRepository;
@@ -37,6 +38,7 @@ namespace MSWT_Services.Services
             _scheduleDetailRatingRepository = scheduleDetailRatingRepository;
             _assignmentRepository = assignmentRepository;
             _cloudinary = cloudinary;
+            _holidayRepository = holidayRepository;
         }
 
         public async Task<List<ScheduleDetailsResponseDTO>> CreateScheduleDetailFromScheduleAsync(string scheduleId, ScheduleDetailsRequestDTO detailDto)
@@ -77,11 +79,21 @@ namespace MSWT_Services.Services
             var startDate = schedule.StartDate.GetValueOrDefault();
             var endDate = schedule.EndDate.GetValueOrDefault();
 
+            var holidayDates = (await _holidayRepository.GetAllHolidaysAsync())
+                .Select(h => DateOnly.FromDateTime(h.Date))
+                .ToHashSet();
+
             var createdDetails = new List<ScheduleDetailsResponseDTO>();
 
             for (var date = startDate; date <= endDate; date = date.AddDays(1))
             {
-                if (date.DayOfWeek == DayOfWeek.Sunday) continue;
+                // Skip Sundays
+                if (date.DayOfWeek == DayOfWeek.Sunday)
+                    continue;
+
+                // Skip holiday dates
+                if (holidayDates.Contains(date))
+                    continue;
 
                 var detail = new ScheduleDetail
                 {
@@ -91,7 +103,7 @@ namespace MSWT_Services.Services
                     WorkerId = detailDto.WorkerId,
                     SupervisorId = schedule.SupervisorId,
                     AssignmentId = detailDto.AssignmentId,
-                    Date = date.ToDateTime(new TimeOnly(0, 0)), // convert DateOnly to DateTime
+                    Date = date.ToDateTime(new TimeOnly(0, 0)),
                     Status = detailDto.Status ?? "Sắp tới",
                     StartTime = schedule.Shift.StartTime,
                     EndTime = schedule.Shift.EndTime,
@@ -102,15 +114,11 @@ namespace MSWT_Services.Services
 
                 await _scheduleDetailsRepository.AddAsync(detail);
 
-                // Add to response list
                 createdDetails.Add(_mapper.Map<ScheduleDetailsResponseDTO>(detail));
             }
 
             return createdDetails;
         }
-
-
-
 
 
         public async Task DeleteSchedule(string id)
@@ -205,7 +213,7 @@ namespace MSWT_Services.Services
         }
 
 
-        public async Task<bool> UpdateRating(string id, string rating)
+        public async Task<bool> UpdateRating(string id, ScheduleDetailsUpdateRatingRequestDTO request)
         {
             try
             {
@@ -213,7 +221,8 @@ namespace MSWT_Services.Services
                 if (scheduleDetail == null)
                     throw new Exception("ScheduleDetail not found.");
 
-                scheduleDetail.Rating = rating.Trim();
+                scheduleDetail.Rating = request.Rating.ToString().TrimEnd();
+                scheduleDetail.Comment = request.Comment;
 
                 await _scheduleDetailsRepository.UpdateAsync(scheduleDetail);
                 return true;

@@ -127,6 +127,7 @@ builder.Services.AddScoped<ISensorBinRepository, SensorBinRepository>();
 builder.Services.AddScoped<IScheduleDetailRatingRepository, ScheduleDetailRatingRepository>();
 builder.Services.AddScoped<IShiftSwapRepository, ShiftSwapRepository>();
 builder.Services.AddScoped<IAttendanceRecordRepository, AttendanceRecordRepository>();
+builder.Services.AddScoped<IHolidayRepository, HolidayRepository>();
 
 // Đăng ký services
 builder.Services.AddScoped<IUserService, UserService>();
@@ -150,6 +151,7 @@ builder.Services.AddScoped<IShiftSwapService, ShiftSwapService>();
 builder.Services.AddHostedService<ScheduleDetailsStatusUpdateService>();
 builder.Services.AddHostedService<UserStatusUpdateService>();
 builder.Services.AddScoped<IAttendanceRecordService, AttendanceRecordService>();
+builder.Services.AddScoped<IHolidayService, HolidayService>();
 
 
 builder.Services.Configure<CloudinarySettings>(
