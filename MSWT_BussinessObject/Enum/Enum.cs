@@ -87,7 +87,7 @@ namespace MSWT_BussinessObject.Enum
         {
             DaGui =1, // Đã gửi
             DangXuLy = 2, // Đang xử lý
-            DaHoanThanh = 3, // Đã hoàn thành
+            DaXuLy = 3, // Đã hoàn thành
         }
 
         /// <summary>Trạng thái Chi tiết công việc</summary>

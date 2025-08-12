@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using MSWT_BussinessObject.Model;
 using MSWT_BussinessObject.Enum;
 using static MSWT_BussinessObject.Enum.Enum;
+using MSWT_Services;
 
 public class LeaveStatusUpdateService : BackgroundService
 {
@@ -30,7 +31,7 @@ public class LeaveStatusUpdateService : BackgroundService
         using var scope = _serviceProvider.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<SmartTrashBinandCleaningStaffManagementContext>();
 
-        var today = DateOnly.FromDateTime(DateTime.Now);
+        var today = DateOnly.FromDateTime(TimeHelper.GetNowInVietnamTime());
 
         // 1. Những đơn bắt đầu hôm nay → set trạng thái nghỉ phép
         var startingLeaves = await db.Leaves
@@ -56,7 +57,7 @@ public class LeaveStatusUpdateService : BackgroundService
         {
             if (leave.Worker != null)
             {
-                leave.Worker.Status = UserStatusHelper.ToStringStatus(UserStatusEnum.Trong);
+                leave.Worker.Status = UserStatusHelper.ToStringStatus(UserStatusEnum.HoatDong);
             }
         }
 

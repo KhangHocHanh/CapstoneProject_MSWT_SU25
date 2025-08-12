@@ -9,6 +9,7 @@ using MSWT_Services.IServices;
 using static MSWT_BussinessObject.RequestDTO.RequestDTO;
 using static MSWT_BussinessObject.Enum.Enum;
 using MSWT_BussinessObject.Enum;
+using MSWT_Services;
 
 namespace MSWT_API.Controllers
 {
@@ -38,7 +39,7 @@ namespace MSWT_API.Controllers
             var leave = _mapper.Map<Leaf>(dto);
             leave.LeaveId = "LV" + DateTime.Now.Ticks;
             leave.WorkerId = userId;
-            leave.RequestDate = DateOnly.FromDateTime(DateTime.Now);
+            leave.RequestDate = DateOnly.FromDateTime(TimeHelper.GetNowInVietnamTime());
             leave.TotalDays = (dto.EndDate.DayNumber - dto.StartDate.DayNumber) + 1;
 
             await _leaveService.AddLeave(leave);
@@ -55,10 +56,18 @@ namespace MSWT_API.Controllers
                 return NotFound(new ResponseDTO(Const.FAIL_READ_CODE, "Không tìm thấy đơn nghỉ phép."));
             }
 
+            // Nếu trạng thái hiện tại đã được duyệt hoặc từ chối -> không cho phép cập nhật nữa
+            if (leave.ApprovalStatus == ApprovalStatusEnum.DaDuyet.ToVietnamese() ||
+                leave.ApprovalStatus == ApprovalStatusEnum.TuChoi.ToVietnamese())
+            {
+                return BadRequest(new ResponseDTO(Const.FAIL_UPDATE_CODE, "Đơn nghỉ phép đã được xử lý, không thể thay đổi trạng thái."));
+            }
+
+            // Nếu trạng thái hiện tại là Chưa duyệt, cho phép chuyển sang Đã duyệt hoặc Từ chối
             var currentUserId = User.FindFirstValue("User_Id");
 
             leave.ApprovalStatus = dto.ApprovalStatus.ToVietnamese();
-            leave.ApprovalDate = DateOnly.FromDateTime(DateTime.Now);
+            leave.ApprovalDate = DateOnly.FromDateTime(TimeHelper.GetNowInVietnamTime());
             leave.ApprovedBy = currentUserId;
             leave.Note = dto.Note;
 

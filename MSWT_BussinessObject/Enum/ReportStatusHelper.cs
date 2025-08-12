@@ -35,7 +35,7 @@ namespace MSWT_BussinessObject.Enum
             {
                 ReportStatus.DaGui => "Đã gửi",
                 ReportStatus.DangXuLy => "Đang xử lý",
-                ReportStatus.DaHoanThanh => "Đã hoàn thành",
+                ReportStatus.DaXuLy => "Đã xử lý",
                 _ => "Không xác định"
             };
         }
@@ -45,7 +45,7 @@ namespace MSWT_BussinessObject.Enum
             {
                 "Đã gửi" => ReportStatus.DaGui,
                 "Đang xử lý" => ReportStatus.DangXuLy,
-                "Đã hoàn thành" => ReportStatus.DaHoanThanh,
+                "Đã xử lý" => ReportStatus.DaXuLy,
                 _ => throw new ArgumentException("Trạng thái không hợp lệ")
             };
         }
@@ -55,7 +55,7 @@ namespace MSWT_BussinessObject.Enum
             return (current, target) switch
             {
                 (ReportStatus.DaGui, ReportStatus.DangXuLy) => true,
-                (ReportStatus.DangXuLy, ReportStatus.DaHoanThanh) => true,
+                (ReportStatus.DangXuLy, ReportStatus.DaXuLy) => true,
                 _ => false
             };
         }

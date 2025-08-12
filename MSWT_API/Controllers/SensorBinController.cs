@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MSWT_BussinessObject.Enum;
 using MSWT_BussinessObject.Model;
+using MSWT_Services;
 using MSWT_Services.IServices;
 using MSWT_Services.Services;
 using static MSWT_BussinessObject.Enum.Enum;
@@ -91,12 +92,12 @@ namespace MSWT_API.Controllers
         [HttpPost("measure")]
         public async Task<IActionResult> MeasureFillLevel([FromBody] SensorMeasurementDto dto)
         {
-            var sensorBin = await _sensorBinService.GetSensorBinById(dto.SensorId);
+            var sensorBin = await _sensorBinService.GetSensorBinById(dto.BinId);
             if (sensorBin == null)
-                return NotFound(new { message = "Sensor không tồn tại" });
+                return NotFound(new { message = "Thùng rác không tồn tại" });
 
             sensorBin.FillLevel = dto.FillLevel;
-            sensorBin.MeasuredAt = DateTime.UtcNow;
+            sensorBin.MeasuredAt = TimeHelper.GetNowInVietnamTime();
             await _sensorBinService.UpdateSensorBin(sensorBin);
 
             return Ok(new
