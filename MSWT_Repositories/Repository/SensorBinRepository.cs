@@ -37,7 +37,7 @@ namespace MSWT_Repositories.Repository
             return await _context.SensorBins
                 .Include(s => s.Bin)
                 .Include(s => s.Sensor)
-                .FirstOrDefaultAsync(s => s.SensorId == id);
+                .FirstOrDefaultAsync(s => s.BinId == id);
         }
 
         async Task<IEnumerable<SensorBin>> ISensorBinRepository.GetAllAsync()

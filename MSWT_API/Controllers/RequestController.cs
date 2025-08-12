@@ -10,6 +10,7 @@ using MSWT_BussinessObject.ResponseDTO;
 using static MSWT_BussinessObject.RequestDTO.RequestDTO;
 using MSWT_BussinessObject.Enum;
 using static MSWT_BussinessObject.Enum.Enum;
+using MSWT_Services;
 
 
 
@@ -71,13 +72,13 @@ namespace MSWT_API.Controllers
             var userId = User.FindFirstValue("User_Id");
 
             var allRequests = await _requestService.GetAllRequests();
-            var nextId = "RQ" + DateTime.UtcNow.Ticks;
+            var nextId = "RQ" + TimeHelper.GetNowInVietnamTime().Ticks;
 
             var request = _mapper.Map<Request>(dto);
             request.RequestId = nextId;
             request.WorkerId = userId;
             request.Status = RequestStatusHelper.ToStringStatus(RequestStatusEnum.DaGui);
-            request.RequestDate = dto.RequestDate ?? DateTime.Now; // Ngày gửi yêu cầu, nếu không có thì lấy ngày hiện tại
+            request.RequestDate = dto.RequestDate ?? TimeHelper.GetNowInVietnamTime(); // Ngày gửi yêu cầu, nếu không có thì lấy ngày hiện tại
             request.ResolveDate = null; // Chưa giải quyết
 
             await _requestService.AddRequest(request);
@@ -111,10 +112,10 @@ namespace MSWT_API.Controllers
 
             // Nếu chuyển sang Đã xử lý → set ResolveDate
             if (dto.Status == RequestStatusEnum.DaXuLy && request.ResolveDate is null)
-                request.ResolveDate = DateTime.Now;
+                request.ResolveDate = TimeHelper.GetNowInVietnamTime();
             // Nếu chuyển sang Đã xử lý → set ResolveDate
             if (dto.Status == RequestStatusEnum.DaHuy && request.ResolveDate is null)
-                request.ResolveDate = DateTime.Now;
+                request.ResolveDate = TimeHelper.GetNowInVietnamTime();
 
             await _requestService.UpdateRequest(request);
 
@@ -135,7 +136,7 @@ namespace MSWT_API.Controllers
                 return BadRequest(new ResponseDTO(Const.ERROR_EXCEPTION, "Không thể hủy Request đã được xử lý"));
 
             request.Status = RequestStatusHelper.ToStringStatus(RequestStatusEnum.DaHuy);
-            request.ResolveDate = DateTime.Now; // Cập nhật ngày hủy
+            request.ResolveDate = TimeHelper.GetNowInVietnamTime(); // Cập nhật ngày hủy
 
             await _requestService.UpdateRequest(request);
 

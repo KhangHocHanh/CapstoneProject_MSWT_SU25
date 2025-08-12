@@ -29,7 +29,7 @@ namespace MSWT_Services.Services
 
         public async Task<(bool IsSuccess, string Message)> CheckInAsync(string userId)
         {
-            var today = DateOnly.FromDateTime(DateTime.Today);
+            var today = DateOnly.FromDateTime(TimeHelper.GetNowInVietnamTime());
             var now = TimeHelper.GetNowInVietnamTime();
 
             // Lấy ca làm hôm nay từ ScheduleDetail
@@ -78,7 +78,7 @@ namespace MSWT_Services.Services
 
         public async Task<(bool IsSuccess, string Message)> CheckOutAsync(string userId)
         {
-            var today = DateOnly.FromDateTime(DateTime.Today);
+            var today = DateOnly.FromDateTime(TimeHelper.GetNowInVietnamTime());
             var now = TimeHelper.GetNowInVietnamTime();
 
             var scheduleDetail = await _scheduleDetailRepo
@@ -88,7 +88,7 @@ namespace MSWT_Services.Services
                 return (false, "Hôm nay bạn không có ca làm.");
 
             var endTime = scheduleDetail.EndTime.Value; // TimeOnly
-            var currentTime = TimeOnly.FromDateTime(now);
+            var currentTime = TimeOnly.FromDateTime(TimeHelper.GetNowInVietnamTime());
 
             var record = await _repo.GetByUserAndDateAsync(userId, today);
             if (record == null || record.Status == "Chưa check in")
@@ -123,7 +123,7 @@ namespace MSWT_Services.Services
         }
         public async Task GenerateDailyRecordsAsync()
         {
-            var today = DateOnly.FromDateTime(DateTime.Today);
+            var today = DateOnly.FromDateTime(TimeHelper.GetNowInVietnamTime());
             var now = TimeHelper.GetNowInVietnamTime();
 
             var allUsers = await _userRepo.GetAllAsync();

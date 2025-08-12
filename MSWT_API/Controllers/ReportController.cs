@@ -126,8 +126,8 @@ namespace MSWT_API.Controllers
             var currentStatus = ReportStatusHelper.ToEnum(report.Status ?? "");
             var newStatus = dto.NewStatus;
 
-            if (currentStatus == ReportStatus.DaHoanThanh)
-                return BadRequest("Báo cáo đã hoàn thành. Không thể cập nhật thêm.");
+            if (currentStatus == ReportStatus.DaXuLy)
+                return BadRequest("Báo cáo đã xử lý. Không thể cập nhật thêm.");
 
             if (!ReportStatusHelper.CanUpdateStatus(currentStatus, newStatus))
                 return BadRequest($"Không thể chuyển trạng thái từ '{report.Status}' sang '{newStatus.ToVietnamese()}'.");

@@ -94,7 +94,7 @@ namespace MSWT_BussinessObject.ResponseDTO
         }
         public class SensorMeasurementDto
         {
-            public string SensorId { get; set; } = null!;
+            public string BinId { get; set; } = null!;
             public float FillLevel { get; set; }
         }
         public class ShiftSwapRespondDTO
