@@ -14,6 +14,14 @@ namespace MSWT_API.Controllers
         {
             _attendanceService = service;
         }
+        [HttpPost("monthly")]
+        public async Task<IActionResult> CreateMonthlyAttendanceRecords([FromBody] CreateMonthlyAttendanceRequest request)
+        {
+            var result = await _attendanceService.CreateMonthlyAttendanceRecordsAsync(request);
+            if (!result.IsSuccess)
+                return BadRequest(result.Message);
+            return Ok(result.Message);
+        }
         [HttpGet("my-records")]
         public async Task<IActionResult> GetMyAttendanceRecords()
         {
@@ -69,5 +77,21 @@ namespace MSWT_API.Controllers
 
             return Ok(result.Message);
         }
+        [HttpPost("add-new-employee")]
+        public async Task<IActionResult> AddNewEmployeeAttendance([FromBody] AddNewEmployeeAttendanceRequest request)
+        {
+            var result = await _attendanceService.AddNewEmployeeAttendanceAsync(request);
+            if (!result.IsSuccess)
+                return BadRequest(result.Message);
+            return Ok(result.Message);
+        }
+        [HttpGet("export")]
+        public async Task<IActionResult> ExportMonthlyAttendance([FromQuery] int year, [FromQuery] int month)
+        {
+            var fileBytes = await _attendanceService.ExportMonthlyAttendanceAsync(year, month);
+            var fileName = $"BaoCaoDiemDanh_{month:D2}_{year}.xlsx";
+            return File(fileBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+        }
+
     }
 }

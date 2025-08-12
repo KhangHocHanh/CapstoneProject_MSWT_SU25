@@ -181,6 +181,15 @@ namespace MSWT_BussinessObject.RequestDTO
             [Required(ErrorMessage = "Xác nhận mật khẩu mới không được để trống")]  
             public string ConfirmNewPassword { get; set; } = null!;
         }
+        public class ChangePasswordByPhoneNumberDto
+        {
+            [Required(ErrorMessage = "Số điện thoại không được để trống")]
+            public string PhoneNumber { get; set; } = null!;
+            [Required(ErrorMessage = "Mật khẩu mới không được để trống")]
+            public string NewPassword { get; set; } = null!;
+            [Required(ErrorMessage = "Xác nhận mật khẩu mới không được để trống")]
+            public string ConfirmNewPassword { get; set; } = null!;
+        }
 
 
         #endregion
@@ -267,8 +276,36 @@ namespace MSWT_BussinessObject.RequestDTO
         {
             public string EmployeeId { get; set; } = null!;
         }
+        // DTO
+        public class CreateMonthlyAttendanceRequest
+        {
+            public int Year { get; set; }
+            public int Month { get; set; }
+            public List<DateOnly> NgayNghi { get; set; } = new();
+        }
+        public class AddNewEmployeeAttendanceRequest
+        {
+            public string UserId { get; set; }
+            public DateOnly StartDate { get; set; }
+            public List<DateOnly> NgayNghi { get; set; } = new();
+        }
+
 
         #endregion
+        #region Reset Password
+        public class SendOtpRequest
+        {
+            public string PhoneNumber { get; set; }
+        }
+
+        public class VerifyOtpRequest
+        {
+            public string PhoneNumber { get; set; }
+            public string OtpCode { get; set; }
+        }
+
+        #endregion
+
 
     }
 }
