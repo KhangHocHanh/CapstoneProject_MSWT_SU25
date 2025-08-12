@@ -141,8 +141,8 @@ namespace MSWT_Services.Services
                 return new ResponseDTO(Const.FAIL_READ_CODE, "Không tìm thấy người dùng.");
 
             var statusEnum = UserStatusHelper.ToEnum(user.Status);
-            if (statusEnum != UserStatusEnum.Trong)
-                return new ResponseDTO(Const.FAIL_UPDATE_CODE, "Chỉ có thể chuyển trạng thái từ 'Trống lịch' sang 'Thôi việc'.");
+            if (statusEnum != UserStatusEnum.HoatDong)
+                return new ResponseDTO(Const.FAIL_UPDATE_CODE, "Chỉ có thể chuyển trạng thái từ 'Hoạt động' sang 'Thôi việc'.");
 
             user.Status = UserStatusHelper.ToStringStatus(UserStatusEnum.ThoiViec);
             user.ReasonForLeave = note;
@@ -226,6 +226,7 @@ namespace MSWT_Services.Services
         public Task<User> GetUserByPhoneAsync(string phoneNumber)
         {
             return _userRepository.GetByPhoneAsync(phoneNumber);
+        }
 
         public async Task<IEnumerable<UserWithRoleDTO>> GetUnassignedWorkersAsync()
         {

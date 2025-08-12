@@ -56,7 +56,7 @@ namespace MSWT_API.Controllers
 
             var newUser = _mapper.Map<User>(dto);
             newUser.UserId = "US" + DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-            newUser.CreateAt = DateOnly.FromDateTime(DateTime.Now);
+            newUser.CreateAt = DateOnly.FromDateTime(TimeHelper.GetNowInVietnamTime());
             newUser.Status = UserStatusHelper.ToStringStatus(UserStatusEnum.ChuaXacThuc);
 
             await _userService.AddUser(newUser);
