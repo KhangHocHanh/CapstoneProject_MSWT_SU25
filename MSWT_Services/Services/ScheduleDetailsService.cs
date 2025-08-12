@@ -79,8 +79,12 @@ namespace MSWT_Services.Services
             var startDate = schedule.StartDate.GetValueOrDefault();
             var endDate = schedule.EndDate.GetValueOrDefault();
 
-            var holidayDates = (await _holidayRepository.GetAllHolidaysAsync())
-                .Select(h => DateOnly.FromDateTime(h.Date))
+            // load holidays once
+            var holidays = await _holidayRepository.GetAllHolidaysAsync();
+
+            // build a HashSet<int> key = month*100 + day for quick lookup
+            var holidayKeys = holidays
+                .Select(h => h.Date.Month * 100 + h.Date.Day)
                 .ToHashSet();
 
             var createdDetails = new List<ScheduleDetailsResponseDTO>();
@@ -91,8 +95,9 @@ namespace MSWT_Services.Services
                 if (date.DayOfWeek == DayOfWeek.Sunday)
                     continue;
 
-                // Skip holiday dates
-                if (holidayDates.Contains(date))
+                // Skip holiday month/day (recurring)
+                var key = date.Month * 100 + date.Day;
+                if (holidayKeys.Contains(key))
                     continue;
 
                 var detail = new ScheduleDetail
@@ -113,9 +118,9 @@ namespace MSWT_Services.Services
                 };
 
                 await _scheduleDetailsRepository.AddAsync(detail);
-
                 createdDetails.Add(_mapper.Map<ScheduleDetailsResponseDTO>(detail));
             }
+
 
             return createdDetails;
         }

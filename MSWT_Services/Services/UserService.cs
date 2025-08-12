@@ -221,6 +221,25 @@ namespace MSWT_Services.Services
             return true;
         }
 
+        public async Task<IEnumerable<UserWithRoleDTO>> GetUnassignedWorkersAsync()
+        {
+            var users = await _userRepository.GetAllAsync();
+
+            var filteredUsers = users
+                .Where(u => u.RoleId == "RL04" && u.IsAssigned == "No");
+
+            return _mapper.Map<IEnumerable<UserWithRoleDTO>>(filteredUsers);
+        }
+
+        public async Task<IEnumerable<UserWithRoleDTO>> GetUnassignedSupervisorsAsync()
+        {
+            var users = await _userRepository.GetAllAsync();
+
+            var filteredUsers = users
+                .Where(u => u.RoleId == "RL03" && u.IsAssigned == "No");
+
+            return _mapper.Map<IEnumerable<UserWithRoleDTO>>(filteredUsers);
+        }
 
     }
 }
