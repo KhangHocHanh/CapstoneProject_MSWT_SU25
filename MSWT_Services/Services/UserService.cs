@@ -29,8 +29,9 @@ namespace MSWT_Services.Services
         private readonly AutoMapper.IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ICloudinaryService _cloudinary;
+        private readonly IScheduleDetailsRepository _scheduleDetailsRepository;
 
-        public UserService(IUserRepository userRepository, IRoleRepository roleRepository, IHttpContextAccessor httpContextAccessor, IJWTService jWTService, AutoMapper.IMapper mapper, IUnitOfWork unitOfWork, ICloudinaryService cloudinary)
+        public UserService(IUserRepository userRepository, IRoleRepository roleRepository, IHttpContextAccessor httpContextAccessor, IJWTService jWTService, AutoMapper.IMapper mapper, IUnitOfWork unitOfWork, ICloudinaryService cloudinary, IScheduleDetailsRepository scheduleDetailsRepository)
         {
             _userRepository = userRepository;
             _roleRepository = roleRepository;
@@ -39,6 +40,7 @@ namespace MSWT_Services.Services
             _mapper = mapper;
             _unitOfWork = unitOfWork;
             _cloudinary = cloudinary;
+            _scheduleDetailsRepository = scheduleDetailsRepository;
         }
 
         #region CRUD User
@@ -220,9 +222,30 @@ namespace MSWT_Services.Services
             return true;
         }
 
+
         public Task<User> GetUserByPhoneAsync(string phoneNumber)
         {
             return _userRepository.GetByPhoneAsync(phoneNumber);
+
+        public async Task<IEnumerable<UserWithRoleDTO>> GetUnassignedWorkersAsync()
+        {
+            var users = await _userRepository.GetAllAsync();
+
+            var filteredUsers = users
+                .Where(u => u.RoleId == "RL04" && u.IsAssigned == "No");
+
+            return _mapper.Map<IEnumerable<UserWithRoleDTO>>(filteredUsers);
+        }
+
+        public async Task<IEnumerable<UserWithRoleDTO>> GetUnassignedSupervisorsAsync()
+        {
+            var users = await _userRepository.GetAllAsync();
+
+            var filteredUsers = users
+                .Where(u => u.RoleId == "RL03" && u.IsAssigned == "No");
+
+            return _mapper.Map<IEnumerable<UserWithRoleDTO>>(filteredUsers);
+
         }
 
         public Task UpdatePasswordAsync(string userId, string newPassword)

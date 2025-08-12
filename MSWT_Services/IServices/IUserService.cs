@@ -37,7 +37,12 @@ namespace MSWT_Services.IServices
         Task<IEnumerable<UserWithRoleDTO>> GetAllUserWithRoleAsync();
 
         Task<string> UpdateAvatarUrl(string id, IFormFile avatarFile);
+
         Task<User> GetUserByPhoneAsync(string phoneNumber);
         Task UpdatePasswordAsync(string userId, string newPassword);
+
+        Task<IEnumerable<UserWithRoleDTO>> GetUnassignedWorkersAsync();
+        Task<IEnumerable<UserWithRoleDTO>> GetUnassignedSupervisorsAsync();
+
     }
 }

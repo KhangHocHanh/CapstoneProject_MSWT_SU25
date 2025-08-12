@@ -52,6 +52,7 @@ public partial class SmartTrashBinandCleaningStaffManagementContext : DbContext
     public virtual DbSet<ScheduleDetailRating> ScheduleDetailRatings { get; set; }
     public virtual DbSet<ShiftSwapRequest> ShiftSwapRequests { get; set; }
     public virtual DbSet<AttendanceRecord> AttendanceRecords { get; set; }
+    public virtual DbSet<Holiday> Holidays { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -498,6 +499,7 @@ public partial class SmartTrashBinandCleaningStaffManagementContext : DbContext
                 .OnDelete(DeleteBehavior.Restrict)
                 .HasConstraintName("FK_ShiftSwapRequest_TargetUser");
         });
+
         modelBuilder.Entity<AttendanceRecord>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK_AttendanceRecord");
@@ -537,6 +539,12 @@ public partial class SmartTrashBinandCleaningStaffManagementContext : DbContext
                 .HasConstraintName("FK_AttendanceRecords_Users");
         });
 
+        modelBuilder.Entity<Holiday>(entity =>
+        {
+            entity.HasKey(e => e.HolidayId).HasName("Holidays_PK");
+            entity.Property(e => e.HolidayName).HasMaxLength(100);
+            entity.Property(e => e.Date).HasColumnType("datetime");
+        });
     }
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);

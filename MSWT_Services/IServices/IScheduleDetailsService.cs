@@ -21,7 +21,7 @@ namespace MSWT_Services.IServices
 
         Task<bool> AddWorkerToSchedule(string id, string workerId);
         Task<bool> AddSupervisorToSchedule(string id, string supervisorId);
-        Task<bool> UpdateRating(string id, string rating);
+        Task<bool> UpdateRating(string id, ScheduleDetailsUpdateRatingRequestDTO request);
         Task<IEnumerable<ScheduleDetailsResponseDTO>> SearchScheduleDetailsByUserIdAsync(string userId);
         Task<bool> AddAssignmentToSchedule(string id, string assignmentId);
         Task<bool> CreateDailyRatingAsync(string userId, ScheduleDetailRatingCreateDTO dto);
