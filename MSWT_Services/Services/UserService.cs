@@ -226,6 +226,7 @@ namespace MSWT_Services.Services
         public Task<User> GetUserByPhoneAsync(string phoneNumber)
         {
             return _userRepository.GetByPhoneAsync(phoneNumber);
+        }
 
         public async Task<IEnumerable<UserWithRoleDTO>> GetUnassignedWorkersAsync()
         {
