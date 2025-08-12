@@ -143,5 +143,19 @@ namespace MSWT_API.Controllers
                 var result = await _userService.UpdateAvatarUrl(id, avatarFile);
                 return Ok(result);   
         }
+
+        [HttpGet("unassigned-workers")]
+        public async Task<IActionResult> GetUnassignedWorkers()
+        {
+            var users = await _userService.GetUnassignedWorkersAsync();
+            return Ok(users);
+        }
+
+        [HttpGet("unassigned-supervisors")]
+        public async Task<IActionResult> GetUnassignedSupervisors()
+        {
+            var users = await _userService.GetUnassignedSupervisorsAsync();
+            return Ok(users);
+        }
     }
 }

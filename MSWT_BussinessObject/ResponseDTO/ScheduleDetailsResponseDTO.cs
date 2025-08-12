@@ -27,6 +27,8 @@ namespace MSWT_BussinessObject.ResponseDTO
 
         public string? Rating { get; set; }
 
+        public string? Comment { get; set; }
+
         public string? WorkerId { get; set; }
 
         public string? WorkerName { get; set; }

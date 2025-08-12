@@ -33,6 +33,8 @@ public partial class ScheduleDetail
 
     public string? AssignmentId { get; set; }
 
+    public string? Comment { get; set; }
+
     public virtual User? BackupForUser { get; set; }
 
     public virtual Schedule? Schedule { get; set; }
