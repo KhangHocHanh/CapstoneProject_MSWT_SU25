@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using MSWT_BussinessObject;
 using MSWT_BussinessObject.Enum;
 using MSWT_BussinessObject.Model;
+using MSWT_Services;
 using MSWT_Services.IServices;
 using static MSWT_BussinessObject.Enum.Enum;
 using static MSWT_BussinessObject.RequestDTO.RequestDTO;
@@ -131,6 +132,16 @@ namespace MSWT_API.Controllers
                 return Unauthorized("Không xác định được người dùng.");
 
             var result = await _userService.ChangePasswordAsync(userId, dto);
+            if (result.Status != Const.SUCCESS_UPDATE_CODE)
+                return BadRequest(result);
+
+            return Ok(result);
+        }
+        [HttpPut("change-password-by-phoneNumber")]
+        public async Task<IActionResult> ChangePasswordByPhoneNumber([FromBody] ChangePasswordByPhoneNumberDto dto)
+        {
+
+            var result = await _userService.ChangePasswordByPhoneNumberAsync(dto);
             if (result.Status != Const.SUCCESS_UPDATE_CODE)
                 return BadRequest(result);
 

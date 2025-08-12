@@ -62,5 +62,23 @@ namespace MSWT_Repositories.Repository
         {
             throw new NotImplementedException();
         }
+        public async Task<bool> ExistsByUserAndDateAsync(string userId, DateOnly date)
+        {
+            return await _context.AttendanceRecords
+                .AnyAsync(r => r.EmployeeId == userId && r.AttendanceDate == date);
+        }
+        public async Task<bool> HasMonthlyAttendanceRecordsAsync(int year, int month)
+        {
+            return await _context.AttendanceRecords.AnyAsync(r => r.AttendanceDate.Value.Year == year && r.AttendanceDate.Value.Month == month);
+        }
+        public async Task<List<AttendanceRecord>> GetRecordsByMonthAsync(int year, int month)
+        {
+            return await _context.AttendanceRecords
+                .Include(r => r.User)
+                .Where(r => r.AttendanceDate.Value.Year == year && r.AttendanceDate.Value.Month == month)
+                .OrderBy(r => r.EmployeeId).ThenBy(r => r.AttendanceDate)
+                .ToListAsync();
+        }
+
     }
 }

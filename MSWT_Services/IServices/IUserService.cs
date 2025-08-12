@@ -28,6 +28,7 @@ namespace MSWT_Services.IServices
 
         Task<ResponseDTO> Login(LoginRequestDTO userDto);
         Task<ResponseDTO> ChangePasswordAsync(string userId, ChangePasswordDto dto);
+        Task<ResponseDTO> ChangePasswordByPhoneNumberAsync(ChangePasswordByPhoneNumberDto dto);
 
         //Task<string> GoogleLoginAsync(string idToken);
         Task RecoverUser(string id);
@@ -36,5 +37,7 @@ namespace MSWT_Services.IServices
         Task<IEnumerable<UserWithRoleDTO>> GetAllUserWithRoleAsync();
 
         Task<string> UpdateAvatarUrl(string id, IFormFile avatarFile);
+        Task<User> GetUserByPhoneAsync(string phoneNumber);
+        Task UpdatePasswordAsync(string userId, string newPassword);
     }
 }

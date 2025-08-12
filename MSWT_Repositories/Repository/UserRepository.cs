@@ -103,5 +103,24 @@ namespace MSWT_Repositories.Repository
                 .Include(u => u.Role) // Ensure role is loaded if needed
                 .FirstOrDefaultAsync(u => u.Phone == phone);
         }
+
+        public Task<User> GetUserByPhone(string phoneNumber)
+        {
+            return _context.Users
+                .FirstOrDefaultAsync(u => u.Phone == phoneNumber);
+        }
+
+        public async Task UpdatePasswordAsync(string userId, string newPassword)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.UserId == userId);
+            if (user == null)
+                throw new Exception("Không tìm thấy người dùng");
+
+            // Gán mật khẩu mới (plain text - chỉ nên dùng khi test)
+            user.Password = newPassword;
+
+            _context.Users.Update(user);
+            await _context.SaveChangesAsync();
+        }
     }
 }

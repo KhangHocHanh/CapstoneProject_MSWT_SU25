@@ -15,5 +15,8 @@ namespace MSWT_Repositories.IRepository
         Task<AttendanceRecord?> GetByUserAndDateAsync(string userId, DateOnly date);
         Task<AttendanceRecord?> GetByIdAsync(string id);
         Task<List<AttendanceRecord>> GetAllByDateAsync(DateOnly date);
+        Task<bool> ExistsByUserAndDateAsync(string userId, DateOnly date);
+        Task<bool> HasMonthlyAttendanceRecordsAsync(int year, int month);
+        Task<List<AttendanceRecord>> GetRecordsByMonthAsync(int year, int month);
     }
 }

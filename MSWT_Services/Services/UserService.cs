@@ -6,6 +6,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using CloudinaryDotNet;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.AspNetCore.Http;
 using MSWT_BussinessObject;
 using MSWT_BussinessObject.Enum;
@@ -178,7 +179,7 @@ namespace MSWT_Services.Services
 
 
             // Cập nhật mật khẩu
-            user.Password = dto.NewPassword; // Nếu có hash: Hash(dto.NewPassword)
+            user.Password = dto.NewPassword; 
             await _userRepository.UpdateAsync(user);
             await _unitOfWork.CommitAsync();
 
@@ -219,6 +220,40 @@ namespace MSWT_Services.Services
             return true;
         }
 
+        public Task<User> GetUserByPhoneAsync(string phoneNumber)
+        {
+            return _userRepository.GetByPhoneAsync(phoneNumber);
+        }
 
+        public Task UpdatePasswordAsync(string userId, string newPassword)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<ResponseDTO> ChangePasswordByPhoneNumberAsync( ChangePasswordByPhoneNumberDto dto)
+        {
+            var user = await _userRepository.GetByPhoneAsync(dto.PhoneNumber);
+            if (user == null)
+                return new ResponseDTO(Const.FAIL_READ_CODE, "Không tìm thấy người dùng.");
+
+            // Kiểm tra mật khẩu cũ
+            if (user.Phone != dto.PhoneNumber) 
+                return new ResponseDTO(Const.FAIL_UPDATE_CODE, "Số điện thoại chưa đăng ký người dùng.");
+
+            // Kiểm tra mật khẩu mới khớp nhau
+            if (dto.NewPassword != dto.ConfirmNewPassword)
+                return new ResponseDTO(Const.FAIL_UPDATE_CODE, "Mật khẩu mới không khớp nhau.");
+            // Kiểm tra điều kiện mật khẩu mới
+            if (!IsValidPassword(dto.NewPassword))
+                return new ResponseDTO(Const.FAIL_UPDATE_CODE, "Mật khẩu phải bắt đầu bằng chữ hoa, có số và tối thiểu 7 ký tự.");
+
+
+            // Cập nhật mật khẩu
+            user.Password = dto.NewPassword;
+            await _userRepository.UpdateAsync(user);
+            await _unitOfWork.CommitAsync();
+
+            return new ResponseDTO(Const.SUCCESS_UPDATE_CODE, "Đổi mật khẩu thành công.");
+        }
     }
 }
