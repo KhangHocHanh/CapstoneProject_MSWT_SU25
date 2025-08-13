@@ -182,6 +182,27 @@ namespace MSWT_BussinessObject.ResponseDTO
             public DateTime? CreatedAt { get; set; }
             public DateTime? UpdatedAt { get; set; }
         }
+        public class RequestResponseDTO
+        {
+            public string RequestId { get; set; } = null!;
+
+            public string? WorkerId { get; set; }
+            public string? WorkerName { get; set; }
+
+            public string? Description { get; set; }
+
+            public string? Status { get; set; }
+
+            public DateTime? RequestDate { get; set; }
+
+            public DateTime? ResolveDate { get; set; }
+
+            public string? Location { get; set; }
+
+            public string? SupervisorId { get; set; }
+
+            public string? TrashBinId { get; set; }
+        }
 
     }
 }
