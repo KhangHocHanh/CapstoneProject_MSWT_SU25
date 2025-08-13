@@ -56,7 +56,7 @@ namespace MSWT_Services.Services
 
         public async Task UpdateRequest(Request request)
         {
-            
+            await _requestRepository.UpdateAsync(request);
         }
     }
 }
