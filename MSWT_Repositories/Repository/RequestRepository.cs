@@ -41,7 +41,9 @@ namespace MSWT_Repositories.Repository
 
         public async Task<IEnumerable<Request>> GetAllAsync()
         {
-            return await _context.Requests.ToListAsync();
+            return await _context.Requests
+                .Include(r => r.Worker)
+                .ToListAsync();
         }
 
         public async Task UpdateAsync(Request request)

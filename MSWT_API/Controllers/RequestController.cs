@@ -38,7 +38,7 @@ namespace MSWT_API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Request>>> GetAsync()
         {
-            var requests = await _requestService.GetAllRequests();
+            var requests = await _requestService.GetAllRequestsWithWorkerName();
             return Ok(requests);
         }
 
