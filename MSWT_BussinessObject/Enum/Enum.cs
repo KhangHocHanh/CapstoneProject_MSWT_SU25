@@ -11,9 +11,10 @@ namespace MSWT_BussinessObject.Enum
         // Request Status Enum
         public enum RequestStatusEnum
         {
-            DaGui,      // Đã gửi
-            DaXuLy,     // Đã xử lý
-            DaHuy       // Đã hủy
+            DaGui = 1,      // Đã gửi
+            DangXuLy = 2,  // Đang xử lý
+            DaXuLy = 3,     // Đã xử lý
+            DaHuy = 4     // Đã hủy
         }
         // Role Status Enum
         public enum RoleStatus
