@@ -52,7 +52,7 @@ namespace MSWT_API.Controllers
 
         // POST api/report (chỉ cho Nhân viên - Báo cáo sự cố)
         [HttpPost]
-        [Authorize(Roles = "Worker,Supervisor")]
+        [Authorize(Roles = "Worker")]
         public async Task<IActionResult> CreateIncidentReport([FromBody] ReportCreateDto dto)
         {
             var userId = User.FindFirstValue("User_Id");
@@ -68,8 +68,8 @@ namespace MSWT_API.Controllers
         }
 
         // POST api/report/leader (chỉ cho Leader)
-        [HttpPost("leader")]
-        [Authorize(Roles = "Leader")]
+        [HttpPost("leader-supervisor")]
+        [Authorize(Roles = "Leader,Supervisor")]
         public async Task<IActionResult> CreateLeaderReport([FromBody] ReportCreateDtoWithType dto)
         {
             var userId = User.FindFirstValue("User_Id");
