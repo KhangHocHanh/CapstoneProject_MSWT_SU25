@@ -69,7 +69,7 @@ namespace MSWT_BussinessObject.Mapper
     .ForMember(dest => dest.RoleName, opt => opt.MapFrom(src => src.User.Role.RoleName));
 
             CreateMap<Report, ReportWithUserNameDTO>()
-    .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User != null ? src.User.UserName : null));
+    .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.User != null ? src.User.FullName : null));
 
 
             #endregion
@@ -142,6 +142,8 @@ namespace MSWT_BussinessObject.Mapper
             CreateMap<TrashBin, TrashbinWithAreaNameDTO>()
     .ForMember(dest => dest.AreaName, opt => opt.MapFrom(src => src.Area != null ? src.Area.AreaName : null));
             #endregion
+            CreateMap<AttendanceRecord, AttendanceRecordResponseDTO>()
+             .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.User.FullName));
         }
     }
 }

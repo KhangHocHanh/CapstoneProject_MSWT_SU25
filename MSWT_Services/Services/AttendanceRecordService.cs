@@ -9,6 +9,8 @@ using MSWT_Repositories.IRepository;
 using MSWT_Services.IServices;
 using static MSWT_BussinessObject.RequestDTO.RequestDTO;
 using ClosedXML.Excel;
+using MSWT_BussinessObject.ResponseDTO;
+using static MSWT_BussinessObject.ResponseDTO.ResponseDTO;
 
 namespace MSWT_Services.Services
 {
@@ -271,6 +273,10 @@ namespace MSWT_Services.Services
             return stream.ToArray();
         }
 
-
+        public async Task<IEnumerable<AttendanceRecordResponseDTO>> GetAllAttendanceRecordWithFullName()
+        {
+           var records = await _repo.GetAllWithUsersAsync();
+           return _mapper.Map<IEnumerable<AttendanceRecordResponseDTO>>(records);
+        }
     }
 }

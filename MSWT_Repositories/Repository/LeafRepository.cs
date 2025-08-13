@@ -39,7 +39,9 @@ namespace MSWT_Repositories.Repository
 
         async Task<IEnumerable<Leaf>> ILeafRepository.GetAllAsync()
         {
-            return await _context.Leaves.ToListAsync();
+            return await _context.Leaves
+                .Include(u => u.Worker)
+                .ToListAsync();
         }
 
         public async Task UpdateAsync(Leaf Leaf)
