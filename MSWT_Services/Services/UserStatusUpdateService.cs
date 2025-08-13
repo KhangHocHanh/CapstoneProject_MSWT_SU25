@@ -15,7 +15,7 @@ namespace MSWT_Services.Services
     {
         private readonly ILogger<UserStatusUpdateService> _logger;
         private readonly IServiceProvider _serviceProvider;
-        private readonly TimeSpan _interval = TimeSpan.FromMinutes(1); // check every minute
+        private readonly TimeSpan _interval = TimeSpan.FromSeconds(1); // check every second
 
         public UserStatusUpdateService(ILogger<UserStatusUpdateService> logger, IServiceProvider serviceProvider)
         {
