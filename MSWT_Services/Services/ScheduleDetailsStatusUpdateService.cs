@@ -10,7 +10,7 @@ public class ScheduleDetailsStatusUpdateService : BackgroundService
 {
     private readonly ILogger<ScheduleDetailsStatusUpdateService> _logger;
     private readonly IServiceProvider _serviceProvider;
-    private readonly TimeSpan _interval = TimeSpan.FromMinutes(1); // check every 5 minutes
+    private readonly TimeSpan _interval = TimeSpan.FromMinutes(1); // check every minute
 
     public ScheduleDetailsStatusUpdateService(ILogger<ScheduleDetailsStatusUpdateService> logger, IServiceProvider serviceProvider)
     {
