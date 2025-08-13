@@ -6,17 +6,21 @@ using System.Threading.Tasks;
 using MSWT_BussinessObject.Enum;
 using MSWT_BussinessObject.Model;
 using MSWT_Repositories.IRepository;
+using MSWT_Repositories.Repository;
 using MSWT_Services.IServices;
 using static MSWT_BussinessObject.Enum.Enum;
+using static MSWT_BussinessObject.ResponseDTO.ResponseDTO;
 
 namespace MSWT_Services.Services
 {
     public class LeaveService : ILeaveService
     {
         private readonly ILeafRepository _leafRepository;
-        public LeaveService(ILeafRepository leafRepository)
+        private readonly IUserRepository _userRepository;
+        public LeaveService(ILeafRepository leafRepository, IUserRepository userRepository)
         {
             _leafRepository = leafRepository;
+            _userRepository = userRepository;
         }
         public async Task AddLeaf(Leaf Leaf)
         {
@@ -97,5 +101,54 @@ namespace MSWT_Services.Services
                             l.ApprovalDate.Value.Month == month)
                 .ToList();
         }
+        public async Task<IEnumerable<LeafDTO>> GetAllLeafsWithFullName()
+        {
+            var leaves = await _leafRepository.GetAllAsync();
+            return leaves.Select(l => new LeafDTO
+            {
+                LeaveId = l.LeaveId,
+                WorkerId = l.WorkerId,
+                LeaveType = l.LeaveType,
+                StartDate = l.StartDate,
+                EndDate = l.EndDate,
+                TotalDays = l.TotalDays,
+                Reason = l.Reason,
+                RequestDate = l.RequestDate,
+                ApprovalStatus = l.ApprovalStatus,
+                ApprovedBy = l.ApprovedBy,
+                ApprovalDate = l.ApprovalDate,
+                Note = l.Note,
+                FullName = l.Worker.FullName // lấy từ entity User
+            }).ToList();
+        }
+
+        public async Task UpdateUsersOnLeaveAsync()
+        {
+            var allLeaves = await _leafRepository.GetAllAsync();
+            var today = DateOnly.FromDateTime(DateTime.Now);
+
+            foreach (var leave in allLeaves)
+            {
+                var user = leave.Worker;
+                if (user == null) continue;
+
+                if (leave.ApprovalStatus == "Đã duyệt" &&
+                    today >= leave.StartDate &&
+                    today <= leave.EndDate)
+                {
+                    if (user.Status != "Nghỉ phép")
+                    {
+                        user.Status = "Nghỉ phép";
+                        await _userRepository.UpdateAsync(user);
+                    }
+                }
+                else if (today > leave.EndDate && user.Status == "Nghỉ phép")
+                {
+                    user.Status = "Hoạt động"; // Trạng thái cũ giả định là "Đang làm việc"
+                    await _userRepository.UpdateAsync(user);
+                }
+            }
+        }
+
     }
 }

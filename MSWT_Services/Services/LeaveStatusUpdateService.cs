@@ -7,60 +7,44 @@ using MSWT_BussinessObject.Model;
 using MSWT_BussinessObject.Enum;
 using static MSWT_BussinessObject.Enum.Enum;
 using MSWT_Services;
+using Microsoft.Extensions.Logging;
+using MSWT_Services.IServices;
 
 public class LeaveStatusUpdateService : BackgroundService
 {
+    private readonly ILogger<LeaveStatusUpdateService> _logger;
     private readonly IServiceProvider _serviceProvider;
+    private readonly TimeSpan _interval = TimeSpan.FromMinutes(1); // check every 5 minutes
 
-    public LeaveStatusUpdateService(IServiceProvider serviceProvider)
+    public LeaveStatusUpdateService(ILogger<LeaveStatusUpdateService> logger, IServiceProvider serviceProvider)
     {
+        _logger = logger;
         _serviceProvider = serviceProvider;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
+        _logger.LogInformation("LeaveStatusUpdateService is starting.");
+
         while (!stoppingToken.IsCancellationRequested)
         {
-            await UpdateUserStatuses();
-            await Task.Delay(TimeSpan.FromHours(24), stoppingToken); // chạy mỗi ngày
-        }
-    }
-
-    private async Task UpdateUserStatuses()
-    {
-        using var scope = _serviceProvider.CreateScope();
-        var db = scope.ServiceProvider.GetRequiredService<SmartTrashBinandCleaningStaffManagementContext>();
-
-        var today = DateOnly.FromDateTime(TimeHelper.GetNowInVietnamTime());
-
-        // 1. Những đơn bắt đầu hôm nay → set trạng thái nghỉ phép
-        var startingLeaves = await db.Leaves
-            .Include(l => l.Worker)
-            .Where(l => l.StartDate == today && l.ApprovalStatus == "Đã duyệt")
-            .ToListAsync();
-
-        foreach (var leave in startingLeaves)
-        {
-            if (leave.Worker != null)
+            try
             {
-                leave.Worker.Status = UserStatusHelper.ToStringStatus(UserStatusEnum.NghiPhep);
+                using var scope = _serviceProvider.CreateScope();
+                var leavesService = scope.ServiceProvider.GetRequiredService<ILeaveService>();
+
+                await leavesService.UpdateUsersOnLeaveAsync();
+
+                _logger.LogInformation("Checked and updated leaves statuses at: {time}", DateTimeOffset.Now);
             }
-        }
-
-        // 2. Những đơn kết thúc hôm qua → set trạng thái trống lịch
-        var endingLeaves = await db.Leaves
-            .Include(l => l.Worker)
-            .Where(l => l.EndDate < today && l.ApprovalStatus == "Đã duyệt")
-            .ToListAsync();
-
-        foreach (var leave in endingLeaves)
-        {
-            if (leave.Worker != null)
+            catch (Exception ex)
             {
-                leave.Worker.Status = UserStatusHelper.ToStringStatus(UserStatusEnum.HoatDong);
+                _logger.LogError(ex, "Error while updating leaves statuses");
             }
+
+            await Task.Delay(_interval, stoppingToken);
         }
 
-        await db.SaveChangesAsync();
+        _logger.LogInformation("LeaveStatusUpdateService is stopping.");
     }
 }

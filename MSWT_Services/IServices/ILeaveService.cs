@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MSWT_BussinessObject.Model;
+using static MSWT_BussinessObject.ResponseDTO.ResponseDTO;
 
 namespace MSWT_Services.IServices
 {
@@ -23,7 +24,8 @@ namespace MSWT_Services.IServices
         Task<IEnumerable<Leaf>> GetLeavesByUser(string userId);
         Task<List<Leaf>> GetApprovedLeavesInMonth(int year, int month);
 
-
+        Task<IEnumerable<LeafDTO>> GetAllLeafsWithFullName();
+        Task UpdateUsersOnLeaveAsync();
 
         #endregion
     }

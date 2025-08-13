@@ -35,7 +35,7 @@ namespace MSWT_API.Controllers
         [HttpGet("all")]
         public async Task<IActionResult> GetAllAttendanceRecords()
         {
-            var records = await _attendanceService.GetAllAttendanceRecordsAsync();
+            var records = await _attendanceService.GetAllAttendanceRecordWithFullName();
             return Ok(records);
         }
         [HttpGet("date/{date}")]

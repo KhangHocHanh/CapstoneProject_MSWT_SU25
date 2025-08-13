@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using MSWT_BussinessObject.Model;
 using static MSWT_BussinessObject.RequestDTO.RequestDTO;
+using static MSWT_BussinessObject.ResponseDTO.ResponseDTO;
 
 namespace MSWT_Services.IServices
 {
@@ -19,6 +20,7 @@ namespace MSWT_Services.IServices
         Task<(bool IsSuccess, string Message)> CreateMonthlyAttendanceRecordsAsync(CreateMonthlyAttendanceRequest request);
         Task<(bool IsSuccess, string Message)> AddNewEmployeeAttendanceAsync(AddNewEmployeeAttendanceRequest request);
         Task<byte[]> ExportMonthlyAttendanceAsync(int year, int month);
+        Task<IEnumerable<AttendanceRecordResponseDTO>> GetAllAttendanceRecordWithFullName();
 
     }
 }
