@@ -144,6 +144,9 @@ namespace MSWT_BussinessObject.Mapper
             #endregion
             CreateMap<AttendanceRecord, AttendanceRecordResponseDTO>()
              .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.User.FullName));
+
+            CreateMap<Request, RequestResponseDTO>()
+                .ForMember(dest => dest.WorkerName, opt => opt.MapFrom(src => src.Worker.FullName));
         }
     }
 }
