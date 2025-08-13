@@ -32,7 +32,12 @@ namespace MSWT_Services.Services
         {
             var area = _mapper.Map<Area>(request);
             area.AreaId = Guid.NewGuid().ToString(); // Generate UID
-            area.IsAssigned = CustomEnum.Enum.AreaStatus.Assigned.ToString();
+            area.IsAssigned = "Yes";
+            
+            var floor = await _floorRepository.GetByIdAsync(area.FloorId);
+            if (floor == null)
+                throw new Exception("Floor not found.");
+
             await _areaRepository.AddAsync(area);
             return _mapper.Map<AreaResponseDTO>(area);
         }

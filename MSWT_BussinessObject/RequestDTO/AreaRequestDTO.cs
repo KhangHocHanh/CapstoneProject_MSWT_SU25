@@ -17,5 +17,7 @@ namespace MSWT_BussinessObject.RequestDTO
         public string? RoomEnd { get; set; }
 
         public string? AreaName { get; set; }
+
+        public string? FloorId { get; set; }
     }
 }
