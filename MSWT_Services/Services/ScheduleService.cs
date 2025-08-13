@@ -57,6 +57,9 @@ namespace MSWT_Services.Services
             var schedule = _mapper.Map<Schedule>(request);
             schedule.ScheduleId = Guid.NewGuid().ToString(); // Generate UID
 
+            supervisor.IsAssigned = "Yes";
+            await _userRepository.UpdateAsync(supervisor);
+
             await _scheduleRepository.AddAsync(schedule);
             return _mapper.Map<ScheduleResponseDTO>(schedule);
         }
