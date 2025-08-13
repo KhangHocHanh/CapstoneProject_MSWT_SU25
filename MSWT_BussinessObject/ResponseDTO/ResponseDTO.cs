@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MSWT_BussinessObject.Model;
 
 namespace MSWT_BussinessObject.ResponseDTO
 {
@@ -31,7 +32,7 @@ namespace MSWT_BussinessObject.ResponseDTO
             public DateTime? ResolvedAt { get; set; }
 
             // Chỉ lấy UserName
-            public string? UserName { get; set; }
+            public string? FullName { get; set; }
         }
 
         public class TrashbinWithAreaNameDTO
@@ -151,5 +152,36 @@ namespace MSWT_BussinessObject.ResponseDTO
             public string? Status { get; set; }
             public string? AreaName { get; set; }
         }
+        public class LeafDTO
+        {
+            public string LeaveId { get; set; } = null!;
+            public string WorkerId { get; set; } = null!;
+            public string FullName { get; set; } = null!;
+            public string LeaveType { get; set; } = null!;
+            public DateOnly StartDate { get; set; }
+            public DateOnly EndDate { get; set; }
+            public int TotalDays { get; set; }
+            public string? Reason { get; set; }
+            public DateOnly RequestDate { get; set; }
+            public string ApprovalStatus { get; set; } = null!;
+            public string? ApprovedBy { get; set; }
+            public DateOnly? ApprovalDate { get; set; }
+            public string? Note { get; set; }
+            
+        }
+        public class AttendanceRecordResponseDTO
+        {
+            public string Id { get; set; } = null!;
+            public string? EmployeeId { get; set; }
+            public string? FullName { get; set; }
+            public DateOnly? AttendanceDate { get; set; }
+            public DateTime? CheckInTime { get; set; }
+            public DateTime? CheckOutTime { get; set; }
+            public string? Status { get; set; }
+            public string? Note { get; set; }
+            public DateTime? CreatedAt { get; set; }
+            public DateTime? UpdatedAt { get; set; }
+        }
+
     }
 }
