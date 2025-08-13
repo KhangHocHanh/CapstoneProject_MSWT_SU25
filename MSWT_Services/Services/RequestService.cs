@@ -8,6 +8,7 @@ using MSWT_BussinessObject.Model;
 using MSWT_BussinessObject.ResponseDTO;
 using MSWT_Repositories.IRepository;
 using MSWT_Services.IServices;
+using static MSWT_BussinessObject.ResponseDTO.ResponseDTO;
 
 namespace MSWT_Services.Services
 {
@@ -38,10 +39,10 @@ namespace MSWT_Services.Services
             return await _requestRepository.GetAllAsync();
         }
 
-        public async Task<IEnumerable<RestroomResponseDTO>> GetAllRequestsWithWorkerName()
+        public async Task<IEnumerable<RequestResponseDTO>> GetAllRequestsWithWorkerName()
         {
             var requests = await _requestRepository.GetAllAsync();
-            return _mapper.Map<IEnumerable<RestroomResponseDTO>>(requests);
+            return _mapper.Map<IEnumerable<RequestResponseDTO>>(requests);
         }
 
         public async Task<Request> GetRequestById(string id)
