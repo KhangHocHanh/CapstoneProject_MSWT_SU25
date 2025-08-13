@@ -15,7 +15,7 @@ namespace MSWT_Services.Services
     {
         private readonly ILogger<UserStatusUpdateService> _logger;
         private readonly IServiceProvider _serviceProvider;
-        private readonly TimeSpan _interval = TimeSpan.FromSeconds(1); // check every second
+        private readonly TimeSpan _interval = TimeSpan.FromHours(1); // check every hour
 
         public UserStatusUpdateService(ILogger<UserStatusUpdateService> logger, IServiceProvider serviceProvider)
         {
@@ -34,7 +34,7 @@ namespace MSWT_Services.Services
                         var userRepository = scope.ServiceProvider.GetRequiredService<IUserRepository>();
                         var scheduleDetailsRepository = scope.ServiceProvider.GetRequiredService<IScheduleDetailsRepository>();
 
-                        var users = await userRepository.GetAllAsync(); // You may want to use pagination if there are many users
+                        var users = await userRepository.GetAllAsync();
                         var scheduleDetails = await scheduleDetailsRepository.GetAllAsync();
 
                         foreach (var user in users)

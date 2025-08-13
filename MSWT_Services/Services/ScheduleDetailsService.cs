@@ -109,7 +109,7 @@ namespace MSWT_Services.Services
                     SupervisorId = schedule.SupervisorId,
                     AssignmentId = detailDto.AssignmentId,
                     Date = date.ToDateTime(new TimeOnly(0, 0)),
-                    Status = detailDto.Status ?? "Sắp tới",
+                    Status = detailDto.Status,
                     StartTime = schedule.Shift.StartTime,
                     EndTime = schedule.Shift.EndTime,
                     IsBackup = detailDto.IsBackup,
@@ -120,7 +120,8 @@ namespace MSWT_Services.Services
                 await _scheduleDetailsRepository.AddAsync(detail);
                 createdDetails.Add(_mapper.Map<ScheduleDetailsResponseDTO>(detail));
             }
-
+            worker.IsAssigned = "Yes";
+            await _userRepository.UpdateAsync(worker);
 
             return createdDetails;
         }
