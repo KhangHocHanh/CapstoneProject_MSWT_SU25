@@ -14,6 +14,7 @@ namespace MSWT_BussinessObject.Enum
             return status switch
             {
                 RequestStatusEnum.DaGui => "Đã gửi",
+                RequestStatusEnum.DangXuLy => "Đang xử lý",
                 RequestStatusEnum.DaXuLy => "Đã xử lý",
                 RequestStatusEnum.DaHuy => "Đã hủy",
                 _ => "Không xác định"
@@ -26,6 +27,7 @@ namespace MSWT_BussinessObject.Enum
             {
                 "Đã gửi" => RequestStatusEnum.DaGui,
                 "Đã xử lý" => RequestStatusEnum.DaXuLy,
+                "Đang xử lý" => RequestStatusEnum.DangXuLy,
                 "Đã hủy" => RequestStatusEnum.DaHuy,
                 _ => throw new ArgumentException("Trạng thái không hợp lệ", nameof(status))
             };
