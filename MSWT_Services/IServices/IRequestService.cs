@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using MSWT_BussinessObject.Model;
 using MSWT_BussinessObject.ResponseDTO;
+using static MSWT_BussinessObject.ResponseDTO.ResponseDTO;
+
 
 namespace MSWT_Services.IServices
 {
@@ -18,6 +20,6 @@ namespace MSWT_Services.IServices
         Task DeleteRequest(string id);
         #endregion
         Task SoftDeleteRequest(string id);
-        Task<IEnumerable<RestroomResponseDTO>> GetAllRequestsWithWorkerName();
+        Task<IEnumerable<RequestResponseDTO>> GetAllRequestsWithWorkerName();
     }
 }
