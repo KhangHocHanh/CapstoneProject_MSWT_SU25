@@ -56,6 +56,7 @@ namespace MSWT_Repositories.Repository
         .Include(s => s.Restroom)
         .Include(s => s.TrashBin)
         .Include(s => s.Shift)
+        .Include(s => s.Supervisor)
         .Include(s => s.ScheduleDetails)
         .ToListAsync();
         }

@@ -36,4 +36,6 @@ public partial class Schedule
     public virtual Shift? Shift { get; set; }
 
     public virtual TrashBin? TrashBin { get; set; }
+
+    public virtual User? Supervisor { get; set; }
 }

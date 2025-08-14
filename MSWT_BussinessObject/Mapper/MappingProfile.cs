@@ -100,7 +100,8 @@ namespace MSWT_BussinessObject.Mapper
                 .ForMember(dest => dest.AreaRestrooms, opt => opt.MapFrom(src => src.Area.Restrooms))
                 .ForMember(dest => dest.AreaTrashBins, opt => opt.MapFrom(src => src.Area.TrashBins))
                 .ForMember(dest => dest.Restroom, opt => opt.MapFrom(src => src.Restroom))
-                .ForMember(dest => dest.TrashBin, opt => opt.MapFrom(src => src.TrashBin));
+                .ForMember(dest => dest.TrashBin, opt => opt.MapFrom(src => src.TrashBin))
+                .ForMember(dest => dest.SupervisorName, opt => opt.MapFrom(src => src.Supervisor.FullName));
 
             CreateMap<ScheduleDetail, ScheduleDetailsResponseDTO>()
                 .ForMember(dest => dest.AreaName, opt => opt.MapFrom(src => src.Schedule.Area.AreaName))
