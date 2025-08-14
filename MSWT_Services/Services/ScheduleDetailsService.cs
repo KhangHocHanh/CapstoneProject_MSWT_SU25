@@ -109,7 +109,7 @@ namespace MSWT_Services.Services
                     SupervisorId = schedule.SupervisorId,
                     AssignmentId = detailDto.AssignmentId,
                     Date = date.ToDateTime(new TimeOnly(0, 0)),
-                    Status = detailDto.Status,
+                    Status = detailDto.Status ?? "Sắp tới",
                     StartTime = schedule.Shift.StartTime,
                     EndTime = schedule.Shift.EndTime,
                     IsBackup = detailDto.IsBackup,
