@@ -100,22 +100,32 @@ namespace MSWT_API.Controllers
             if (request is null)
                 return NotFound(new ResponseDTO(Const.ERROR_EXCEPTION, "Request không tồn tại"));
 
-            // Chuyển trạng thái hiện tại từ string → enum
             var currentStatus = RequestStatusHelper.ToEnum(request.Status);
 
             // Chặn hủy khi đã xử lý
             if (dto.Status == RequestStatusEnum.DaHuy && currentStatus == RequestStatusEnum.DaXuLy)
                 return BadRequest(new ResponseDTO(Const.ERROR_EXCEPTION, "Không thể hủy Request đã được xử lý"));
 
-            // Cập nhật
+            // Luồng hợp lệ: Đã gửi → Đang xử lý → Đã xử lý
+            bool isValidFlow = (currentStatus == RequestStatusEnum.DaGui && dto.Status == RequestStatusEnum.DangXuLy)
+                            || (currentStatus == RequestStatusEnum.DangXuLy && dto.Status == RequestStatusEnum.DaXuLy)
+                            || (dto.Status == RequestStatusEnum.DaHuy); // Có thể hủy từ bất kỳ trạng thái nào hợp lệ
+
+            if (!isValidFlow)
+            {
+                var currentStatusVN = RequestStatusHelper.ToStringStatus(currentStatus);
+                var targetStatusVN = RequestStatusHelper.ToStringStatus(dto.Status);
+                return BadRequest(new ResponseDTO(Const.ERROR_EXCEPTION, $"Không thể chuyển từ trạng thái {currentStatusVN} sang {targetStatusVN}"));
+            }
+
+            // Cập nhật trạng thái
             request.Status = RequestStatusHelper.ToStringStatus(dto.Status);
 
-            // Nếu chuyển sang Đã xử lý → set ResolveDate
-            if (dto.Status == RequestStatusEnum.DaXuLy && request.ResolveDate is null)
+            // Set ResolveDate nếu sang trạng thái kết thúc (Đã xử lý hoặc Đã hủy)
+            if ((dto.Status == RequestStatusEnum.DaXuLy || dto.Status == RequestStatusEnum.DaHuy) && request.ResolveDate is null)
+            {
                 request.ResolveDate = TimeHelper.GetNowInVietnamTime();
-            // Nếu chuyển sang Đã xử lý → set ResolveDate
-            if (dto.Status == RequestStatusEnum.DaHuy && request.ResolveDate is null)
-                request.ResolveDate = TimeHelper.GetNowInVietnamTime();
+            }
 
             await _requestService.UpdateRequest(request);
 
