@@ -22,9 +22,11 @@ public partial class SmartTrashBinandCleaningStaffManagementContext : DbContext
 
     public virtual DbSet<Assignment> Assignments { get; set; }
 
-    public virtual DbSet<AssignmentSchedule> AssignmentSchedules { get; set; }
+    public virtual DbSet<AttendanceRecord> AttendanceRecords { get; set; }
 
-    public virtual DbSet<Floor> Floors { get; set; }
+    public virtual DbSet<Building> Buildings { get; set; }
+
+    public virtual DbSet<GroupAssignment> GroupAssignments { get; set; }
 
     public virtual DbSet<Leaf> Leaves { get; set; }
 
@@ -32,9 +34,9 @@ public partial class SmartTrashBinandCleaningStaffManagementContext : DbContext
 
     public virtual DbSet<Request> Requests { get; set; }
 
-    public virtual DbSet<Restroom> Restrooms { get; set; }
-
     public virtual DbSet<Role> Roles { get; set; }
+
+    public virtual DbSet<Room> Rooms { get; set; }
 
     public virtual DbSet<Schedule> Schedules { get; set; }
 
@@ -46,13 +48,15 @@ public partial class SmartTrashBinandCleaningStaffManagementContext : DbContext
 
     public virtual DbSet<Shift> Shifts { get; set; }
 
+    public virtual DbSet<ShiftSwapRequest> ShiftSwapRequests { get; set; }
+
     public virtual DbSet<TrashBin> TrashBins { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
-    public virtual DbSet<ScheduleDetailRating> ScheduleDetailRatings { get; set; }
-    public virtual DbSet<ShiftSwapRequest> ShiftSwapRequests { get; set; }
-    public virtual DbSet<AttendanceRecord> AttendanceRecords { get; set; }
-    public virtual DbSet<Holiday> Holidays { get; set; }
+
+    public virtual DbSet<WorkGroupMember> WorkGroupMembers { get; set; }
+
+    public virtual DbSet<WorkerGroup> WorkerGroups { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -102,20 +106,14 @@ public partial class SmartTrashBinandCleaningStaffManagementContext : DbContext
                 .HasMaxLength(50)
                 .HasDefaultValueSql("(newid())");
             entity.Property(e => e.AreaName).HasMaxLength(50);
+            entity.Property(e => e.BuildingId).HasMaxLength(50);
             entity.Property(e => e.Description).HasMaxLength(50);
-            entity.Property(e => e.FloorId).HasMaxLength(50);
-            entity.Property(e => e.IsAssigned).HasMaxLength(50);
-            entity.Property(e => e.RoomBegin)
-                .HasMaxLength(10)
-                .IsFixedLength();
-            entity.Property(e => e.RoomEnd)
-                .HasMaxLength(10)
-                .IsFixedLength();
             entity.Property(e => e.Status).HasMaxLength(50);
 
-            entity.HasOne(d => d.Floor).WithMany(p => p.Areas)
-                .HasForeignKey(d => d.FloorId)
-                .HasConstraintName("FK_Areas_Floors");
+            entity.HasOne(d => d.Building).WithMany(p => p.Areas)
+                .HasForeignKey(d => d.BuildingId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("Areas_Buildings_FK");
         });
 
         modelBuilder.Entity<Assignment>(entity =>
@@ -127,33 +125,48 @@ public partial class SmartTrashBinandCleaningStaffManagementContext : DbContext
                 .HasDefaultValueSql("(newid())");
             entity.Property(e => e.AssigmentName).HasMaxLength(50);
             entity.Property(e => e.Description).HasMaxLength(150);
+            entity.Property(e => e.GroupAssignmentId).HasMaxLength(50);
             entity.Property(e => e.Status).HasMaxLength(50);
-            entity.Property(e => e.TimesPerDay).HasMaxLength(50);
+
+            entity.HasOne(d => d.GroupAssignment).WithMany(p => p.Assignments)
+                .HasForeignKey(d => d.GroupAssignmentId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("Assignments_GroupAssignments_FK");
         });
 
-        modelBuilder.Entity<AssignmentSchedule>(entity =>
+        modelBuilder.Entity<AttendanceRecord>(entity =>
         {
-            entity.Property(e => e.AssignmentScheduleId).HasMaxLength(50);
-            entity.Property(e => e.AssignmentId).HasMaxLength(50);
-            entity.Property(e => e.ScheduleId).HasMaxLength(50);
+            entity.Property(e => e.Id).HasMaxLength(50);
+            entity.Property(e => e.CheckInTime).HasColumnType("datetime");
+            entity.Property(e => e.CheckOutTime).HasColumnType("datetime");
+            entity.Property(e => e.CreatedAt).HasColumnType("datetime");
+            entity.Property(e => e.EmployeeId).HasMaxLength(50);
+            entity.Property(e => e.Note).HasMaxLength(250);
+            entity.Property(e => e.Status).HasMaxLength(50);
+            entity.Property(e => e.UpdatedAt).HasColumnType("datetime");
 
-            entity.HasOne(d => d.Assignment).WithMany(p => p.AssignmentSchedules)
-                .HasForeignKey(d => d.AssignmentId)
-                .HasConstraintName("AssignmentSchedules_Assignments_FK");
-
-            entity.HasOne(d => d.Schedule).WithMany(p => p.AssignmentSchedules)
-                .HasForeignKey(d => d.ScheduleId)
-                .HasConstraintName("AssignmentSchedules_Schedules_FK");
+            entity.HasOne(d => d.Employee).WithMany(p => p.AttendanceRecords)
+                .HasForeignKey(d => d.EmployeeId)
+                .HasConstraintName("FK_AttendanceRecords_Users");
         });
 
-        modelBuilder.Entity<Floor>(entity =>
+        modelBuilder.Entity<Building>(entity =>
         {
-            entity.HasKey(e => e.FloorId).HasName("PK_Floor");
+            entity.HasKey(e => e.BuildingId).HasName("Buildings_PK");
 
-            entity.Property(e => e.FloorId)
-                .HasMaxLength(50)
-                .HasDefaultValueSql("(newid())");
-            entity.Property(e => e.Status).HasMaxLength(50);
+            entity.Property(e => e.BuildingId).HasMaxLength(50);
+            entity.Property(e => e.BuildingName).HasMaxLength(50);
+            entity.Property(e => e.Description).HasMaxLength(50);
+        });
+
+        modelBuilder.Entity<GroupAssignment>(entity =>
+        {
+            entity.HasKey(e => e.GroupAssignmentId).HasName("GroupAssignments_PK");
+
+            entity.Property(e => e.GroupAssignmentId).HasMaxLength(50);
+            entity.Property(e => e.AssignmentGroupName).HasMaxLength(50);
+            entity.Property(e => e.CreatedAt).HasColumnType("datetime");
+            entity.Property(e => e.Description).HasMaxLength(50);
         });
 
         modelBuilder.Entity<Leaf>(entity =>
@@ -229,25 +242,6 @@ public partial class SmartTrashBinandCleaningStaffManagementContext : DbContext
                 .HasConstraintName("FK_Requests_Users");
         });
 
-        modelBuilder.Entity<Restroom>(entity =>
-        {
-            entity.HasKey(e => e.RestroomId).HasName("PK_Restroom");
-
-            entity.Property(e => e.RestroomId)
-                .HasMaxLength(50)
-                .HasDefaultValueSql("(newid())");
-            entity.Property(e => e.AreaId).HasMaxLength(50);
-            entity.Property(e => e.Description).HasMaxLength(50);
-            entity.Property(e => e.RestroomNumber)
-                .HasMaxLength(50)
-                .IsUnicode(false);
-            entity.Property(e => e.Status).HasMaxLength(50);
-
-            entity.HasOne(d => d.Area).WithMany(p => p.Restrooms)
-                .HasForeignKey(d => d.AreaId)
-                .HasConstraintName("FK_Restrooms_Areas");
-        });
-
         modelBuilder.Entity<Role>(entity =>
         {
             entity.HasKey(e => e.RoleId).HasName("PK_Role");
@@ -260,6 +254,26 @@ public partial class SmartTrashBinandCleaningStaffManagementContext : DbContext
             entity.Property(e => e.Status).HasMaxLength(50);
         });
 
+        modelBuilder.Entity<Room>(entity =>
+        {
+            entity.HasKey(e => e.RoomId).HasName("PK_Restroom");
+
+            entity.Property(e => e.RoomId)
+                .HasMaxLength(50)
+                .HasDefaultValueSql("(newid())");
+            entity.Property(e => e.AreaId).HasMaxLength(50);
+            entity.Property(e => e.Description).HasMaxLength(50);
+            entity.Property(e => e.RoomNumber)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.RoomType).HasMaxLength(50);
+            entity.Property(e => e.Status).HasMaxLength(50);
+
+            entity.HasOne(d => d.Area).WithMany(p => p.Rooms)
+                .HasForeignKey(d => d.AreaId)
+                .HasConstraintName("Rooms_Areas_FK");
+        });
+
         modelBuilder.Entity<Schedule>(entity =>
         {
             entity.HasKey(e => e.ScheduleId).HasName("PK_Schedule");
@@ -267,28 +281,13 @@ public partial class SmartTrashBinandCleaningStaffManagementContext : DbContext
             entity.Property(e => e.ScheduleId)
                 .HasMaxLength(50)
                 .HasDefaultValueSql("(newid())");
-            entity.Property(e => e.AreaId).HasMaxLength(50);
-            entity.Property(e => e.RestroomId).HasMaxLength(50);
             entity.Property(e => e.ScheduleName).HasMaxLength(50);
             entity.Property(e => e.ScheduleType).HasMaxLength(50);
             entity.Property(e => e.ShiftId).HasMaxLength(50);
-            entity.Property(e => e.TrashBinId).HasMaxLength(50);
-
-            entity.HasOne(d => d.Area).WithMany(p => p.Schedules)
-                .HasForeignKey(d => d.AreaId)
-                .HasConstraintName("FK_Schedules_Areas");
-
-            entity.HasOne(d => d.Restroom).WithMany(p => p.Schedules)
-                .HasForeignKey(d => d.RestroomId)
-                .HasConstraintName("FK_Schedules_Restrooms");
 
             entity.HasOne(d => d.Shift).WithMany(p => p.Schedules)
                 .HasForeignKey(d => d.ShiftId)
                 .HasConstraintName("FK_Schedules_Shifts");
-
-            entity.HasOne(d => d.TrashBin).WithMany(p => p.Schedules)
-                .HasForeignKey(d => d.TrashBinId)
-                .HasConstraintName("Schedules_TrashBins_FK");
         });
 
         modelBuilder.Entity<ScheduleDetail>(entity =>
@@ -299,10 +298,11 @@ public partial class SmartTrashBinandCleaningStaffManagementContext : DbContext
                 .HasMaxLength(50)
                 .HasDefaultValueSql("(newid())");
             entity.Property(e => e.BackupForUserId).HasMaxLength(50);
+            entity.Property(e => e.Comment).HasMaxLength(150);
             entity.Property(e => e.Date).HasColumnType("datetime");
             entity.Property(e => e.Description).HasMaxLength(150);
             entity.Property(e => e.EndTime).HasPrecision(0);
-            entity.Property(e => e.EvidenceImage).HasMaxLength(250);
+            entity.Property(e => e.GroupAssignmentId).HasMaxLength(50);
             entity.Property(e => e.IsBackup).HasMaxLength(50);
             entity.Property(e => e.Rating)
                 .HasMaxLength(10)
@@ -311,23 +311,25 @@ public partial class SmartTrashBinandCleaningStaffManagementContext : DbContext
             entity.Property(e => e.StartTime).HasPrecision(0);
             entity.Property(e => e.Status).HasMaxLength(50);
             entity.Property(e => e.SupervisorId).HasMaxLength(50);
-            entity.Property(e => e.WorkerId).HasMaxLength(50);
+            entity.Property(e => e.WorkerGroupId).HasMaxLength(50);
 
-            entity.HasOne(d => d.BackupForUser).WithMany(p => p.ScheduleDetailBackupForUsers)
+            entity.HasOne(d => d.BackupForUser).WithMany(p => p.ScheduleDetails)
                 .HasForeignKey(d => d.BackupForUserId)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("ScheduleDetails_Users_FK");
+
+            entity.HasOne(d => d.GroupAssignment).WithMany(p => p.ScheduleDetails)
+                .HasForeignKey(d => d.GroupAssignmentId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("ScheduleDetails_GroupAssignments_FK");
 
             entity.HasOne(d => d.Schedule).WithMany(p => p.ScheduleDetails)
                 .HasForeignKey(d => d.ScheduleId)
                 .HasConstraintName("FK_ScheduleDetails_Schedules");
 
-            entity.HasOne(d => d.Supervisor).WithMany(p => p.ScheduleDetailSupervisors)
-                .HasForeignKey(d => d.SupervisorId)
-                .HasConstraintName("FK_ScheduleDetails_Supervisor");
-
-            entity.HasOne(d => d.Worker).WithMany(p => p.ScheduleDetailWorkers)
-                .HasForeignKey(d => d.WorkerId)
-                .HasConstraintName("FK_ScheduleDetails_Worker");
+            entity.HasOne(d => d.WorkerGroup).WithMany(p => p.ScheduleDetails)
+                .HasForeignKey(d => d.WorkerGroupId)
+                .HasConstraintName("FK_ScheduleDetails_WorkerGroup");
         });
 
         modelBuilder.Entity<Sensor>(entity =>
@@ -347,9 +349,8 @@ public partial class SmartTrashBinandCleaningStaffManagementContext : DbContext
 
             entity.Property(e => e.SensorId).HasMaxLength(50);
             entity.Property(e => e.BinId).HasMaxLength(50);
+            entity.Property(e => e.MeasuredAt).HasColumnType("datetime");
             entity.Property(e => e.Status).HasMaxLength(50);
-            entity.Property(e => e.FillLevel).HasColumnType("float");
-            entity.Property(e => e.MeasuredAt).HasColumnType("datetime").HasDefaultValueSql("getdate()");
 
             entity.HasOne(d => d.Bin).WithMany(p => p.SensorBins)
                 .HasForeignKey(d => d.BinId)
@@ -371,6 +372,28 @@ public partial class SmartTrashBinandCleaningStaffManagementContext : DbContext
                 .HasDefaultValueSql("(newid())");
             entity.Property(e => e.ShiftName).HasMaxLength(50);
             entity.Property(e => e.Status).HasMaxLength(50);
+        });
+
+        modelBuilder.Entity<ShiftSwapRequest>(entity =>
+        {
+            entity.HasKey(e => e.SwapRequestId).HasName("PK_ShiftSwapRequest");
+
+            entity.Property(e => e.SwapRequestId).ValueGeneratedNever();
+            entity.Property(e => e.ConfirmedDate).HasColumnType("datetime");
+            entity.Property(e => e.Reason).HasMaxLength(50);
+            entity.Property(e => e.RequestDate).HasColumnType("datetime");
+            entity.Property(e => e.RequesterId).HasMaxLength(50);
+            entity.Property(e => e.Status).HasMaxLength(50);
+            entity.Property(e => e.TargetUserId).HasMaxLength(50);
+            entity.Property(e => e.TargetUserPhone).HasMaxLength(50);
+
+            entity.HasOne(d => d.Requester).WithMany(p => p.ShiftSwapRequestRequesters)
+                .HasForeignKey(d => d.RequesterId)
+                .HasConstraintName("FK_ShiftSwapRequest_Users");
+
+            entity.HasOne(d => d.TargetUser).WithMany(p => p.ShiftSwapRequestTargetUsers)
+                .HasForeignKey(d => d.TargetUserId)
+                .HasConstraintName("FK_ShiftSwapRequest_Users1");
         });
 
         modelBuilder.Entity<TrashBin>(entity =>
@@ -410,6 +433,7 @@ public partial class SmartTrashBinandCleaningStaffManagementContext : DbContext
             entity.Property(e => e.Image)
                 .HasMaxLength(250)
                 .IsUnicode(false);
+            entity.Property(e => e.IsAssigned).HasMaxLength(50);
             entity.Property(e => e.Password)
                 .HasMaxLength(50)
                 .IsUnicode(false);
@@ -428,123 +452,43 @@ public partial class SmartTrashBinandCleaningStaffManagementContext : DbContext
                 .HasConstraintName("FK_Users_Roles");
         });
 
+        modelBuilder.Entity<WorkGroupMember>(entity =>
+        {
+            entity.HasKey(e => e.WorkGroupMemberId).HasName("WorkGroupMember_PK");
+
+            entity.ToTable("WorkGroupMember");
+
+            entity.Property(e => e.WorkGroupMemberId).HasMaxLength(50);
+            entity.Property(e => e.JoinedAt).HasColumnType("datetime");
+            entity.Property(e => e.LeftAt).HasColumnType("datetime");
+            entity.Property(e => e.RoleId).HasMaxLength(50);
+            entity.Property(e => e.UserId).HasMaxLength(50);
+            entity.Property(e => e.WorkGroupId).HasMaxLength(50);
+
+            entity.HasOne(d => d.User).WithMany(p => p.WorkGroupMembers)
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("WorkGroupMember_Users_FK");
+
+            entity.HasOne(d => d.WorkGroup).WithMany(p => p.WorkGroupMembers)
+                .HasForeignKey(d => d.WorkGroupId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("WorkGroupMember_WorkerGroup_FK");
+        });
+
+        modelBuilder.Entity<WorkerGroup>(entity =>
+        {
+            entity.HasKey(e => e.WorkerGroupId).HasName("WorkerGroup_PK");
+
+            entity.ToTable("WorkerGroup");
+
+            entity.Property(e => e.WorkerGroupId).HasMaxLength(50);
+            entity.Property(e => e.CreatedAt).HasColumnType("datetime");
+            entity.Property(e => e.Description).HasMaxLength(100);
+            entity.Property(e => e.WorkerGroupName).HasMaxLength(50);
+        });
+
         OnModelCreatingPartial(modelBuilder);
-        modelBuilder.Entity<ScheduleDetailRating>(entity =>
-        {
-            entity.HasKey(e => e.ScheduleDetailRatingId).HasName("PK_ScheduleDetailRating");
-
-            entity.Property(e => e.ScheduleDetailRatingId)
-                .HasMaxLength(50)
-                .HasDefaultValueSql("(newid())");
-
-            entity.Property(e => e.ScheduleDetailId).HasMaxLength(50);
-            entity.Property(e => e.RatedByUserId).HasMaxLength(50);
-            entity.Property(e => e.RatingDate).HasColumnType("date");
-            entity.Property(e => e.RatedAt).HasColumnType("datetime");
-            entity.Property(e => e.Comment).HasMaxLength(200);
-            entity.Property(e => e.RatingValue).HasColumnType("int");
-
-            entity.HasOne(d => d.ScheduleDetail)
-                .WithMany(p => p.Ratings)
-                .HasForeignKey(d => d.ScheduleDetailId)
-                .HasConstraintName("FK_ScheduleDetailRatings_ScheduleDetail");
-
-            entity.HasIndex(e => new { e.ScheduleDetailId, e.RatingDate }).IsUnique();
-        });
-
-        modelBuilder.Entity<ShiftSwapRequest>(entity =>
-        {
-            entity.HasKey(e => e.SwapRequestId).HasName("PK_ShiftSwapRequest");
-
-            entity.Property(e => e.SwapRequestId)
-                .HasDefaultValueSql("(newid())");
-
-            entity.Property(e => e.RequestDate)
-                .IsRequired();
-
-            entity.Property(e => e.RequesterId)
-                .HasMaxLength(50)
-                .IsRequired();
-
-            entity.Property(e => e.TargetUserId)
-                .HasMaxLength(50);
-
-            entity.Property(e => e.TargetUserPhone)
-                .HasMaxLength(20)
-                .IsRequired();
-
-            entity.Property(e => e.Status)
-                .HasMaxLength(50)
-                .IsRequired();
-
-            entity.Property(e => e.Reason)
-                .HasMaxLength(500);
-
-            entity.Property(e => e.Month)
-                .IsRequired();
-
-            entity.Property(e => e.Year)
-                .IsRequired();
-
-   
-            entity.HasOne(d => d.Requester)
-                .WithMany()
-                .HasForeignKey(d => d.RequesterId)
-                .OnDelete(DeleteBehavior.Restrict)
-                .HasConstraintName("FK_ShiftSwapRequest_Requester");
-
-            entity.HasOne(d => d.TargetUser)
-                .WithMany()
-                .HasForeignKey(d => d.TargetUserId)
-                .OnDelete(DeleteBehavior.Restrict)
-                .HasConstraintName("FK_ShiftSwapRequest_TargetUser");
-        });
-
-        modelBuilder.Entity<AttendanceRecord>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PK_AttendanceRecord");
-
-            entity.Property(e => e.Id)
-                .HasMaxLength(50)
-                .HasDefaultValueSql("(newid())");
-
-            entity.Property(e => e.EmployeeId)
-                .HasMaxLength(50);
-
-            entity.Property(e => e.AttendanceDate)
-                .HasColumnType("date");
-
-            entity.Property(e => e.CheckInTime)
-                .HasColumnType("datetime");
-
-            entity.Property(e => e.CheckOutTime)
-                .HasColumnType("datetime");
-
-            entity.Property(e => e.Status)
-                .HasMaxLength(50);
-
-            entity.Property(e => e.Note)
-                .HasMaxLength(500);
-
-            entity.Property(e => e.CreatedAt)
-                .HasColumnType("datetime")
-                .HasDefaultValueSql("GETDATE()");
-
-            entity.Property(e => e.UpdatedAt)
-                .HasColumnType("datetime");
-
-            entity.HasOne(e => e.User)
-                .WithMany(u => u.AttendanceRecords)
-                .HasForeignKey(e => e.EmployeeId)
-                .HasConstraintName("FK_AttendanceRecords_Users");
-        });
-
-        modelBuilder.Entity<Holiday>(entity =>
-        {
-            entity.HasKey(e => e.HolidayId).HasName("Holidays_PK");
-            entity.Property(e => e.HolidayName).HasMaxLength(100);
-            entity.Property(e => e.Date).HasColumnType("datetime");
-        });
     }
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);

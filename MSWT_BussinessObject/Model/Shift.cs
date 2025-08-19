@@ -9,7 +9,7 @@ public partial class Shift
 
     public TimeOnly? StartTime { get; set; }
 
-    public TimeOnly EndTime { get; set; }
+    public TimeOnly? EndTime { get; set; }
 
     public string? Status { get; set; }
 

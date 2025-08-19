@@ -35,6 +35,8 @@ public partial class User
 
     public virtual ICollection<Alert> Alerts { get; set; } = new List<Alert>();
 
+    public virtual ICollection<AttendanceRecord> AttendanceRecords { get; set; } = new List<AttendanceRecord>();
+
     public virtual ICollection<Leaf> LeafApprovedByNavigations { get; set; } = new List<Leaf>();
 
     public virtual ICollection<Leaf> LeafWorkers { get; set; } = new List<Leaf>();
@@ -47,11 +49,11 @@ public partial class User
 
     public virtual Role? Role { get; set; }
 
-    public virtual ICollection<ScheduleDetail> ScheduleDetailBackupForUsers { get; set; } = new List<ScheduleDetail>();
+    public virtual ICollection<ScheduleDetail> ScheduleDetails { get; set; } = new List<ScheduleDetail>();
 
-    public virtual ICollection<ScheduleDetail> ScheduleDetailSupervisors { get; set; } = new List<ScheduleDetail>();
+    public virtual ICollection<ShiftSwapRequest> ShiftSwapRequestRequesters { get; set; } = new List<ShiftSwapRequest>();
 
-    public virtual ICollection<ScheduleDetail> ScheduleDetailWorkers { get; set; } = new List<ScheduleDetail>();
-    public virtual ICollection<AttendanceRecord> AttendanceRecords { get; set; } = new List<AttendanceRecord>();
+    public virtual ICollection<ShiftSwapRequest> ShiftSwapRequestTargetUsers { get; set; } = new List<ShiftSwapRequest>();
 
+    public virtual ICollection<WorkGroupMember> WorkGroupMembers { get; set; } = new List<WorkGroupMember>();
 }

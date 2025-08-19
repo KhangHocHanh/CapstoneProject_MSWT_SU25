@@ -75,9 +75,9 @@ namespace MSWT_BussinessObject.Mapper
             #endregion
 
 
-            CreateMap<FloorRequestDTO, Floor>();
+
             CreateMap<AreaRequestDTO, Area>();
-            CreateMap<RestroomRequestDTO, Restroom>();
+
             CreateMap<AreaUpdateRequestDTO, Area>();
             CreateMap<ScheduleRequestDTO, Schedule>();
             CreateMap<ScheduleDetailsRequestDTO, ScheduleDetail>();
@@ -89,26 +89,10 @@ namespace MSWT_BussinessObject.Mapper
                 .ForMember(dest => dest.AreaName, opt => opt.MapFrom(src => src.TrashBin.Area.AreaName));
 
             CreateMap<Assignment, AssignmentResponseDTO>();
-            CreateMap<Restroom, RestroomResponseDTO>()
-                .ForMember(dest => dest.AreaName, opt => opt.MapFrom(src => src.Area.AreaName));
-            CreateMap<Floor, FloorResponseDTO>();
-            CreateMap<Area, AreaResponseDTO>()
-            .ForMember(dest => dest.FloorNumber, opt => opt.MapFrom(src => src.Floor.FloorNumber));
-            CreateMap<Schedule, ScheduleResponseDTO>()
-                .ForMember(dest => dest.RestroomNumber, opt => opt.MapFrom(src => src.Restroom.RestroomNumber))
-                .ForMember(dest => dest.AreaName, opt => opt.MapFrom(src => src.Area.AreaName))
-                .ForMember(dest => dest.AreaRestrooms, opt => opt.MapFrom(src => src.Area.Restrooms))
-                .ForMember(dest => dest.AreaTrashBins, opt => opt.MapFrom(src => src.Area.TrashBins))
-                .ForMember(dest => dest.Restroom, opt => opt.MapFrom(src => src.Restroom))
-                .ForMember(dest => dest.TrashBin, opt => opt.MapFrom(src => src.TrashBin))
-                .ForMember(dest => dest.SupervisorName, opt => opt.MapFrom(src => src.Supervisor.FullName));
+          
+            
 
-            CreateMap<ScheduleDetail, ScheduleDetailsResponseDTO>()
-                .ForMember(dest => dest.AreaName, opt => opt.MapFrom(src => src.Schedule.Area.AreaName))
-                .ForMember(dest => dest.ScheduleName, opt => opt.MapFrom(src => src.Schedule.ScheduleName))
-                .ForMember(dest => dest.AssignmentName, opt => opt.MapFrom(src => src.Assignment.AssigmentName))
-                .ForMember(dest => dest.WorkerName, opt => opt.MapFrom(src => src.Worker.FullName))
-                .ForMember(dest => dest.Schedule, opt => opt.MapFrom(src => src.Schedule));
+            
             CreateMap<Shift, ShiftResponseDTO>();
             CreateMap<TrashBin, TrashBinResponseDTO>();
             CreateMap<ShiftSwapRequest, ShiftSwapResponseDTO>()
@@ -143,8 +127,7 @@ namespace MSWT_BussinessObject.Mapper
             CreateMap<TrashBin, TrashbinWithAreaNameDTO>()
     .ForMember(dest => dest.AreaName, opt => opt.MapFrom(src => src.Area != null ? src.Area.AreaName : null));
             #endregion
-            CreateMap<AttendanceRecord, AttendanceRecordResponseDTO>()
-             .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.User.FullName));
+          
 
             CreateMap<Request, RequestResponseDTO>()
                 .ForMember(dest => dest.WorkerName, opt => opt.MapFrom(src => src.Worker.FullName));

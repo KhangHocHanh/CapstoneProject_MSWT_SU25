@@ -23,9 +23,7 @@ public partial class TrashBin
 
     public virtual ICollection<Request> Requests { get; set; } = new List<Request>();
 
-    public virtual Restroom? Restroom { get; set; }
-
-    public virtual ICollection<Schedule> Schedules { get; set; } = new List<Schedule>();
+    public virtual Room? Restroom { get; set; }
 
     public virtual ICollection<SensorBin> SensorBins { get; set; } = new List<SensorBin>();
 }
