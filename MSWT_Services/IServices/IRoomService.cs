@@ -9,14 +9,14 @@ using System.Threading.Tasks;
 
 namespace MSWT_Services.IServices
 {
-    public interface IFloorService
+    public interface IRoomService
     {
         #region CRUD Category
-        Task<IEnumerable<FloorResponseDTO>> GetAllFloors();
-        Task<FloorResponseDTO> GetFloorById(string id);
-        Task<FloorResponseDTO> CreateFloorAsync(FloorRequestDTO request);
-        Task<bool> UpdateFloor(string id, FloorRequestDTO request);
-        Task DeleteFloor(string id);
+        Task<IEnumerable<RoomResponseDTO>> GetAllRooms();
+        Task<RoomResponseDTO?> GetRoomById(string id);
+        Task<RoomResponseDTO> AddRoom(RoomRequestDTO request);
+        Task<RoomResponseDTO> UpdateRoom(string restroomId, RoomRequestDTO request);
+        Task DeleteRoom(string id);
         #endregion
     }
 }

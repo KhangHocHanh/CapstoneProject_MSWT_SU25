@@ -74,13 +74,13 @@ namespace MSWT_API.Controllers
         }
 
         [HttpPut("{areaId}/{floorId}")]
-        public async Task<IActionResult> AddFloorToArea(string areaId, string floorId)
+        public async Task<IActionResult> AddFloorToArea(string areaId, string buildingId)
         {
             try
             {
-                var result = await _areaService.AddFloorToArea(areaId, floorId);
+                var result = await _areaService.AddBuildingToArea(areaId, buildingId);
                 if (!result)
-                    return BadRequest("Failed to add floor to area.");
+                    return BadRequest("Failed to add building to area.");
 
                 return Ok("Floor successfully added to area.");
             }

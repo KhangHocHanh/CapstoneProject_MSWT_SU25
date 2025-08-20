@@ -112,9 +112,9 @@ builder.Services.AddDbContext<SmartTrashBinandCleaningStaffManagementContext>(op
 //builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 //builder.Services.AddScoped<IRequestRepository, RequestRepository>();
 //builder.Services.AddScoped<IAssignmentRepository, AssignmentRepository>();
-//builder.Services.AddScoped<IAreaRepository, AreaRepository>();
-//builder.Services.AddScoped<IFloorRepository, FloorRepository>();
-//builder.Services.AddScoped<IRestroomRepository, RestroomRepository>();
+builder.Services.AddScoped<IAreaRepository, AreaRepository>();
+builder.Services.AddScoped<IBuildingRepository, BuildingRepository>();
+builder.Services.AddScoped<IRoomRepository, RoomRepository>();
 //builder.Services.AddScoped<IShiftRepository, ShiftRepository>();
 //builder.Services.AddScoped<ISensorRepository, SensorRepository>();
 //builder.Services.AddScoped<ITrashBinRepository, TrashBinRepository>();
@@ -134,9 +134,9 @@ builder.Services.AddDbContext<SmartTrashBinandCleaningStaffManagementContext>(op
 //builder.Services.AddScoped<IRoleService, RoleService>();
 //builder.Services.AddScoped<IRequestService, RequestService>();
 //builder.Services.AddScoped<IAssignmentService, AssignmentService>();
-////builder.Services.AddScoped<IAreaService, AreaService>();
-////builder.Services.AddScoped<IFloorService, FloorService>();
-////builder.Services.AddScoped<IRestroomService, RestroomService>();
+builder.Services.AddScoped<IAreaService, AreaService>();
+builder.Services.AddScoped<IBuildingService, BuildingService>();
+builder.Services.AddScoped<IRoomService, RoomService>();
 //builder.Services.AddScoped<IShiftService, ShiftService>();
 //builder.Services.AddScoped<ISensorService, SensorService>();
 //builder.Services.AddScoped<ITrashBinService, TrashBinService>();

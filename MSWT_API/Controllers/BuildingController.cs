@@ -6,52 +6,52 @@ using MSWT_Services.IServices;
 
 namespace MSWT_API.Controllers
 {
-    [Route("api/floors")]
+    [Route("api/buildings")]
     [ApiController]
-    public class FloorController : Controller
+    public class BuildingController : Controller
     {
-            private readonly IFloorService _floorService;
+            private readonly IBuildingService _buildingService;
 
-            public FloorController(IFloorService floorService)
+            public BuildingController(IBuildingService floorService)
             {
-            _floorService = floorService;
+            _buildingService = floorService;
             }
 
             #region CRUD Category
             [HttpPost]
-            public async Task<ActionResult<FloorResponseDTO>> CreateFloor([FromBody] FloorRequestDTO request)
+            public async Task<ActionResult<BuildingResponseDTO>> CreateBuilding([FromBody] BuildingRequestDTO request)
             {
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
                     
-                var createdFloor = await _floorService.CreateFloorAsync(request);
-                return Ok(createdFloor);
+                var createdBuilding = await _buildingService.CreateBuildingAsync(request);
+                return Ok(createdBuilding);
             }
 
             [HttpGet]
-            public async Task<ActionResult<IEnumerable<FloorResponseDTO>>> GetAll()
+            public async Task<ActionResult<IEnumerable<BuildingResponseDTO>>> GetAll()
             {
-                return Ok(await _floorService.GetAllFloors());
+                return Ok(await _buildingService.GetAllBuildings());
             }
 
             [HttpGet("{id}")]
-            public async Task<ActionResult<FloorResponseDTO>> GetById(string id)
+            public async Task<ActionResult<BuildingResponseDTO>> GetById(string id)
             {
-                var floor = await _floorService.GetFloorById(id);
-                if (floor == null)
+                var building = await _buildingService.GetBuildingById(id);
+                if (building == null)
                     return NotFound();
-                return Ok(floor);
+                return Ok(building);
             }
 
             [HttpPut("{id}")]
-            public async Task<IActionResult> UpdateFloor(string id, [FromBody] FloorRequestDTO request)
+            public async Task<IActionResult> UpdateFloor(string id, [FromBody] BuildingRequestDTO request)
             {
                 try
                 {
-                    var result = await _floorService.UpdateFloor(id, request);
+                    var result = await _buildingService.UpdateBuilding(id, request);
                     if (!result)
                     {
-                        return NotFound($"Floor with ID {id} not found.");
+                        return NotFound($"Building with ID {id} not found.");
                     }
 
                     return Ok(); // or Ok() if you prefer returning a success message
@@ -66,7 +66,7 @@ namespace MSWT_API.Controllers
             {
                 try
                 {
-                    await _floorService.DeleteFloor(id);
+                    await _buildingService.DeleteBuilding(id);
                     return NoContent(); // 204 No Content if success
                 }
                 catch (Exception ex)

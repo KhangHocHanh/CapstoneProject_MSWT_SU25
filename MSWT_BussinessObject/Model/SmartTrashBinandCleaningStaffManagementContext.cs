@@ -312,6 +312,7 @@ public partial class SmartTrashBinandCleaningStaffManagementContext : DbContext
             entity.Property(e => e.Status).HasMaxLength(50);
             entity.Property(e => e.SupervisorId).HasMaxLength(50);
             entity.Property(e => e.WorkerGroupId).HasMaxLength(50);
+            entity.Property(e => e.AreaId).HasMaxLength(50);
 
             entity.HasOne(d => d.BackupForUser).WithMany(p => p.ScheduleDetails)
                 .HasForeignKey(d => d.BackupForUserId)

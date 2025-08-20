@@ -33,6 +33,8 @@ public partial class ScheduleDetail
 
     public string? Comment { get; set; }
 
+    public string? AreaId { get; set; }
+
     public virtual User? BackupForUser { get; set; }
 
     public virtual GroupAssignment? GroupAssignment { get; set; }
