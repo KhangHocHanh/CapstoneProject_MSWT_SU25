@@ -30,24 +30,32 @@ namespace MSWT_Services.Services
             return _mapper.Map<WorkGroupMemberResponse>(workGroupMember);
         }
 
-        // ✅ Return supervisor + member list
-        public async Task<(string? SupervisorUserId, List<(string WorkGroupMemberId, string UserId)> Members)>
-            GetSupervisorAndMembersByWorkGroupIdAsync(string workGroupId)
+        public async Task<(string? SupervisorUserId, List<WorkGroupMemberResponse> Members)>
+    GetSupervisorAndMembersByWorkGroupIdAsync(string workGroupId)
         {
             var members = await _workGroupMemberRepository.GetByWorkGroupIdAsync(workGroupId);
 
             if (members == null || !members.Any())
                 throw new Exception("No members found for the given WorkGroupId.");
 
-            var memberList = members
-                .Where(m => !string.IsNullOrEmpty(m.UserId))
-                .Select(m => (m.WorkGroupMemberId, m.UserId!))
-                .ToList();
+            // map entities -> responses (FullName comes from User.FullName via profile)
+            var memberResponses = members.Where(m => !string.IsNullOrEmpty(m.UserId))
+    .Select(m => new WorkGroupMemberResponse
+    {
+        WorkGroupMemberId = m.WorkGroupMemberId,
+        WorkGroupId = m.WorkGroupId,
+        UserId = m.UserId,
+        RoleId = m.RoleId,
+        JoinedAt = m.JoinedAt,
+        LeftAt = m.LeftAt,
+        FullName = m.User?.FullName
+    }).ToList();
+            var supervisor = memberResponses.FirstOrDefault(m => m.RoleId == "RL03");
 
-            var supervisor = members.FirstOrDefault(m => m.RoleId == "RL03");
-
-            return (supervisor?.UserId, memberList);
+            return (supervisor?.UserId, memberResponses);
         }
+
+
 
         // ✅ Return full mapped response DTO list
         public async Task<IEnumerable<WorkGroupMemberResponse>> GetMembersByWorkGroupIdAsync(string workGroupId)

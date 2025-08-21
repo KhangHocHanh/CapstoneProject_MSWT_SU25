@@ -50,34 +50,39 @@ namespace MSWT_Services.Services
             _workGroupMemberService = workGroupMemberService;
         }
 
-        public async Task<ScheduleDetailsResponseDTO> CreateScheduleDetailFromScheduleAsync(string scheduleId, ScheduleDetailsRequestDTO detailDto)
+        public async Task<ScheduleDetailsResponseDTO> CreateScheduleDetailFromScheduleAsync(
+    string scheduleId, ScheduleDetailsRequestDTO detailDto)
         {
-            var schedule = await _scheduleRepository.GetByIdAsync(scheduleId);
-            if (schedule == null)
-                throw new Exception("Schedule not found.");
+            var schedule = await _scheduleRepository.GetByIdAsync(scheduleId)
+                ?? throw new Exception("Schedule not found.");
 
-            //if (!string.IsNullOrEmpty(detailDto.AssignmentId))
-            //{
-            //    var assignment = await _assignmentRepository.GetByIdAsync(detailDto.AssignmentId);
-            //    if (assignment == null)
-            //        throw new Exception("Assignment not found.");
-            //}
-            //var startDate = schedule.StartDate.GetValueOrDefault();
-            //var endDate = schedule.EndDate.GetValueOrDefault();
-
-            var (supervisorId, members) = await _workGroupMemberService.GetSupervisorAndMembersByWorkGroupIdAsync(detailDto.WorkerGroupId);
+            var (supervisorId, members) =
+                await _workGroupMemberService.GetSupervisorAndMembersByWorkGroupIdAsync(detailDto.WorkerGroupId);
 
             if (supervisorId == null)
                 throw new Exception("No supervisor (RL03) found in this work group.");
 
             var scheduleDetail = _mapper.Map<ScheduleDetail>(detailDto);
-            scheduleDetail.Schedule = schedule;
             scheduleDetail.ScheduleId = scheduleId;
             scheduleDetail.SupervisorId = supervisorId;
 
+            if (scheduleDetail.StartTime.HasValue)
+            {
+                scheduleDetail.EndTime = scheduleDetail.StartTime.Value.AddMinutes(140);
+            }
+
             await _scheduleDetailsRepository.AddAsync(scheduleDetail);
-            return _mapper.Map<ScheduleDetailsResponseDTO>(scheduleDetail);
+
+            // map base entity -> DTO, then enrich
+            var response = _mapper.Map<ScheduleDetailsResponseDTO>(scheduleDetail);
+            response.SupervisorId = supervisorId;
+            response.Workers = members;   // <-- already includes FullName
+
+            return response;
         }
+
+
+
 
 
         public async Task DeleteSchedule(string id)
@@ -88,13 +93,50 @@ namespace MSWT_Services.Services
         public async Task<IEnumerable<ScheduleDetailsResponseDTO>> GetAllSchedule()
         {
             var scheduleDetails = await _scheduleDetailsRepository.GetAllAsync();
-            return _mapper.Map<IEnumerable<ScheduleDetailsResponseDTO>>(scheduleDetails);
+
+            var responses = new List<ScheduleDetailsResponseDTO>();
+
+            foreach (var detail in scheduleDetails)
+            {
+                var dto = _mapper.Map<ScheduleDetailsResponseDTO>(detail);
+
+                if (!string.IsNullOrEmpty(detail.WorkerGroupId))
+                {
+                    var (supervisorId, members) =
+                        await _workGroupMemberService.GetSupervisorAndMembersByWorkGroupIdAsync(detail.WorkerGroupId);
+
+                    dto.SupervisorId = supervisorId;
+                    dto.Workers = members;  // <-- FullName is already populated
+
+                    var supervisor = members.FirstOrDefault(m => m.UserId == supervisorId);
+                    dto.SupervisorName = supervisor?.FullName;
+                }
+
+                responses.Add(dto);
+            }
+
+            return responses;
         }
+
+
+
 
         public async Task<ScheduleDetailsResponseDTO> GetScheduleById(string id)
         {
             var scheduleDetails = await _scheduleDetailsRepository.GetByIdAsync(id);
-            return _mapper.Map<ScheduleDetailsResponseDTO>(scheduleDetails);
+            var dto = _mapper.Map<ScheduleDetailsResponseDTO>(scheduleDetails);
+
+            if (!string.IsNullOrEmpty(scheduleDetails.WorkerGroupId))
+            {
+                var (supervisorId, members) =
+                    await _workGroupMemberService.GetSupervisorAndMembersByWorkGroupIdAsync(scheduleDetails.WorkerGroupId);
+                dto.SupervisorId = supervisorId;
+                dto.Workers = members;
+                var supervisor = members.FirstOrDefault(m => m.UserId == supervisorId);
+                dto.SupervisorName = supervisor?.FullName;
+            }
+
+            return dto;
         }
 
         public async Task UpdateSchedule(ScheduleDetail scheduleDetail)

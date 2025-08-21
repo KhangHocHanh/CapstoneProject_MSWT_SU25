@@ -21,6 +21,8 @@ namespace MSWT_BussinessObject.ResponseDTO
 
         public string? SupervisorId { get; set; }
 
+        public string? SupervisorName { get; set; }
+
         public string? Rating { get; set; }
 
         public string? WorkerGroupId { get; set; }
@@ -40,5 +42,7 @@ namespace MSWT_BussinessObject.ResponseDTO
         public string? AreaId { get; set; }
 
         public ScheduleResponseDTO Schedule { get; set; }
+
+        public List<WorkGroupMemberResponse> Workers { get; set; } = new();
     }
 }

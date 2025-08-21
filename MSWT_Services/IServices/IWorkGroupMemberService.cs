@@ -10,7 +10,7 @@ namespace MSWT_Services.IServices
     public interface IWorkGroupMemberService
     {
         Task<WorkGroupMemberResponse> GetWorkGroupMemberById(string id);
-        Task<(string? SupervisorUserId, List<(string WorkGroupMemberId, string UserId)> Members)> GetSupervisorAndMembersByWorkGroupIdAsync(string workGroupId);
+        Task<(string? SupervisorUserId, List<WorkGroupMemberResponse> Members)> GetSupervisorAndMembersByWorkGroupIdAsync(string workGroupId);
         Task<IEnumerable<WorkGroupMemberResponse>> GetMembersByWorkGroupIdAsync(string workGroupId);
     }
 }

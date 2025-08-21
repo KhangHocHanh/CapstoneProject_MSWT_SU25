@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MSWT_BussinessObject.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,5 +20,7 @@ namespace MSWT_BussinessObject.ResponseDTO
         public DateTime? JoinedAt { get; set; }
 
         public DateTime? LeftAt { get; set; }
+
+        public string? FullName { get; set; }
     }
 }

@@ -48,6 +48,8 @@ namespace MSWT_Repositories.Repository
                 .Include(sd => sd.Schedule)
                 .Include(sd => sd.GroupAssignment)
                 .Include(sd => sd.WorkerGroup)
+                 .ThenInclude(wg => wg.WorkGroupMembers)
+                    .ThenInclude(wgm => wgm.User)
                 .ToListAsync();
         }
 

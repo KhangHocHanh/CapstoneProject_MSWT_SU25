@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MSWT_BussinessObject.Model;
+using MSWT_BussinessObject.ResponseDTO;
 using MSWT_Repositories.IRepository;
 using System;
 using System.Collections.Generic;
@@ -42,8 +43,8 @@ namespace MSWT_Repositories.Repository
             async Task<IEnumerable<WorkGroupMember>> IWorkGroupMemberRepository.GetAllAsync()
             {
                 return await _context.WorkGroupMembers
-
-            .ToListAsync();
+                    .Include(m => m.User)
+                    .ToListAsync();
             }
 
             public async Task UpdateAsync(WorkGroupMember workGroupMember)
@@ -54,9 +55,13 @@ namespace MSWT_Repositories.Repository
 
             public async Task<IEnumerable<WorkGroupMember>> GetByWorkGroupIdAsync(string workGroupId)
             {
-                return await _context.WorkGroupMembers
+                var members = await _context.WorkGroupMembers
+                    .Include(m => m.User)
                     .Where(m => m.WorkGroupId == workGroupId)
                     .ToListAsync();
-            }   
-        }
+
+            return members;
+            }
+
+    }
 }

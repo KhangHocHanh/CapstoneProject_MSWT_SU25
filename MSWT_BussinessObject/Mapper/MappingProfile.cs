@@ -88,7 +88,8 @@ namespace MSWT_BussinessObject.Mapper
             CreateMap<Alert, AlertTrashBinDTO>()
                 .ForMember(dest => dest.AreaName, opt => opt.MapFrom(src => src.TrashBin.Area.AreaName));
 
-            CreateMap<ScheduleDetail, ScheduleDetailsResponseDTO>();
+            CreateMap<ScheduleDetail, ScheduleDetailsResponseDTO>()
+                .ForMember(dest => dest.Workers, opt => opt.MapFrom(src => src.WorkerGroup.WorkGroupMembers));
             CreateMap<Schedule, ScheduleResponseDTO>();
             CreateMap<Assignment, AssignmentResponseDTO>();
             CreateMap<Building, BuildingResponseDTO>();
@@ -98,11 +99,15 @@ namespace MSWT_BussinessObject.Mapper
             CreateMap<Shift, ShiftResponseDTO>();
             CreateMap<TrashBin, TrashBinResponseDTO>();
             CreateMap<ShiftSwapRequest, ShiftSwapResponseDTO>()
-    .ForMember(dest => dest.TargetUserId, opt => opt.MapFrom(src => src.TargetUserId ?? string.Empty))
-    .ForMember(dest => dest.TargetUserPhone, opt => opt.MapFrom(src => src.TargetUserPhone ?? string.Empty))
-    .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status ?? string.Empty))
-    .ForMember(dest => dest.Reason, opt => opt.MapFrom(src => src.Reason ?? string.Empty));
+                .ForMember(dest => dest.TargetUserId, opt => opt.MapFrom(src => src.TargetUserId ?? string.Empty))
+                .ForMember(dest => dest.TargetUserPhone, opt => opt.MapFrom(src => src.TargetUserPhone ?? string.Empty))
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status ?? string.Empty))
+                .ForMember(dest => dest.Reason, opt => opt.MapFrom(src => src.Reason ?? string.Empty));
             CreateMap<ShiftSwapRequest, ShiftSwapResponseDTO>();
+            CreateMap<WorkGroupMember, WorkGroupMemberResponse>()
+                .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.User.FullName));
+
+
             #region User
 
             CreateMap<UserCreateDto, User>()
