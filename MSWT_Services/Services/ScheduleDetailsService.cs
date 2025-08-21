@@ -28,6 +28,7 @@ namespace MSWT_Services.Services
         private readonly IMapper _mapper;
         //private readonly IScheduleDetailRatingRepository _scheduleDetailRatingRepository;
         private readonly ICloudinaryService _cloudinary;
+        private readonly IWorkGroupMemberService _workGroupMemberService;
 
         public ScheduleDetailsService(IScheduleDetailsRepository scheduleDetailsRepository, 
             IUserRepository userRepository, 
@@ -35,7 +36,8 @@ namespace MSWT_Services.Services
             IMapper mapper, 
             //IScheduleDetailRatingRepository scheduleDetailRatingRepository, 
             IAssignmentRepository assignmentRepository, 
-            ICloudinaryService cloudinary
+            ICloudinaryService cloudinary,
+            IWorkGroupMemberService workGroupMemberService
             )
         {
             _scheduleDetailsRepository = scheduleDetailsRepository;
@@ -45,6 +47,7 @@ namespace MSWT_Services.Services
             //_scheduleDetailRatingRepository = scheduleDetailRatingRepository;
             _assignmentRepository = assignmentRepository;
             _cloudinary = cloudinary;
+            _workGroupMemberService = workGroupMemberService;
         }
 
         public async Task<ScheduleDetailsResponseDTO> CreateScheduleDetailFromScheduleAsync(string scheduleId, ScheduleDetailsRequestDTO detailDto)
@@ -62,16 +65,15 @@ namespace MSWT_Services.Services
             //var startDate = schedule.StartDate.GetValueOrDefault();
             //var endDate = schedule.EndDate.GetValueOrDefault();
 
-            //var members = await _workGroupMemberRepository.GetByWorkGroupIdAsync(detailDto.WorkerGroupId);
+            var (supervisorId, members) = await _workGroupMemberService.GetSupervisorAndMembersByWorkGroupIdAsync(detailDto.WorkerGroupId);
 
-            //var supervisor = members.FirstOrDefault(m => m.RoleId == "RL03");
-            //if (supervisor == null)
-            //    throw new Exception("No supervisor found in worker group.");
+            if (supervisorId == null)
+                throw new Exception("No supervisor (RL03) found in this work group.");
 
             var scheduleDetail = _mapper.Map<ScheduleDetail>(detailDto);
             scheduleDetail.Schedule = schedule;
             scheduleDetail.ScheduleId = scheduleId;
-            //scheduleDetail.SupervisorId = detailDto.WorkerGroupId.FirstOrDefault
+            scheduleDetail.SupervisorId = supervisorId;
 
             await _scheduleDetailsRepository.AddAsync(scheduleDetail);
             return _mapper.Map<ScheduleDetailsResponseDTO>(scheduleDetail);

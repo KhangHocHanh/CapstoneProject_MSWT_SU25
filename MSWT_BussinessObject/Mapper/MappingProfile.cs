@@ -129,8 +129,8 @@ namespace MSWT_BussinessObject.Mapper
             CreateMap<TrashBin, TrashbinWithAreaNameDTO>()
     .ForMember(dest => dest.AreaName, opt => opt.MapFrom(src => src.Area != null ? src.Area.AreaName : null));
             #endregion
-          
 
+            CreateMap<WorkGroupMember, WorkGroupMemberResponse>();
             CreateMap<Request, RequestResponseDTO>()
                 .ForMember(dest => dest.WorkerName, opt => opt.MapFrom(src => src.Worker.FullName));
         }

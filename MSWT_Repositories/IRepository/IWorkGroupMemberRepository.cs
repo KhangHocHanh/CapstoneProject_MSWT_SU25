@@ -9,6 +9,11 @@ namespace MSWT_Repositories.IRepository
 {
     public interface IWorkGroupMemberRepository : IGenericRepository<WorkGroupMember>
     {
-
+        Task<WorkGroupMember> GetByIdAsync(string id);
+        Task AddAsync(WorkGroupMember workGroupMember);
+        Task DeleteAsync(string id);
+        Task<IEnumerable<WorkGroupMember>> GetAllAsync();
+        Task UpdateAsync(WorkGroupMember workGroupMember);
+        Task<IEnumerable<WorkGroupMember>> GetByWorkGroupIdAsync(string workGroupId);
     }
 }

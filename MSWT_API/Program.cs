@@ -128,6 +128,7 @@ builder.Services.AddScoped<IScheduleDetailsRepository, ScheduleDetailsRepository
 //builder.Services.AddScoped<IShiftSwapRepository, ShiftSwapRepository>();
 //builder.Services.AddScoped<IAttendanceRecordRepository, AttendanceRecordRepository>();
 //builder.Services.AddScoped<IHolidayRepository, HolidayRepository>();
+builder.Services.AddScoped<IWorkGroupMemberRepository, WorkGroupMemberRepository>();
 
 // Đăng ký services
 builder.Services.AddScoped<IUserService, UserService>();
@@ -152,6 +153,7 @@ builder.Services.AddScoped<ICloudinaryService, CloudinaryService>();
 ////builder.Services.AddHostedService<UserStatusUpdateService>();
 ////builder.Services.AddScoped<IAttendanceRecordService, AttendanceRecordService>();
 //builder.Services.AddScoped<IHolidayService, HolidayService>();
+builder.Services.AddScoped<IWorkGroupMemberService, WorkGroupMemberService>();
 
 
 builder.Services.Configure<CloudinarySettings>(
