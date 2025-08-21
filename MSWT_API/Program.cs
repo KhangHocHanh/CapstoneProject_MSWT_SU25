@@ -99,29 +99,29 @@ builder.Services.AddDbContext<SmartTrashBinandCleaningStaffManagementContext>(op
         options.UseSqlServer(builder.Configuration.GetConnectionString("DB")));
 
 ////Đăng ký DI (Dependency Injection)
-//builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-//builder.Services.AddScoped<IJWTService, JWTService>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IJWTService, JWTService>();
 //builder.Services.AddHostedService<LeaveStatusUpdateService>();
-//builder.Logging.ClearProviders();
-//builder.Logging.AddConsole(); // hoặc AddFile, AddDebug, tùy nhu cầu
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole(); // hoặc AddFile, AddDebug, tùy nhu cầu
 
 
 
 //// Đăng ký repositories
-//builder.Services.AddScoped<IUserRepository, UserRepository>();
-//builder.Services.AddScoped<IRoleRepository, RoleRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 //builder.Services.AddScoped<IRequestRepository, RequestRepository>();
-//builder.Services.AddScoped<IAssignmentRepository, AssignmentRepository>();
+builder.Services.AddScoped<IAssignmentRepository, AssignmentRepository>();
 builder.Services.AddScoped<IAreaRepository, AreaRepository>();
 builder.Services.AddScoped<IBuildingRepository, BuildingRepository>();
 builder.Services.AddScoped<IRoomRepository, RoomRepository>();
-//builder.Services.AddScoped<IShiftRepository, ShiftRepository>();
+builder.Services.AddScoped<IShiftRepository, ShiftRepository>();
 //builder.Services.AddScoped<ISensorRepository, SensorRepository>();
 //builder.Services.AddScoped<ITrashBinRepository, TrashBinRepository>();
 //builder.Services.AddScoped<ILeafRepository, LeafRepository>();
 //builder.Services.AddScoped<IReportRepository, ReportRepository>();
-//builder.Services.AddScoped<IScheduleRepository, ScheduleRepository>();
-//builder.Services.AddScoped<IScheduleDetailsRepository, ScheduleDetailsRepository>();
+builder.Services.AddScoped<IScheduleRepository, ScheduleRepository>();
+builder.Services.AddScoped<IScheduleDetailsRepository, ScheduleDetailsRepository>();
 //builder.Services.AddScoped<IAlertRepository, AlertRepository>();
 //builder.Services.AddScoped<ISensorBinRepository, SensorBinRepository>();
 //builder.Services.AddScoped<IScheduleDetailRatingRepository, ScheduleDetailRatingRepository>();
@@ -130,23 +130,23 @@ builder.Services.AddScoped<IRoomRepository, RoomRepository>();
 //builder.Services.AddScoped<IHolidayRepository, HolidayRepository>();
 
 // Đăng ký services
-//builder.Services.AddScoped<IUserService, UserService>();
-//builder.Services.AddScoped<IRoleService, RoleService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IRoleService, RoleService>();
 //builder.Services.AddScoped<IRequestService, RequestService>();
-//builder.Services.AddScoped<IAssignmentService, AssignmentService>();
+builder.Services.AddScoped<IAssignmentService, AssignmentService>();
 builder.Services.AddScoped<IAreaService, AreaService>();
 builder.Services.AddScoped<IBuildingService, BuildingService>();
 builder.Services.AddScoped<IRoomService, RoomService>();
-//builder.Services.AddScoped<IShiftService, ShiftService>();
+builder.Services.AddScoped<IShiftService, ShiftService>();
 //builder.Services.AddScoped<ISensorService, SensorService>();
 //builder.Services.AddScoped<ITrashBinService, TrashBinService>();
 //builder.Services.AddScoped<ILeaveService, LeaveService>();
 //builder.Services.AddScoped<IReportService, ReportService>();
-//builder.Services.AddScoped<IScheduleService, ScheduleService>();
-////builder.Services.AddScoped<IScheduleDetailsService, ScheduleDetailsService>();
-////builder.Services.AddScoped<IAlertService, AlertService>();
+builder.Services.AddScoped<IScheduleService, ScheduleService>();
+builder.Services.AddScoped<IScheduleDetailsService, ScheduleDetailsService>();
+//builder.Services.AddScoped<IAlertService, AlertService>();
 //builder.Services.AddScoped<ISensorBinService, SensorBinService>();
-//builder.Services.AddScoped<ICloudinaryService, CloudinaryService>();
+builder.Services.AddScoped<ICloudinaryService, CloudinaryService>();
 ////builder.Services.AddScoped<IShiftSwapService, ShiftSwapService>();
 //builder.Services.AddHostedService<ScheduleDetailsStatusUpdateService>();
 ////builder.Services.AddHostedService<UserStatusUpdateService>();

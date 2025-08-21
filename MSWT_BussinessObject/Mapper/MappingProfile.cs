@@ -74,7 +74,7 @@ namespace MSWT_BussinessObject.Mapper
 
             #endregion
 
-
+            CreateMap<ScheduleDetailsRequestDTO, ScheduleDetail>();
             CreateMap<RoomRequestDTO, Room>();
             CreateMap<AreaRequestDTO, Area>();
             CreateMap<BuildingRequestDTO, Building>();
@@ -88,9 +88,10 @@ namespace MSWT_BussinessObject.Mapper
             CreateMap<Alert, AlertTrashBinDTO>()
                 .ForMember(dest => dest.AreaName, opt => opt.MapFrom(src => src.TrashBin.Area.AreaName));
 
+            CreateMap<ScheduleDetail, ScheduleDetailsResponseDTO>();
+            CreateMap<Schedule, ScheduleResponseDTO>();
             CreateMap<Assignment, AssignmentResponseDTO>();
             CreateMap<Building, BuildingResponseDTO>();
-
             CreateMap<Room, RoomResponseDTO>();
             CreateMap<Area, AreaResponseDTO>()
                 .ForMember(dest => dest.Rooms, opt => opt.MapFrom(src => src.Rooms));
