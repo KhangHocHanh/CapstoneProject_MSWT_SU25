@@ -51,5 +51,12 @@ namespace MSWT_Repositories.Repository
             _context.Assignments.Update(assignment);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<IEnumerable<Assignment>> GetByGroupAssignmentIdAsync(string groupAssignmentId)
+        {
+            return await _context.Assignments
+                .Where(a => a.GroupAssignmentId == groupAssignmentId)
+                .ToListAsync();
+        }
     }
 }
