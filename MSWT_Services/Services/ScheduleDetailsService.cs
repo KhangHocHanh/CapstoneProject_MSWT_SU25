@@ -24,7 +24,7 @@ namespace MSWT_Services.Services
         private readonly IScheduleDetailsRepository _scheduleDetailsRepository;
         private readonly IScheduleRepository _scheduleRepository;
         private readonly IUserRepository _userRepository;
-        private readonly IAssignmentRepository _assignmentRepository;
+        private readonly IAssignmentService _assignmentService;
         private readonly IMapper _mapper;
         //private readonly IScheduleDetailRatingRepository _scheduleDetailRatingRepository;
         private readonly ICloudinaryService _cloudinary;
@@ -33,9 +33,9 @@ namespace MSWT_Services.Services
         public ScheduleDetailsService(IScheduleDetailsRepository scheduleDetailsRepository, 
             IUserRepository userRepository, 
             IScheduleRepository scheduleRepository, 
-            IMapper mapper, 
+            IMapper mapper,
             //IScheduleDetailRatingRepository scheduleDetailRatingRepository, 
-            IAssignmentRepository assignmentRepository, 
+            IAssignmentService assignmentService, 
             ICloudinaryService cloudinary,
             IWorkGroupMemberService workGroupMemberService
             )
@@ -45,7 +45,7 @@ namespace MSWT_Services.Services
             _scheduleRepository = scheduleRepository;
             _mapper = mapper;
             //_scheduleDetailRatingRepository = scheduleDetailRatingRepository;
-            _assignmentRepository = assignmentRepository;
+            _assignmentService = assignmentService;
             _cloudinary = cloudinary;
             _workGroupMemberService = workGroupMemberService;
         }
@@ -93,28 +93,31 @@ namespace MSWT_Services.Services
         public async Task<IEnumerable<ScheduleDetailsResponseDTO>> GetAllSchedule()
         {
             var scheduleDetails = await _scheduleDetailsRepository.GetAllAsync();
-
             var responses = new List<ScheduleDetailsResponseDTO>();
-
             foreach (var detail in scheduleDetails)
             {
                 var dto = _mapper.Map<ScheduleDetailsResponseDTO>(detail);
 
+                // Existing workgroup logic
                 if (!string.IsNullOrEmpty(detail.WorkerGroupId))
                 {
                     var (supervisorId, members) =
                         await _workGroupMemberService.GetSupervisorAndMembersByWorkGroupIdAsync(detail.WorkerGroupId);
-
                     dto.SupervisorId = supervisorId;
-                    dto.Workers = members;  // <-- FullName is already populated
-
+                    dto.Workers = members;
                     var supervisor = members.FirstOrDefault(m => m.UserId == supervisorId);
                     dto.SupervisorName = supervisor?.FullName;
                 }
 
+                // NEW: Add assignments if GroupAssignmentId exists
+                if (!string.IsNullOrEmpty(detail.GroupAssignmentId))
+                {
+                    var assignments = await _assignmentService.GetAssignmentsByGroupAssignmentIdAsync(detail.GroupAssignmentId);
+                    dto.Assignments = assignments.ToList();
+                }
+
                 responses.Add(dto);
             }
-
             return responses;
         }
 

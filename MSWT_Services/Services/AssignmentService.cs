@@ -63,5 +63,15 @@ namespace MSWT_Services.Services
             _mapper.Map(assignment, existingAss);
             await _assignmentRepository.UpdateAsync(existingAss);
         }
+
+        public async Task<IEnumerable<AssignmentResponseDTO>> GetAssignmentsByGroupAssignmentIdAsync(string groupAssignmentId)
+        {
+            var assignments = await _assignmentRepository.GetByGroupAssignmentIdAsync(groupAssignmentId);
+
+            if (assignments == null || !assignments.Any())
+                return new List<AssignmentResponseDTO>();
+
+            return _mapper.Map<IEnumerable<AssignmentResponseDTO>>(assignments);
+        }
     }
 }

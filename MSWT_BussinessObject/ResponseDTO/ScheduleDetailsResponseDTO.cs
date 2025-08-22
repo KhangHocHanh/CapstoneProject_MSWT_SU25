@@ -42,7 +42,8 @@ namespace MSWT_BussinessObject.ResponseDTO
         public string? AreaId { get; set; }
 
         public ScheduleResponseDTO Schedule { get; set; }
-
         public List<WorkGroupMemberResponse> Workers { get; set; } = new();
+        public List<AssignmentResponseDTO> Assignments { get; set; } = new();
+
     }
 }
