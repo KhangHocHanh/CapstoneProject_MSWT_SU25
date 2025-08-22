@@ -139,6 +139,12 @@ namespace MSWT_Services.Services
                 dto.SupervisorName = supervisor?.FullName;
             }
 
+            if (!string.IsNullOrEmpty(scheduleDetails.GroupAssignmentId))
+            {
+                var assignments = await _assignmentService.GetAssignmentsByGroupAssignmentIdAsync(scheduleDetails.GroupAssignmentId);
+                dto.Assignments = assignments.ToList();
+            }
+
             return dto;
         }
 
@@ -237,25 +243,37 @@ namespace MSWT_Services.Services
             }
         }
 
-        public async Task<IEnumerable<ScheduleDetailsResponseDTO>> SearchScheduleDetailsByUserIdAsync(string userId)
+        public async Task<IEnumerable<ScheduleDetailsResponseDTO>> GetSchedulesByUserIdAsync(string userId)
         {
-            try
+            var scheduleDetails = await _scheduleDetailsRepository.SearchByUserIdAsync(userId);
+            var responses = new List<ScheduleDetailsResponseDTO>();
+
+            foreach (var detail in scheduleDetails)
             {
-                var user = await _userRepository.GetByIdAsync(userId);
-                if (user == null)
-                    throw new Exception("User not found.");
+                var dto = _mapper.Map<ScheduleDetailsResponseDTO>(detail);
 
-                var results = await _scheduleDetailsRepository.SearchByUserIdAsync(userId);
+                // Get workgroup information
+                if (!string.IsNullOrEmpty(detail.WorkerGroupId))
+                {
+                    var (supervisorId, members) =
+                        await _workGroupMemberService.GetSupervisorAndMembersByWorkGroupIdAsync(detail.WorkerGroupId);
+                    dto.SupervisorId = supervisorId;
+                    dto.Workers = members;
+                    var supervisor = members.FirstOrDefault(m => m.UserId == supervisorId);
+                    dto.SupervisorName = supervisor?.FullName;
+                }
 
-                if (results == null || !results.Any())
-                    throw new Exception("No schedule details found for the user.");
+                // Get assignments if needed
+                if (!string.IsNullOrEmpty(detail.GroupAssignmentId))
+                {
+                    var assignments = await _assignmentService.GetAssignmentsByGroupAssignmentIdAsync(detail.GroupAssignmentId);
+                    dto.Assignments = assignments.ToList();
+                }
 
-                return _mapper.Map<IEnumerable<ScheduleDetailsResponseDTO>>(results);
+                responses.Add(dto);
             }
-            catch (Exception ex)
-            {
-                throw new Exception($"Error searching schedule details for user {userId}: {ex.Message}", ex);
-            }
+
+            return responses;
         }
 
         //public async Task<bool> CreateDailyRatingAsync(string userId, ScheduleDetailRatingCreateDTO dto)

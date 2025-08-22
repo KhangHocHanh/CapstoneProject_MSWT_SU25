@@ -66,6 +66,20 @@ namespace MSWT_API.Controllers
             return Ok(result);
         }
 
+        [HttpGet("scheduleDetails/{userId}")]
+        public async Task<IActionResult> GetSchedulesByUserId(string userId)
+        {
+            try
+            {
+                var schedules = await _scheduleDetailsService.GetSchedulesByUserIdAsync(userId);
+                return Ok(schedules);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Error retrieving schedules for user: {ex.Message}");
+            }
+        }
+
         //[HttpPut("{id}/assignments/{assignmentId}")]
         //public async Task<IActionResult> AddAssignmentToSchedule(string id, string assignmentId)
         //{
