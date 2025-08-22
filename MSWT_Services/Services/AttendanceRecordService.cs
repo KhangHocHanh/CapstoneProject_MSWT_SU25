@@ -275,8 +275,8 @@
 
 //        public async Task<IEnumerable<AttendanceRecordResponseDTO>> GetAllAttendanceRecordWithFullName()
 //        {
-//           var records = await _repo.GetAllWithUsersAsync();
-//           return _mapper.Map<IEnumerable<AttendanceRecordResponseDTO>>(records);
+//            var records = await _repo.GetAllWithUsersAsync();
+//            return _mapper.Map<IEnumerable<AttendanceRecordResponseDTO>>(records);
 //        }
 //    }
 //}
