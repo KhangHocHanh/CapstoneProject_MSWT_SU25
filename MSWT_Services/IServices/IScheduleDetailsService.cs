@@ -18,6 +18,7 @@ namespace MSWT_Services.IServices
         Task<IEnumerable<ScheduleDetailsResponseDTO>> GetAllSchedule();
         Task<ScheduleDetailsResponseDTO> GetScheduleById(string id);
         Task UpdateSchedule(ScheduleDetail scheduleDetail);
+        Task<IEnumerable<ScheduleDetailsResponseDTO>> GetSchedulesByUserIdAsync(string userId);
 
         //Task<bool> AddWorkerToSchedule(string id, string workerId);
         //Task<bool> AddSupervisorToSchedule(string id, string supervisorId);
