@@ -22,7 +22,7 @@ namespace MSWT_Services.Services
     {
         private readonly IAlertRepository _alertRepository;
         private readonly IMapper _mapper;
-        public AlertService(IAlertRepository alertRepository,IMapper mapper)
+        public AlertService(IAlertRepository alertRepository, IMapper mapper)
         {
             _alertRepository = alertRepository;
             _mapper = mapper;
@@ -45,7 +45,7 @@ namespace MSWT_Services.Services
             //await _alertRepository.AddAsync(request);
             // Lấy UserId quản lý thùng rác tại thời điểm gửi alert
             var userId = await _alertRepository.GetUserIdForTrashBinAtTimeAsync(
-                request.TrashBinId, request.TimeSend
+                request.TrashBinId, (DateTime)request.TimeSend
             );
 
             request.UserId = userId; // Nếu null thì vẫn giữ null
@@ -59,7 +59,7 @@ namespace MSWT_Services.Services
         {
             var alert = await _alertRepository.GetByIdAsync(alertId);
             if (alert == null) throw new Exception("Alert not found.");
-            alert.Status = AlertStatus.DaXuLy.ToDisplayString(); 
+            alert.Status = AlertStatus.DaXuLy.ToDisplayString();
             alert.ResolvedAt = TimeHelper.GetNowInVietnamTime(); // Cập nhật thời gian giải quyết
             await _alertRepository.UpdateAsync(alert);
 

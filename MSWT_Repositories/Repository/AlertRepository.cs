@@ -17,7 +17,7 @@ namespace MSWT_Repositories.Repository
         {
             _context = context;
         }
-        public async Task AddAsync(Alert alert)   
+        public async Task AddAsync(Alert alert)
         {
             _context.AddAsync(alert);
             await _context.SaveChangesAsync();
@@ -55,7 +55,7 @@ namespace MSWT_Repositories.Repository
             await _context.SaveChangesAsync();
         }
         public async Task<IEnumerable<Alert>> GetAlertsByUserId(string userId)
-        { 
+        {
             return await _context.Alerts
                 .Include(a => a.TrashBin)
                 .ThenInclude(tb => tb.Area)
@@ -66,16 +66,16 @@ namespace MSWT_Repositories.Repository
         public async Task<string?> GetUserIdForTrashBinAtTimeAsync(string trashBinId, DateTime alertTime)
         {
             var alertDateOnly = DateOnly.FromDateTime(alertTime);
-
-            return await (
-                from s in _context.Schedules
-                join sd in _context.ScheduleDetails on s.ScheduleId equals sd.ScheduleId
-                where s.TrashBinId == trashBinId
-                      && s.StartDate.HasValue && s.EndDate.HasValue
-                      && s.StartDate.Value <= alertDateOnly
-                      && s.EndDate.Value >= alertDateOnly
-                select sd.WorkerId
-            ).FirstOrDefaultAsync();
+            return null;
+            //return await (
+            //    from s in _context.Schedules
+            //    join sd in _context.ScheduleDetails on s.ScheduleId equals sd.ScheduleId
+            //    where s.TrashBinId == trashBinId
+            //          && s.StartDate.HasValue && s.EndDate.HasValue
+            //          && s.StartDate.Value <= alertDateOnly
+            //          && s.EndDate.Value >= alertDateOnly
+            //    select sd.WorkerId
+            //).FirstOrDefaultAsync();
         }
 
 

@@ -10,9 +10,10 @@ public partial class SensorBin
     public string BinId { get; set; } = null!;
 
     public string? Status { get; set; }
-    public float FillLevel { get; set; }  
 
-    public DateTime MeasuredAt { get; set; } = DateTime.UtcNow;
+    public double? FillLevel { get; set; }
+
+    public DateTime? MeasuredAt { get; set; }
 
     public virtual TrashBin Bin { get; set; } = null!;
 
