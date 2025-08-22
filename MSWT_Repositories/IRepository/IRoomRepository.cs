@@ -7,14 +7,14 @@ using System.Threading.Tasks;
 
 namespace MSWT_Repositories.IRepository
 {
-    public interface IFloorRepository : IGenericRepository<Floor>
+    public interface IRoomRepository
     {
         #region CRUD Category
-        Task<IEnumerable<Floor>> GetAllAsync();
-        Task<Floor> GetByIdAsync(string id);
-        Task AddAsync(Floor floor);
+        Task<IEnumerable<Room>> GetAllAsync();
+        Task<Room> GetByIdAsync(string id);
+        Task AddAsync(Room room);
         Task DeleteAsync(string id);
-        Task UpdateAsync(Floor floor);
+        Task UpdateAsync(Room restroom);
         #endregion
     }
 }

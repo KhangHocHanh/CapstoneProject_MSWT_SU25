@@ -19,20 +19,24 @@ namespace MSWT_Services.Services
     public class AreaService : IAreaService
     {
         private readonly IAreaRepository _areaRepository;
-        private readonly IFloorRepository _floorRepository;
+        private readonly IBuildingRepository _buildingRepository;
         private readonly IMapper _mapper;
-        public AreaService(IAreaRepository areaRepository, IMapper mapper, IFloorRepository floorRepository)
+        public AreaService(IAreaRepository areaRepository, IMapper mapper, IBuildingRepository buildingRepository)
         {
             _areaRepository = areaRepository;
             _mapper = mapper;
-            _floorRepository = floorRepository;
+            _buildingRepository = buildingRepository;
         }
 
         public async Task<AreaResponseDTO> CreateAreaAsync(AreaRequestDTO request)
         {
             var area = _mapper.Map<Area>(request);
             area.AreaId = Guid.NewGuid().ToString(); // Generate UID
-            area.IsAssigned = CustomEnum.Enum.AreaStatus.Assigned.ToString();
+
+            var building = await _buildingRepository.GetByIdAsync(area.BuildingId);
+            if (building == null)
+                throw new Exception("Building not found.");
+
             await _areaRepository.AddAsync(area);
             return _mapper.Map<AreaResponseDTO>(area);
         }
@@ -67,7 +71,7 @@ namespace MSWT_Services.Services
             await _areaRepository.UpdateAsync(existingArea);
         }
 
-        public async Task<bool> AddFloorToArea(string id, string floorId)
+        public async Task<bool> AddBuildingToArea(string id, string buildingId)
         {
             try
             {
@@ -75,12 +79,12 @@ namespace MSWT_Services.Services
                 if (area == null)
                     throw new Exception("Area not found.");
 
-                var floor = await _floorRepository.GetByIdAsync(floorId);
-                if (floor == null)
-                    throw new Exception("Floor not found.");
+                var building = await _buildingRepository.GetByIdAsync(buildingId);
+                if (building == null)
+                    throw new Exception("Building not found.");
 
-                area.Floor = floor;
-                area.IsAssigned = "yes";
+                area.Building = building;
+
                 await _areaRepository.UpdateAsync(area);
                 return true;
             }

@@ -19,12 +19,12 @@ namespace MSWT_Repositories.Repository
         public async Task<Schedule> GetByIdAsync(string id)
         {
             return await _context.Schedules
-        .Include(s => s.Area)
-            .ThenInclude(a => a.Restrooms)
-        .Include(s => s.Area)
-            .ThenInclude(a => a.TrashBins)
-        .Include(s => s.Restroom)
-        .Include(s => s.TrashBin)
+        //.Include(s => s.Area)
+            //.ThenInclude(a => a.Restrooms)
+        //.Include(s => s.Area)
+            //.ThenInclude(a => a.TrashBins)
+        //.Include(s => s.Restroom)
+        //.Include(s => s.TrashBin)
         .Include(s => s.Shift)
         .Include(s => s.ScheduleDetails)
         .FirstOrDefaultAsync(s => s.ScheduleId == id);
@@ -49,13 +49,14 @@ namespace MSWT_Repositories.Repository
         async Task<IEnumerable<Schedule>> IScheduleRepository.GetAllAsync()
         {
             return await _context.Schedules
-        .Include(s => s.Area)
-            .ThenInclude(a => a.Restrooms)
-        .Include(s => s.Area)
-            .ThenInclude(a => a.TrashBins)
-        .Include(s => s.Restroom)
-        .Include(s => s.TrashBin)
+        //.Include(s => s.Area)
+        //    .ThenInclude(a => a.Restrooms)
+        //.Include(s => s.Area)
+        //    .ThenInclude(a => a.TrashBins)
+        //.Include(s => s.Restroom)
+        //.Include(s => s.TrashBin)
         .Include(s => s.Shift)
+        //.Include(s => s.Supervisor)
         .Include(s => s.ScheduleDetails)
         .ToListAsync();
         }

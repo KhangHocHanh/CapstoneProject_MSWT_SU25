@@ -16,6 +16,6 @@ namespace MSWT_Services.IServices
         Task<IEnumerable<AreaResponseDTO>> GetAllAreasAsync();
         Task<AreaResponseDTO> GetAreaById(string id);
         Task UpdateArea(string areaId, AreaUpdateRequestDTO requestDto);
-        Task<bool> AddFloorToArea(string id, string floorId);
+        Task<bool> AddBuildingToArea(string id, string buildingId);
     }
 }

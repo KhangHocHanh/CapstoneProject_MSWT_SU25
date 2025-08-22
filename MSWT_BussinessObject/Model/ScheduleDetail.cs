@@ -19,9 +19,7 @@ public partial class ScheduleDetail
 
     public string? Rating { get; set; }
 
-    public string? WorkerId { get; set; }
-
-    public string? EvidenceImage { get; set; }
+    public string? WorkerGroupId { get; set; }
 
     public string? BackupForUserId { get; set; }
 
@@ -31,20 +29,17 @@ public partial class ScheduleDetail
 
     public string? IsBackup { get; set; }
 
-    public string? AssignmentId { get; set; }
+    public string? GroupAssignmentId { get; set; }
 
     public string? Comment { get; set; }
 
+    public string? AreaId { get; set; }
+
     public virtual User? BackupForUser { get; set; }
+
+    public virtual GroupAssignment? GroupAssignment { get; set; }
 
     public virtual Schedule? Schedule { get; set; }
 
-    public virtual User? Supervisor { get; set; }
-
-    public virtual User? Worker { get; set; }
-
-    public virtual Assignment Assignment { get; set; }
-
-    public virtual ICollection<ScheduleDetailRating>? Ratings { get; set; }
-
+    public virtual WorkerGroup? WorkerGroup { get; set; }
 }

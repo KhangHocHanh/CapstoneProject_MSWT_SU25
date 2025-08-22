@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace MSWT_BussinessObject.Model;
 
-public partial class Restroom
+public partial class Room
 {
-    public string RestroomId { get; set; } = null!;
+    public string RoomId { get; set; } = null!;
 
     public string? Description { get; set; }
 
@@ -13,11 +13,11 @@ public partial class Restroom
 
     public string? Status { get; set; }
 
-    public string? RestroomNumber { get; set; }
+    public string? RoomNumber { get; set; }
+
+    public string? RoomType { get; set; }
 
     public virtual Area? Area { get; set; }
-
-    public virtual ICollection<Schedule> Schedules { get; set; } = new List<Schedule>();
 
     public virtual ICollection<TrashBin> TrashBins { get; set; } = new List<TrashBin>();
 }

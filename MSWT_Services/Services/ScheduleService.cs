@@ -33,26 +33,11 @@ namespace MSWT_Services.Services
         }
         public async Task<ScheduleResponseDTO> CreateScheduleAsync(ScheduleRequestDTO request)
         {
-            var area = await _areaRepository.GetByIdAsync(request.AreaId);
-            if (area == null)
-            {
-                throw new Exception("Area does not exist.");
-            }
-
             var shift = await _shiftRepository.GetByIdAsync(request.ShiftId);
             if (shift == null)
             {
                 throw new Exception("Shift does not exist.");
             }
-
-            // Load supervisor with Role
-            var supervisor = await _userRepository.GetAll()
-                .Include(u => u.Role)
-                .FirstOrDefaultAsync(u => u.UserId == request.SupervisorId);
-            if (supervisor == null)
-                throw new Exception("Supervisor not found.");
-            if (supervisor.Role?.RoleName?.ToLower() != "supervisor")
-                throw new Exception("The selected user does not have the 'Supervisor' role.");
 
             var schedule = _mapper.Map<Schedule>(request);
             schedule.ScheduleId = Guid.NewGuid().ToString(); // Generate UID
@@ -88,25 +73,11 @@ namespace MSWT_Services.Services
                     throw new Exception("Schedule not found.");
                 }
 
-                var area = await _areaRepository.GetByIdAsync(request.AreaId);
-                if (area == null)
-                {
-                    throw new Exception("Area does not exist.");
-                }
-
                 var shift = await _shiftRepository.GetByIdAsync(request.ShiftId);
                 if (shift == null)
                 {
                     throw new Exception("Shift does not exist.");
                 }
-
-                var supervisor = await _userRepository.GetAll()
-                .Include(u => u.Role)
-                .FirstOrDefaultAsync(u => u.UserId == request.SupervisorId);
-                if (supervisor == null)
-                    throw new Exception("Supervisor not found.");
-                if (supervisor.Role?.RoleName?.ToLower() != "supervisor")
-                    throw new Exception("The selected user does not have the 'Supervisor' role.");
 
                 _mapper.Map(request, existingSchedule);
                 await _scheduleRepository.UpdateAsync(existingSchedule);

@@ -37,12 +37,12 @@ namespace MSWT_API.Controllers
             return Ok(schedule);
         }
 
-        [HttpGet("user/{userId}")]
-        public async Task<IActionResult> SearchScheduleDetailsByUserId(string userId)
-        {
-            var results = await _scheduleDetailsService.SearchScheduleDetailsByUserIdAsync(userId);
-            return Ok(results);
-        }
+        //[HttpGet("user/{userId}")]
+        //public async Task<IActionResult> SearchScheduleDetailsByUserId(string userId)
+        //{
+        //    var results = await _scheduleDetailsService.SearchScheduleDetailsByUserIdAsync(userId);
+        //    return Ok(results);
+        //}
 
 
         [HttpDelete("{id}")]
@@ -60,154 +60,154 @@ namespace MSWT_API.Controllers
         }
         #endregion
         [HttpPost("{scheduleId}/details")]
-        public async Task<IActionResult> CreateScheduleDetail(string scheduleId, [FromForm] ScheduleDetailsRequestDTO detailDto)
+        public async Task<IActionResult> CreateScheduleDetail(string scheduleId, [FromBody] ScheduleDetailsRequestDTO detailDto)
         {
             var result = await _scheduleDetailsService.CreateScheduleDetailFromScheduleAsync(scheduleId, detailDto);
             return Ok(result);
         }
 
-        [HttpPut("{id}/assignments/{assignmentId}")]
-        public async Task<IActionResult> AddAssignmentToSchedule(string id, string assignmentId)
-        {
-            try
-            {
-                var success = await _scheduleDetailsService.AddAssignmentToSchedule(id, assignmentId);
-                if (success)
-                    return Ok(new { message = "Assignment added to schedule detail successfully." });
+        //[HttpPut("{id}/assignments/{assignmentId}")]
+        //public async Task<IActionResult> AddAssignmentToSchedule(string id, string assignmentId)
+        //{
+        //    try
+        //    {
+        //        var success = await _scheduleDetailsService.AddAssignmentToSchedule(id, assignmentId);
+        //        if (success)
+        //            return Ok(new { message = "Assignment added to schedule detail successfully." });
 
-                return BadRequest("Could not assign the assignment.");
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { error = ex.Message });
-            }
-        }
+        //        return BadRequest("Could not assign the assignment.");
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return BadRequest(new { error = ex.Message });
+        //    }
+        //}
 
 
-        [HttpPut("user/worker/{id}")]
-        public async Task<IActionResult> AssignWorker(string id, [FromBody] string userId)
-        {
-            try
-            {
-                var result = await _scheduleDetailsService.AddWorkerToSchedule(id, userId);
-                if (!result)
-                    return BadRequest(new { message = "Failed to assign worker to schedule." });
+        //[HttpPut("user/worker/{id}")]
+        //public async Task<IActionResult> AssignWorker(string id, [FromBody] string userId)
+        //{
+        //    try
+        //    {
+        //        var result = await _scheduleDetailsService.AddWorkerToSchedule(id, userId);
+        //        if (!result)
+        //            return BadRequest(new { message = "Failed to assign worker to schedule." });
 
-                return Ok(new { message = "Worker assigned successfully." });
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { message = ex.Message });
-            }
-        }
+        //        return Ok(new { message = "Worker assigned successfully." });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return BadRequest(new { message = ex.Message });
+        //    }
+        //}
 
-        [HttpPut("user/supervisor/{id}")]
-        public async Task<IActionResult> AssignSupervisor(string id, [FromBody] string userId)
-        {
-            try
-            {
-                var result = await _scheduleDetailsService.AddSupervisorToSchedule(id, userId);
-                if (!result)
-                    return BadRequest(new { message = "Failed to assign supervisor to schedule." });
+        //[HttpPut("user/supervisor/{id}")]
+        //public async Task<IActionResult> AssignSupervisor(string id, [FromBody] string userId)
+        //{
+        //    try
+        //    {
+        //        var result = await _scheduleDetailsService.AddSupervisorToSchedule(id, userId);
+        //        if (!result)
+        //            return BadRequest(new { message = "Failed to assign supervisor to schedule." });
 
-                return Ok(new { message = "Supervisor assigned successfully." });
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { message = ex.Message });
-            }
-        }
+        //        return Ok(new { message = "Supervisor assigned successfully." });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return BadRequest(new { message = ex.Message });
+        //    }
+        //}
 
-        [HttpPut("scheduledetails/rating/{id}")]
-        public async Task<IActionResult> UpdateRating(string id, [FromBody] ScheduleDetailsUpdateRatingRequestDTO request)
-        {
-            try
-            {
-                var result = await _scheduleDetailsService.UpdateRating(id, request);
-                if (!result)
-                    return BadRequest(new { message = "Failed to rate scheduleDetails." });
+        //[HttpPut("scheduledetails/rating/{id}")]
+        //public async Task<IActionResult> UpdateRating(string id, [FromBody] ScheduleDetailsUpdateRatingRequestDTO request)
+        //{
+        //    try
+        //    {
+        //        var result = await _scheduleDetailsService.UpdateRating(id, request);
+        //        if (!result)
+        //            return BadRequest(new { message = "Failed to rate scheduleDetails." });
 
-                return Ok(new { message = "scheduleDetails rated successfully." });
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { message = ex.Message });
-            }
-        }
+        //        return Ok(new { message = "scheduleDetails rated successfully." });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return BadRequest(new { message = ex.Message });
+        //    }
+        //}
 
-        [HttpPost("schedule-detail/rating")]
-        [Authorize(Roles = "Supervisor")] // hoặc bỏ nếu mọi role đều có quyền
-        public async Task<IActionResult> CreateDailyRating([FromBody] ScheduleDetailRatingCreateDTO dto)
-        {
-            var userId = User.FindFirstValue("User_Id");
-            if (userId == null) return Unauthorized();
+        //[HttpPost("schedule-detail/rating")]
+        //[Authorize(Roles = "Supervisor")] // hoặc bỏ nếu mọi role đều có quyền
+        //public async Task<IActionResult> CreateDailyRating([FromBody] ScheduleDetailRatingCreateDTO dto)
+        //{
+        //    var userId = User.FindFirstValue("User_Id");
+        //    if (userId == null) return Unauthorized();
 
-            try
-            {
-                await _scheduleDetailsService.CreateDailyRatingAsync(userId, dto);
-                return Ok(new { message = "Rating submitted." });
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { message = ex.Message });
-            }
-        }
+        //    try
+        //    {
+        //        await _scheduleDetailsService.CreateDailyRatingAsync(userId, dto);
+        //        return Ok(new { message = "Rating submitted." });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return BadRequest(new { message = ex.Message });
+        //    }
+        //}
 
-        [HttpPut("schedule-details/{id}/status")]
-        [Authorize(Roles = "Worker")]
-        public async Task<IActionResult> MarkScheduleDetailAsComplete(string id, IFormFile? evidenceImage)
-        {
-            try
-            {
-                var userId = User.FindFirst("User_Id")?.Value;
-                if (string.IsNullOrEmpty(userId))
-                    return Unauthorized("Không thể xác định người dùng.");
+        //[HttpPut("schedule-details/{id}/status")]
+        //[Authorize(Roles = "Worker")]
+        //public async Task<IActionResult> MarkScheduleDetailAsComplete(string id, IFormFile? evidenceImage)
+        //{
+        //    try
+        //    {
+        //        var userId = User.FindFirst("User_Id")?.Value;
+        //        if (string.IsNullOrEmpty(userId))
+        //            return Unauthorized("Không thể xác định người dùng.");
 
-                var result = await _scheduleDetailsService.UpdateScheduleDetailStatusToComplete(id, userId, evidenceImage);
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { message = ex.Message });
-            }
-        }
+        //        var result = await _scheduleDetailsService.UpdateScheduleDetailStatusToComplete(id, userId, evidenceImage);
+        //        return Ok(result);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return BadRequest(new { message = ex.Message });
+        //    }
+        //}
 
-        [HttpGet("average-rating")]
-        public async Task<IActionResult> GetAverageRating([FromQuery] int year, [FromQuery] int month)
-        {
-            try
-            {
-                var userId = User.FindFirst("User_Id")?.Value;
-                if (string.IsNullOrEmpty(userId))
-                    return Unauthorized("Không thể xác định người dùng.");
+        //[HttpGet("average-rating")]
+        //public async Task<IActionResult> GetAverageRating([FromQuery] int year, [FromQuery] int month)
+        //{
+        //    try
+        //    {
+        //        var userId = User.FindFirst("User_Id")?.Value;
+        //        if (string.IsNullOrEmpty(userId))
+        //            return Unauthorized("Không thể xác định người dùng.");
 
-                var result = await _scheduleDetailsService.GetAverageRatingForMonthAsync(userId,year,month);
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { message = ex.Message });
-            }
+        //        var result = await _scheduleDetailsService.GetAverageRatingForMonthAsync(userId,year,month);
+        //        return Ok(result);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return BadRequest(new { message = ex.Message });
+        //    }
+        //}
 
-        }
-        [HttpGet("my-work-stats")]
-        [Authorize]
-        public async Task<IActionResult> GetMyWorkStats([FromQuery] int month, [FromQuery] int year)
-        {
-            var userId = User.FindFirstValue("User_Id");
-            if (string.IsNullOrEmpty(userId))
-                return Unauthorized("Không thể xác định người dùng.");
+        //[HttpGet("my-work-stats")]
+        //[Authorize]
+        //public async Task<IActionResult> GetMyWorkStats([FromQuery] int month, [FromQuery] int year)
+        //{
+        //    var userId = User.FindFirstValue("User_Id");
+        //    if (string.IsNullOrEmpty(userId))
+        //        return Unauthorized("Không thể xác định người dùng.");
 
-            var (workedDays, totalDays, percentage) = await _scheduleDetailsService.GetWorkStatsInMonthAsync(userId, month, year);
+        //    var (workedDays, totalDays, percentage) = await _scheduleDetailsService.GetWorkStatsInMonthAsync(userId, month, year);
 
-            return Ok(new
-            {
-                Month = month,
-                Year = year,
-                WorkedDays = workedDays,
-                TotalDays = totalDays,
-                Percentage = Math.Round(percentage, 2)
-            });
-        }
+        //    return Ok(new
+        //    {
+        //        Month = month,
+        //        Year = year,
+        //        WorkedDays = workedDays,
+        //        TotalDays = totalDays,
+        //        Percentage = Math.Round(percentage, 2)
+        //    });
+        //}
     }
 }

@@ -9,22 +9,22 @@ using System.Threading.Tasks;
 
 namespace MSWT_Repositories.Repository
 {
-    public class FloorRepository : GenericRepository<Floor>, IFloorRepository
+    public class BuildingRepository : GenericRepository<Building>, IBuildingRepository
     {
-        public FloorRepository(SmartTrashBinandCleaningStaffManagementContext context) : base(context)
+        public BuildingRepository(SmartTrashBinandCleaningStaffManagementContext context) : base(context)
         {
             _context = context;
         }
 
-        public async Task<Floor> GetByIdAsync(string id)
+        public async Task<Building> GetByIdAsync(string id)
         {
-            return await _context.Floors
+            return await _context.Buildings
         .Include(f => f.Areas)
 
-        .FirstOrDefaultAsync(f => f.FloorId == id);
+        .FirstOrDefaultAsync(f => f.BuildingId == id);
         }
 
-        public async Task AddAsync(Floor floor)
+        public async Task AddAsync(Building floor)
         {
             _context.AddAsync(floor);
             await _context.SaveChangesAsync();
@@ -32,25 +32,25 @@ namespace MSWT_Repositories.Repository
 
         public async Task DeleteAsync(string id)
         {
-            var floor = await _context.Floors.FindAsync(id);
+            var floor = await _context.Buildings.FindAsync(id);
             if (floor != null)
             {
-                _context.Floors.Remove(floor);
+                _context.Buildings.Remove(floor);
                 await _context.SaveChangesAsync();
             }
         }
 
-        async Task<IEnumerable<Floor>> IFloorRepository.GetAllAsync()
+        async Task<IEnumerable<Building>> IBuildingRepository.GetAllAsync()
         {
-            return await _context.Floors
+            return await _context.Buildings
         .Include(f => f.Areas)
 
         .ToListAsync();
         }
 
-        public async Task UpdateAsync(Floor floor)
+        public async Task UpdateAsync(Building floor)
         {
-            _context.Floors.Update(floor);
+            _context.Buildings.Update(floor);
             await _context.SaveChangesAsync();
         }
     }

@@ -9,7 +9,7 @@ public partial class Alert
 
     public string? TrashBinId { get; set; }
 
-    public DateTime TimeSend { get; set; }
+    public DateTime? TimeSend { get; set; }
 
     public DateTime? ResolvedAt { get; set; }
 

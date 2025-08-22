@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using static MSWT_BussinessObject.RequestDTO.RequestDTO;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http;
+using Azure.Core;
 
 namespace MSWT_Services.Services
 {
@@ -25,105 +26,63 @@ namespace MSWT_Services.Services
         private readonly IUserRepository _userRepository;
         private readonly IAssignmentRepository _assignmentRepository;
         private readonly IMapper _mapper;
-        private readonly IScheduleDetailRatingRepository _scheduleDetailRatingRepository;
-        private readonly IHolidayRepository _holidayRepository;
+        //private readonly IScheduleDetailRatingRepository _scheduleDetailRatingRepository;
         private readonly ICloudinaryService _cloudinary;
+        private readonly IWorkGroupMemberService _workGroupMemberService;
 
-        public ScheduleDetailsService(IScheduleDetailsRepository scheduleDetailsRepository, IUserRepository userRepository, IScheduleRepository scheduleRepository, IMapper mapper, IScheduleDetailRatingRepository scheduleDetailRatingRepository, IAssignmentRepository assignmentRepository, ICloudinaryService cloudinary, IHolidayRepository holidayRepository)
+        public ScheduleDetailsService(IScheduleDetailsRepository scheduleDetailsRepository, 
+            IUserRepository userRepository, 
+            IScheduleRepository scheduleRepository, 
+            IMapper mapper, 
+            //IScheduleDetailRatingRepository scheduleDetailRatingRepository, 
+            IAssignmentRepository assignmentRepository, 
+            ICloudinaryService cloudinary,
+            IWorkGroupMemberService workGroupMemberService
+            )
         {
             _scheduleDetailsRepository = scheduleDetailsRepository;
             _userRepository = userRepository;
             _scheduleRepository = scheduleRepository;
             _mapper = mapper;
-            _scheduleDetailRatingRepository = scheduleDetailRatingRepository;
+            //_scheduleDetailRatingRepository = scheduleDetailRatingRepository;
             _assignmentRepository = assignmentRepository;
             _cloudinary = cloudinary;
-            _holidayRepository = holidayRepository;
+            _workGroupMemberService = workGroupMemberService;
         }
 
-        public async Task<List<ScheduleDetailsResponseDTO>> CreateScheduleDetailFromScheduleAsync(string scheduleId, ScheduleDetailsRequestDTO detailDto)
+        public async Task<ScheduleDetailsResponseDTO> CreateScheduleDetailFromScheduleAsync(
+    string scheduleId, ScheduleDetailsRequestDTO detailDto)
         {
-            var schedule = await _scheduleRepository.GetByIdAsync(scheduleId);
-            if (schedule == null)
-                throw new Exception("Schedule not found.");
+            var schedule = await _scheduleRepository.GetByIdAsync(scheduleId)
+                ?? throw new Exception("Schedule not found.");
 
-            var supervisor = await _userRepository.GetAll()
-                .Include(u => u.Role)
-                .FirstOrDefaultAsync(u => u.UserId == schedule.SupervisorId);
-            if (supervisor == null)
-                throw new Exception("Supervisor not found.");
-            if (supervisor.Role?.RoleName?.ToLower() != "supervisor")
-                throw new Exception("The selected user does not have the 'Supervisor' role.");
+            var (supervisorId, members) =
+                await _workGroupMemberService.GetSupervisorAndMembersByWorkGroupIdAsync(detailDto.WorkerGroupId);
 
-            var worker = await _userRepository.GetAll()
-                .Include(u => u.Role)
-                .FirstOrDefaultAsync(u => u.UserId == detailDto.WorkerId);
-            if (worker == null)
-                throw new Exception("Worker not found.");
-            if (worker.Role?.RoleName?.ToLower() != "worker")
-                throw new Exception("The selected user does not have the 'Worker' role.");
+            if (supervisorId == null)
+                throw new Exception("No supervisor (RL03) found in this work group.");
 
-            if (!string.IsNullOrEmpty(detailDto.AssignmentId))
+            var scheduleDetail = _mapper.Map<ScheduleDetail>(detailDto);
+            scheduleDetail.ScheduleId = scheduleId;
+            scheduleDetail.SupervisorId = supervisorId;
+
+            if (scheduleDetail.StartTime.HasValue)
             {
-                var assignment = await _assignmentRepository.GetByIdAsync(detailDto.AssignmentId);
-                if (assignment == null)
-                    throw new Exception("Assignment not found.");
+                scheduleDetail.EndTime = scheduleDetail.StartTime.Value.AddMinutes(140);
             }
 
-            string? evidenceImageUrl = null;
-            if (detailDto.EvidenceImageFile != null)
-            {
-                evidenceImageUrl = await _cloudinary.UploadFile(detailDto.EvidenceImageFile);
-            }
+            await _scheduleDetailsRepository.AddAsync(scheduleDetail);
 
-            var startDate = schedule.StartDate.GetValueOrDefault();
-            var endDate = schedule.EndDate.GetValueOrDefault();
+            // map base entity -> DTO, then enrich
+            var response = _mapper.Map<ScheduleDetailsResponseDTO>(scheduleDetail);
+            response.SupervisorId = supervisorId;
+            response.Workers = members;   // <-- already includes FullName
 
-            // load holidays once
-            var holidays = await _holidayRepository.GetAllHolidaysAsync();
-
-            // build a HashSet<int> key = month*100 + day for quick lookup
-            var holidayKeys = holidays
-                .Select(h => h.Date.Month * 100 + h.Date.Day)
-                .ToHashSet();
-
-            var createdDetails = new List<ScheduleDetailsResponseDTO>();
-
-            for (var date = startDate; date <= endDate; date = date.AddDays(1))
-            {
-                // Skip Sundays
-                if (date.DayOfWeek == DayOfWeek.Sunday)
-                    continue;
-
-                // Skip holiday month/day (recurring)
-                var key = date.Month * 100 + date.Day;
-                if (holidayKeys.Contains(key))
-                    continue;
-
-                var detail = new ScheduleDetail
-                {
-                    ScheduleDetailId = Guid.NewGuid().ToString(),
-                    ScheduleId = schedule.ScheduleId,
-                    Description = detailDto.Description,
-                    WorkerId = detailDto.WorkerId,
-                    SupervisorId = schedule.SupervisorId,
-                    AssignmentId = detailDto.AssignmentId,
-                    Date = date.ToDateTime(new TimeOnly(0, 0)),
-                    Status = detailDto.Status ?? "Sắp tới",
-                    StartTime = schedule.Shift.StartTime,
-                    EndTime = schedule.Shift.EndTime,
-                    IsBackup = detailDto.IsBackup,
-                    BackupForUserId = detailDto.BackupForUserId,
-                    EvidenceImage = evidenceImageUrl
-                };
-
-                await _scheduleDetailsRepository.AddAsync(detail);
-                createdDetails.Add(_mapper.Map<ScheduleDetailsResponseDTO>(detail));
-            }
-
-
-            return createdDetails;
+            return response;
         }
+
+
+
 
 
         public async Task DeleteSchedule(string id)
@@ -134,13 +93,50 @@ namespace MSWT_Services.Services
         public async Task<IEnumerable<ScheduleDetailsResponseDTO>> GetAllSchedule()
         {
             var scheduleDetails = await _scheduleDetailsRepository.GetAllAsync();
-            return _mapper.Map<IEnumerable<ScheduleDetailsResponseDTO>>(scheduleDetails);
+
+            var responses = new List<ScheduleDetailsResponseDTO>();
+
+            foreach (var detail in scheduleDetails)
+            {
+                var dto = _mapper.Map<ScheduleDetailsResponseDTO>(detail);
+
+                if (!string.IsNullOrEmpty(detail.WorkerGroupId))
+                {
+                    var (supervisorId, members) =
+                        await _workGroupMemberService.GetSupervisorAndMembersByWorkGroupIdAsync(detail.WorkerGroupId);
+
+                    dto.SupervisorId = supervisorId;
+                    dto.Workers = members;  // <-- FullName is already populated
+
+                    var supervisor = members.FirstOrDefault(m => m.UserId == supervisorId);
+                    dto.SupervisorName = supervisor?.FullName;
+                }
+
+                responses.Add(dto);
+            }
+
+            return responses;
         }
+
+
+
 
         public async Task<ScheduleDetailsResponseDTO> GetScheduleById(string id)
         {
             var scheduleDetails = await _scheduleDetailsRepository.GetByIdAsync(id);
-            return _mapper.Map<ScheduleDetailsResponseDTO>(scheduleDetails);
+            var dto = _mapper.Map<ScheduleDetailsResponseDTO>(scheduleDetails);
+
+            if (!string.IsNullOrEmpty(scheduleDetails.WorkerGroupId))
+            {
+                var (supervisorId, members) =
+                    await _workGroupMemberService.GetSupervisorAndMembersByWorkGroupIdAsync(scheduleDetails.WorkerGroupId);
+                dto.SupervisorId = supervisorId;
+                dto.Workers = members;
+                var supervisor = members.FirstOrDefault(m => m.UserId == supervisorId);
+                dto.SupervisorName = supervisor?.FullName;
+            }
+
+            return dto;
         }
 
         public async Task UpdateSchedule(ScheduleDetail scheduleDetail)
@@ -148,74 +144,74 @@ namespace MSWT_Services.Services
             await _scheduleDetailsRepository.UpdateAsync(scheduleDetail);
         }
 
-        public async Task<bool> AddWorkerToSchedule(string id, string workerId)
-        {
-            try
-            {
-                var scheduleDetail = await _scheduleDetailsRepository.GetByIdAsync(id);
-                if (scheduleDetail == null)
-                    throw new Exception("ScheduleDetail not found.");
+        //public async Task<bool> AddWorkerToSchedule(string id, string workerId)
+        //{
+        //    try
+        //    {
+        //        var scheduleDetail = await _scheduleDetailsRepository.GetByIdAsync(id);
+        //        if (scheduleDetail == null)
+        //            throw new Exception("ScheduleDetail not found.");
 
-                var worker = await _userRepository.GetByIdAsync(workerId);
-                if (worker == null)
-                    throw new Exception("Worker not found.");
+        //        var worker = await _userRepository.GetByIdAsync(workerId);
+        //        if (worker == null)
+        //            throw new Exception("Worker not found.");
 
-                scheduleDetail.Worker = worker;
+        //        scheduleDetail.Worker = worker;
 
-                await _scheduleDetailsRepository.UpdateAsync(scheduleDetail);
-                return true;
-            }
-            catch (Exception e)
-            {
-                throw new Exception($"Error updating schedule detail : {e.Message}", e);
-            }
-        }
+        //        await _scheduleDetailsRepository.UpdateAsync(scheduleDetail);
+        //        return true;
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        throw new Exception($"Error updating schedule detail : {e.Message}", e);
+        //    }
+        //}
 
-        public async Task<bool> AddSupervisorToSchedule(string id, string supervisorId)
-        {
-            try
-            {
-                var scheduleDetail = await _scheduleDetailsRepository.GetByIdAsync(id);
-                if (scheduleDetail == null)
-                    throw new Exception("ScheduleDetail not found.");
+        //public async Task<bool> AddSupervisorToSchedule(string id, string supervisorId)
+        //{
+        //    try
+        //    {
+        //        var scheduleDetail = await _scheduleDetailsRepository.GetByIdAsync(id);
+        //        if (scheduleDetail == null)
+        //            throw new Exception("ScheduleDetail not found.");
 
-                var supervisor = await _userRepository.GetByIdAsync(supervisorId);
-                if (supervisor == null)
-                    throw new Exception("Supervisor not found.");
+        //        var supervisor = await _userRepository.GetByIdAsync(supervisorId);
+        //        if (supervisor == null)
+        //            throw new Exception("Supervisor not found.");
 
-                scheduleDetail.Supervisor = supervisor;
+        //        scheduleDetail.Supervisor = supervisor;
 
-                await _scheduleDetailsRepository.UpdateAsync(scheduleDetail);
-                return true;
-            }
-            catch (Exception e)
-            {
-                throw new Exception($"Error updating schedule detail : {e.Message}", e);
-            }
-        }
+        //        await _scheduleDetailsRepository.UpdateAsync(scheduleDetail);
+        //        return true;
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        throw new Exception($"Error updating schedule detail : {e.Message}", e);
+        //    }
+        //}
 
-        public async Task<bool> AddAssignmentToSchedule(string id, string assignmentId)
-        {
-            try
-            {
-                var scheduleDetail = await _scheduleDetailsRepository.GetByIdAsync(id);
-                if (scheduleDetail == null)
-                    throw new Exception("ScheduleDetail not found.");
+        //public async Task<bool> AddAssignmentToSchedule(string id, string assignmentId)
+        //{
+        //    try
+        //    {
+        //        var scheduleDetail = await _scheduleDetailsRepository.GetByIdAsync(id);
+        //        if (scheduleDetail == null)
+        //            throw new Exception("ScheduleDetail not found.");
 
-                var assignment = await _assignmentRepository.GetByIdAsync(assignmentId);
-                if (assignment == null)
-                    throw new Exception("Assignment not found.");
+        //        var assignment = await _assignmentRepository.GetByIdAsync(assignmentId);
+        //        if (assignment == null)
+        //            throw new Exception("Assignment not found.");
 
-                scheduleDetail.Assignment = assignment;
+        //        scheduleDetail.Assignment = assignment;
 
-                await _scheduleDetailsRepository.UpdateAsync(scheduleDetail);
-                return true;
-            }
-            catch (Exception e)
-            {
-                throw new Exception($"Error updating schedule detail : {e.Message}", e);
-            }
-        }
+        //        await _scheduleDetailsRepository.UpdateAsync(scheduleDetail);
+        //        return true;
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        throw new Exception($"Error updating schedule detail : {e.Message}", e);
+        //    }
+        //}
 
 
         public async Task<bool> UpdateRating(string id, ScheduleDetailsUpdateRatingRequestDTO request)
@@ -259,34 +255,34 @@ namespace MSWT_Services.Services
             }
         }
 
-        public async Task<bool> CreateDailyRatingAsync(string userId, ScheduleDetailRatingCreateDTO dto)
-        {
-            var scheduleDetail = await _scheduleDetailsRepository.GetByIdAsync(dto.ScheduleDetailId);
-            if (scheduleDetail == null)
-                throw new Exception("ScheduleDetail not found.");
+        //public async Task<bool> CreateDailyRatingAsync(string userId, ScheduleDetailRatingCreateDTO dto)
+        //{
+        //    var scheduleDetail = await _scheduleDetailsRepository.GetByIdAsync(dto.ScheduleDetailId);
+        //    if (scheduleDetail == null)
+        //        throw new Exception("ScheduleDetail not found.");
 
-            var today = DateTime.UtcNow.Date;
+        //    var today = DateTime.UtcNow.Date;
 
-            var existingRating = await _scheduleDetailRatingRepository
-                .GetByScheduleDetailAndDateAsync(dto.ScheduleDetailId, today);
+        //    var existingRating = await _scheduleDetailRatingRepository
+        //        .GetByScheduleDetailAndDateAsync(dto.ScheduleDetailId, today);
 
-            if (existingRating != null)
-                throw new Exception("This ScheduleDetail has already been rated today.");
+        //    if (existingRating != null)
+        //        throw new Exception("This ScheduleDetail has already been rated today.");
 
-            var rating = new ScheduleDetailRating
-            {
-                ScheduleDetailRatingId = Guid.NewGuid().ToString(),
-                ScheduleDetailId = dto.ScheduleDetailId,
-                RatedByUserId = userId,
-                RatingValue = dto.RatingValue,
-                Comment = dto.Comment,
-                RatedAt = DateTime.UtcNow,
-                RatingDate = today
-            };
+        //    var rating = new ScheduleDetailRating
+        //    {
+        //        ScheduleDetailRatingId = Guid.NewGuid().ToString(),
+        //        ScheduleDetailId = dto.ScheduleDetailId,
+        //        RatedByUserId = userId,
+        //        RatingValue = dto.RatingValue,
+        //        Comment = dto.Comment,
+        //        RatedAt = DateTime.UtcNow,
+        //        RatingDate = today
+        //    };
 
-            await _scheduleDetailRatingRepository.CreateAsync(rating);
-            return true;
-        }
+        //    await _scheduleDetailRatingRepository.CreateAsync(rating);
+        //    return true;
+        //}
 
         public async Task UpdateScheduleDetailStatusesAsync()
         {
@@ -315,37 +311,37 @@ namespace MSWT_Services.Services
         }
 
 
-        public async Task<bool> UpdateScheduleDetailStatusToComplete(string scheduleDetailId, string currentUserId, IFormFile? newEvidenceImage = null)
-        {
-            var detail = await _scheduleDetailsRepository.GetByIdAsync(scheduleDetailId);
-            if (detail == null)
-                throw new Exception("ScheduleDetail không tồn tại.");
+        //public async Task<bool> UpdateScheduleDetailStatusToComplete(string scheduleDetailId, string currentUserId, IFormFile? newEvidenceImage = null)
+        //{
+        //    var detail = await _scheduleDetailsRepository.GetByIdAsync(scheduleDetailId);
+        //    if (detail == null)
+        //        throw new Exception("ScheduleDetail không tồn tại.");
 
-            if (detail.Status == "Sắp tới")
-                throw new Exception("Không thể hoàn thành công việc khi nó chưa bắt đầu.");
+        //    if (detail.Status == "Sắp tới")
+        //        throw new Exception("Không thể hoàn thành công việc khi nó chưa bắt đầu.");
 
-            if (detail.WorkerId != currentUserId)
-                throw new Exception("Bạn không có quyền cập nhật công việc này.");
+        //    if (detail.WorkerId != currentUserId)
+        //        throw new Exception("Bạn không có quyền cập nhật công việc này.");
 
-            if (newEvidenceImage != null)
-            {
-                var uploadedUrl = await _cloudinary.UploadFile(newEvidenceImage);
-                detail.EvidenceImage = uploadedUrl;
-            }
+        //    if (newEvidenceImage != null)
+        //    {
+        //        var uploadedUrl = await _cloudinary.UploadFile(newEvidenceImage);
+        //        detail.EvidenceImage = uploadedUrl;
+        //    }
 
-            detail.Status = "Hoàn thành";
-            await _scheduleDetailsRepository.UpdateAsync(detail);
+        //    detail.Status = "Hoàn thành";
+        //    await _scheduleDetailsRepository.UpdateAsync(detail);
 
-            return true;
-        }
-        public Task<double?> GetAverageRatingForMonthAsync(string workerId, int year, int month)
-        {
-            return _scheduleDetailsRepository.GetAverageRatingForMonthAsync(workerId, year, month);
-        }
-        public async Task<(int workedDays, int totalDays, double percentage)> GetWorkStatsInMonthAsync(string workerId, int month, int year)
-        {
-            return await _scheduleDetailsRepository.GetWorkStatsInMonthAsync(workerId, month, year);
-        }
+        //    return true;
+        //}
+        //public Task<double?> GetAverageRatingForMonthAsync(string workerId, int year, int month)
+        //{
+        //    return _scheduleDetailsRepository.GetAverageRatingForMonthAsync(workerId, year, month);
+        //}
+        //public async Task<(int workedDays, int totalDays, double percentage)> GetWorkStatsInMonthAsync(string workerId, int month, int year)
+        //{
+        //    return await _scheduleDetailsRepository.GetWorkStatsInMonthAsync(workerId, month, year);
+        //}
 
     }
 }

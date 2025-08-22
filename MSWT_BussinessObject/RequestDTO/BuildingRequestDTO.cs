@@ -6,14 +6,10 @@ using System.Threading.Tasks;
 
 namespace MSWT_BussinessObject.RequestDTO
 {
-    public class AreaRequestDTO
+    public class BuildingRequestDTO
     {
-        public string? BuildingId { get; set; }
+        public string? BuildingName { get; set; }
 
         public string? Description { get; set; }
-
-        public string? Status { get; set; }
-
-        public string? AreaName { get; set; }
     }
 }

@@ -36,12 +36,8 @@ namespace MSWT_Repositories.Repository
         {
             return await _context.ScheduleDetails
                 .Include(sd => sd.Schedule)
-                    .ThenInclude(s => s.Area)
-                .Include(sd => sd.Assignment)
-                .Include(sd => sd.Schedule)
-                    .ThenInclude(s => s.Restroom)
-                .Include(sd => sd.Schedule)
-                    .ThenInclude(s => s.TrashBin)
+                .Include(sd => sd.GroupAssignment)
+                .Include(sd => sd.WorkerGroup)
 
                 .FirstOrDefaultAsync(sd => sd.ScheduleDetailId == id);
         }
@@ -50,13 +46,10 @@ namespace MSWT_Repositories.Repository
         {
             return await _context.ScheduleDetails
                 .Include(sd => sd.Schedule)
-                    .ThenInclude(s => s.Area)
-                .Include(sd => sd.Schedule)
-                    .ThenInclude(s => s.Restroom)
-                .Include(sd => sd.Schedule)
-                    .ThenInclude(s => s.TrashBin)
-                .Include(sd => sd.Assignment)
-                .Include(sd => sd.Worker)
+                .Include(sd => sd.GroupAssignment)
+                .Include(sd => sd.WorkerGroup)
+                 .ThenInclude(wg => wg.WorkGroupMembers)
+                    .ThenInclude(wgm => wgm.User)
                 .ToListAsync();
         }
 
@@ -69,88 +62,81 @@ namespace MSWT_Repositories.Repository
         public async Task<IEnumerable<ScheduleDetail>> SearchByUserIdAsync(string userId)
         {
             return await _context.ScheduleDetails
-                .Where(sd => sd.WorkerId == userId || sd.SupervisorId == userId)
                 .Include(sd => sd.Schedule)
-                    .ThenInclude(s => s.Area) // To get AreaName
-                .Include(sd => sd.Worker)
-                .Include(sd => sd.Supervisor)
-                .Include(sd => sd.Assignment)
-                .Include(sd => sd.Schedule)
-                    .ThenInclude(s => s.Restroom)
-                .Include(sd => sd.Schedule)
-                    .ThenInclude(s => s.TrashBin)
+                .Include(sd => sd.GroupAssignment)
+                .Include(sd => sd.WorkerGroup)
                 .ToListAsync();
         }
-        public async Task<ScheduleDetail?> GetByUserAndDateAsync(string userId, DateOnly targetDate)
-        {
-            return await _context.ScheduleDetails
-                .Include(sd => sd.Schedule)
-                .Include(sd => sd.Worker) // Nếu cần thông tin User
-                .FirstOrDefaultAsync(sd =>
-                    sd.WorkerId == userId &&
-                    sd.Schedule != null &&
-                    sd.Schedule.StartDate <= targetDate &&
-                    sd.Schedule.EndDate >= targetDate);
-        }
-        public async Task<double?> GetAverageRatingForMonthAsync(string workerId, int year, int month)
-        {
-            var today = DateTime.Today;
+        //public async Task<ScheduleDetail?> GetByUserAndDateAsync(string userId, DateOnly targetDate)
+        //{
+        //    return await _context.ScheduleDetails
+        //        .Include(sd => sd.Schedule)
+        //        //.Include(sd => sd.Worker) // Nếu cần thông tin User
+        //        .FirstOrDefaultAsync(sd =>
+        //            sd.WorkerId == userId &&
+        //            sd.Schedule != null &&
+        //            sd.Schedule.StartDate <= targetDate &&
+        //            sd.Schedule.EndDate >= targetDate);
+        //}
+        //public async Task<double?> GetAverageRatingForMonthAsync(string workerId, int year, int month)
+        //{
+        //    var today = DateTime.Today;
 
-            var ratings = await _context.ScheduleDetails
-                .Where(sd => sd.WorkerId == workerId
-                             && sd.Date.HasValue
-                             && sd.Date.Value.Year == year
-                             && sd.Date.Value.Month == month
-                             && sd.Date <= today
-                             && !string.IsNullOrEmpty(sd.Rating))
-                .ToListAsync(); // Truy vấn SQL trước
+        //    var ratings = await _context.ScheduleDetails
+        //        .Where(sd => sd.WorkerId == workerId
+        //                     && sd.Date.HasValue
+        //                     && sd.Date.Value.Year == year
+        //                     && sd.Date.Value.Month == month
+        //                     && sd.Date <= today
+        //                     && !string.IsNullOrEmpty(sd.Rating))
+        //        .ToListAsync(); // Truy vấn SQL trước
 
-            var parsedRatings = ratings
-                .Select(sd => double.TryParse(sd.Rating, out var r) ? (double?)r : null)
-                .Where(r => r.HasValue)
-                .Select(r => r.Value)
-                .ToList();
+        //    var parsedRatings = ratings
+        //        .Select(sd => double.TryParse(sd.Rating, out var r) ? (double?)r : null)
+        //        .Where(r => r.HasValue)
+        //        .Select(r => r.Value)
+        //        .ToList();
 
-            return parsedRatings.Any() ? parsedRatings.Average() : null;
-        }
+        //    return parsedRatings.Any() ? parsedRatings.Average() : null;
+        //}
 
-        public async Task<(int workedDays, int totalDays, double percentage)> GetWorkStatsInMonthAsync(string workerId, int month, int year)
-        {
-            // Tổng số ngày có lịch làm
-            var totalDays = await _context.ScheduleDetails
-                .Where(d => d.WorkerId == workerId &&
-                            d.Date.Value.Month == month &&
-                            d.Date.Value.Year == year)
-                .Select(d => d.Date.Value.Date) // lấy phần ngày (bỏ giờ)
-                .Distinct()
-                .CountAsync();
+        //public async Task<(int workedDays, int totalDays, double percentage)> GetWorkStatsInMonthAsync(string workerId, int month, int year)
+        //{
+        //    // Tổng số ngày có lịch làm
+        //    var totalDays = await _context.ScheduleDetails
+        //        .Where(d => d.WorkerId == workerId &&
+        //                    d.Date.Value.Month == month &&
+        //                    d.Date.Value.Year == year)
+        //        .Select(d => d.Date.Value.Date) // lấy phần ngày (bỏ giờ)
+        //        .Distinct()
+        //        .CountAsync();
 
-            // Số ngày đã hoàn thành
-            var workedDays = await _context.ScheduleDetails
-                .Where(d => d.WorkerId == workerId &&
-                            d.Status == "Hoàn thành" &&
-                            d.Date.Value.Month == month &&
-                            d.Date.Value.Year== year)
-                .Select(d => d.Date.Value.Date)
-                .Distinct()
-                .CountAsync();
+        //    // Số ngày đã hoàn thành
+        //    var workedDays = await _context.ScheduleDetails
+        //        .Where(d => d.WorkerId == workerId &&
+        //                    d.Status == "Hoàn thành" &&
+        //                    d.Date.Value.Month == month &&
+        //                    d.Date.Value.Year == year)
+        //        .Select(d => d.Date.Value.Date)
+        //        .Distinct()
+        //        .CountAsync();
 
-            // Tính phần trăm
-            double percentage = totalDays > 0 ? (workedDays * 100.0 / totalDays) : 0;
+        //    // Tính phần trăm
+        //    double percentage = totalDays > 0 ? (workedDays * 100.0 / totalDays) : 0;
 
-            return (workedDays, totalDays, percentage);
-        }
+        //    return (workedDays, totalDays, percentage);
+        //}
 
-        public async Task<ScheduleDetail?> GetByWorkerAndDateAsync(string userId, DateOnly date)
-        {
-            return await _context.ScheduleDetails
-                .Include(sd => sd.Schedule)
-                .Include(sd => sd.Worker) // Nếu cần thông tin User
-                .FirstOrDefaultAsync(sd =>
-                    sd.WorkerId == userId &&
-                    sd.Schedule != null &&
-                    sd.Schedule.StartDate <= date &&
-                    sd.Schedule.EndDate >= date);
-        }
+        //public async Task<ScheduleDetail?> GetByWorkerAndDateAsync(string userId, DateOnly date)
+        //{
+        //    return await _context.ScheduleDetails
+        //        .Include(sd => sd.Schedule)
+        //        .Include(sd => sd.Worker) // Nếu cần thông tin User
+        //        .FirstOrDefaultAsync(sd =>
+        //            sd.WorkerId == userId &&
+        //            sd.Schedule != null &&
+        //            sd.Schedule.StartDate <= date &&
+        //            sd.Schedule.EndDate >= date);
+        //}
     }
 }

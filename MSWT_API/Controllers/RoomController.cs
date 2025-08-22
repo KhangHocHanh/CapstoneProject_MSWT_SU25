@@ -7,53 +7,53 @@ using MSWT_Services.Services;
 
 namespace MSWT_API.Controllers
 {
-    [Route("api/restrooms")]
+    [Route("api/rooms")]
     [ApiController]
-    public class RestroomController : Controller
+    public class RoomController : Controller
     {
-        private readonly IRestroomService _restroomService;
+        private readonly IRoomService _roomService;
 
-        public RestroomController(IRestroomService restroomService)
+        public RoomController(IRoomService roomService)
         {
-            _restroomService = restroomService;
+            _roomService = roomService;
         }
 
         #region CRUD Category
         [HttpPost]
-        public async Task<ActionResult<RestroomResponseDTO>> AddRestroom([FromBody] RestroomRequestDTO request)
+        public async Task<ActionResult<RoomResponseDTO>> AddRoom([FromBody] RoomRequestDTO request)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var createdFloor = await _restroomService.AddRestroom(request);
-            return Ok(createdFloor);
+            var createdRoom = await _roomService.AddRoom(request);
+            return Ok(createdRoom);
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Restroom>>> GetAll()
+        public async Task<ActionResult<IEnumerable<Room>>> GetAll()
         {
-            return Ok(await _restroomService.GetAllRestrooms());
+            return Ok(await _roomService.GetAllRooms());
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Restroom>> GetById(string id)
+        public async Task<ActionResult<Room>> GetById(string id)
         {
-            var restroom = await _restroomService.GetRestroomById(id);
-            if (restroom == null)
+            var room = await _roomService.GetRoomById(id);
+            if (room == null)
                 return NotFound();
-            return Ok(restroom);
+            return Ok(room);
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<RestroomResponseDTO>> UpdateRestroom(string id, [FromBody] RestroomRequestDTO request)
+        public async Task<ActionResult<RoomResponseDTO>> UpdateRoom(string id, [FromBody] RoomRequestDTO request)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             try
             {
-                var updatedRestroom = await _restroomService.UpdateRestroom(id, request);
-                return Ok(updatedRestroom);
+                var updatedRoom = await _roomService.UpdateRoom(id, request);
+                return Ok(updatedRoom);
             }
             catch (Exception ex)
             {
@@ -66,7 +66,7 @@ namespace MSWT_API.Controllers
         {
             try
             {
-                await _restroomService.DeleteRestroom(id);
+                await _roomService.DeleteRoom(id);
                 return NoContent(); // 204 No Content if success
             }
             catch (Exception ex)
