@@ -73,11 +73,11 @@ namespace MSWT_Services.Services
 
             await _scheduleDetailsRepository.AddAsync(scheduleDetail);
 
+
             // map base entity -> DTO, then enrich
             var response = _mapper.Map<ScheduleDetailsResponseDTO>(scheduleDetail);
             response.SupervisorId = supervisorId;
             response.Workers = members;   // <-- already includes FullName
-
             return response;
         }
 
