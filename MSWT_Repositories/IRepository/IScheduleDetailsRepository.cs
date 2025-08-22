@@ -16,10 +16,10 @@ namespace MSWT_Repositories.IRepository
         Task UpdateAsync(ScheduleDetail scheduleDetail);
         Task<IEnumerable<ScheduleDetail>> GetAllAsync();
         Task<IEnumerable<ScheduleDetail>> SearchByUserIdAsync(string userId);
-        Task<ScheduleDetail?> GetByUserAndDateAsync(string userId, DateOnly targetDate);
-        Task<double?> GetAverageRatingForMonthAsync(string workerId, int year, int month);
-        Task<(int workedDays, int totalDays, double percentage)> GetWorkStatsInMonthAsync(string workerId, int month, int year);
-        Task<ScheduleDetail?> GetByWorkerAndDateAsync(string userId, DateOnly date);
+        //Task<ScheduleDetail?> GetByUserAndDateAsync(string userId, DateOnly targetDate);
+        //Task<double?> GetAverageRatingForMonthAsync(string workerId, int year, int month);
+        //Task<(int workedDays, int totalDays, double percentage)> GetWorkStatsInMonthAsync(string workerId, int month, int year);
+        //Task<ScheduleDetail?> GetByWorkerAndDateAsync(string userId, DateOnly date);
 
         #endregion
     }

@@ -10,18 +10,14 @@ namespace MSWT_BussinessObject.ResponseDTO
     {
         public string AreaId { get; set; } = null!;
 
-        public string? FloorId { get; set; }
+        public string? BuildingId { get; set; }
 
         public string? Description { get; set; }
 
         public string? Status { get; set; }
 
-        public string? RoomBegin { get; set; }
-
-        public string? RoomEnd { get; set; }
-
         public string? AreaName { get; set; }
 
-        public int? FloorNumber { get; set; }
+        public List<RoomResponseDTO>? Rooms { get; set; }
     }
 }
