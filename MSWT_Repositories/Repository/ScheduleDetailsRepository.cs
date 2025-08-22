@@ -38,6 +38,8 @@ namespace MSWT_Repositories.Repository
                 .Include(sd => sd.Schedule)
                 .Include(sd => sd.GroupAssignment)
                 .Include(sd => sd.WorkerGroup)
+                 .ThenInclude(wg => wg.WorkGroupMembers)
+                    .ThenInclude(wgm => wgm.User)
 
                 .FirstOrDefaultAsync(sd => sd.ScheduleDetailId == id);
         }
@@ -62,10 +64,15 @@ namespace MSWT_Repositories.Repository
         public async Task<IEnumerable<ScheduleDetail>> SearchByUserIdAsync(string userId)
         {
             return await _context.ScheduleDetails
-                .Include(sd => sd.Schedule)
-                .Include(sd => sd.GroupAssignment)
-                .Include(sd => sd.WorkerGroup)
-                .ToListAsync();
+        .Include(sd => sd.Schedule)
+        .Include(sd => sd.GroupAssignment)
+        .Include(sd => sd.WorkerGroup)
+            .ThenInclude(wg => wg.WorkGroupMembers)
+                .ThenInclude(wgm => wgm.User)
+        .Where(sd => sd.WorkerGroupId != null &&
+                     sd.WorkerGroup.WorkGroupMembers
+                         .Any(wgm => wgm.UserId == userId))
+        .ToListAsync();
         }
         //public async Task<ScheduleDetail?> GetByUserAndDateAsync(string userId, DateOnly targetDate)
         //{
