@@ -26,6 +26,7 @@ namespace MSWT_BussinessObject.ResponseDTO
         public string? Rating { get; set; }
 
         public string? WorkerGroupId { get; set; }
+        public string? WorkerGroupName { get; set; }
 
         public string? BackupForUserId { get; set; }
 
@@ -36,6 +37,7 @@ namespace MSWT_BussinessObject.ResponseDTO
         public string? IsBackup { get; set; }
 
         public string? GroupAssignmentId { get; set; }
+        public string? GroupAssignmentName { get; set; }
 
         public string? Comment { get; set; }
 

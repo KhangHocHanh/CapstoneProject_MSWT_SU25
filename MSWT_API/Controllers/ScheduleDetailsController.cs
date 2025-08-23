@@ -6,6 +6,7 @@ using MSWT_BussinessObject.RequestDTO;
 using MSWT_Services.IServices;
 using MSWT_Services.Services;
 using static MSWT_BussinessObject.RequestDTO.RequestDTO;
+using MSWT_BussinessObject.ResponseDTO;
 
 namespace MSWT_API.Controllers
 {
@@ -23,7 +24,7 @@ namespace MSWT_API.Controllers
         #region CRUD Category
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ScheduleDetail>>> GetAll()
+        public async Task<ActionResult<IEnumerable<ScheduleDetailsResponseDTO>>> GetAll()
         {
             return Ok(await _scheduleDetailsService.GetAllSchedule());
         }
