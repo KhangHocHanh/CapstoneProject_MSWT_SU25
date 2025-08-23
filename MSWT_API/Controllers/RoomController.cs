@@ -30,7 +30,7 @@ namespace MSWT_API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Room>>> GetAll()
+        public async Task<ActionResult<IEnumerable<RoomResponseDTO>>> GetAll()
         {
             return Ok(await _roomService.GetAllRooms());
         }
