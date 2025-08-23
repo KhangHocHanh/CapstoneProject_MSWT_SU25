@@ -20,6 +20,7 @@ namespace MSWT_BussinessObject.ResponseDTO
         public string? RoomNumber { get; set; }
 
         public string? RoomType { get; set; }
+        public string? AreaName { get; set; }
 
         //public virtual Area? Area { get; set; }
 

@@ -94,8 +94,11 @@ namespace MSWT_BussinessObject.Mapper
             CreateMap<Assignment, AssignmentResponseDTO>();
             CreateMap<Building, BuildingResponseDTO>();
             CreateMap<Room, RoomResponseDTO>();
+            CreateMap<Room, RoomResponseDTO>()
+             .ForMember(dest => dest.AreaName, opt => opt.MapFrom(src => src.Area.AreaName));
             CreateMap<Area, AreaResponseDTO>()
-                .ForMember(dest => dest.Rooms, opt => opt.MapFrom(src => src.Rooms));
+                .ForMember(dest => dest.Rooms, opt => opt.MapFrom(src => src.Rooms))
+                .ForMember(dest => dest.BuildingName, opt => opt.MapFrom(src => src.Building.BuildingName));
             CreateMap<Shift, ShiftResponseDTO>();
             CreateMap<TrashBin, TrashBinResponseDTO>();
             CreateMap<ShiftSwapRequest, ShiftSwapResponseDTO>()
@@ -138,6 +141,9 @@ namespace MSWT_BussinessObject.Mapper
             CreateMap<WorkGroupMember, WorkGroupMemberResponse>();
             CreateMap<Request, RequestResponseDTO>()
                 .ForMember(dest => dest.WorkerName, opt => opt.MapFrom(src => src.Worker.FullName));
+            CreateMap<ScheduleDetail, ScheduleDetailsResponseDTO>()
+                .ForMember(dest => dest.WorkerGroupName, opt => opt.MapFrom(src => src.WorkerGroup.WorkerGroupName))
+                .ForMember(dest => dest.GroupAssignmentName, opt => opt.MapFrom(src => src.GroupAssignment.AssignmentGroupName));
         }
     }
 }

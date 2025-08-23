@@ -4,6 +4,7 @@ using MSWT_BussinessObject.RequestDTO;
 using MSWT_BussinessObject.ResponseDTO;
 using MSWT_Services.IServices;
 using MSWT_Services.Services;
+using static MSWT_BussinessObject.ResponseDTO.ResponseDTO;
 
 namespace MSWT_API.Controllers
 {
@@ -31,7 +32,7 @@ namespace MSWT_API.Controllers
 
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Area>>> GetAll()
+        public async Task<ActionResult<IEnumerable<AreaResponseDTO>>> GetAll()
         {
             return Ok(await _areaService.GetAllAreasAsync());
         }

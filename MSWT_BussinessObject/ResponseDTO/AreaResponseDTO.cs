@@ -17,6 +17,7 @@ namespace MSWT_BussinessObject.ResponseDTO
         public string? Status { get; set; }
 
         public string? AreaName { get; set; }
+        public string? BuildingName { get; set; }
 
         public List<RoomResponseDTO>? Rooms { get; set; }
     }
