@@ -17,6 +17,6 @@ namespace MSWT_BussinessObject.ResponseDTO
 
         public DateTime? CreatedAt { get; set; }
 
-        public virtual ICollection<Assignment> Assignments { get; set; } = new List<Assignment>();
+        //public virtual ICollection<Assignment> Assignments { get; set; } = new List<Assignment>();
     }
 }

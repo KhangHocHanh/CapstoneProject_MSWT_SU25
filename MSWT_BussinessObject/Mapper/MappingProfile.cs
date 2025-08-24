@@ -111,6 +111,7 @@ namespace MSWT_BussinessObject.Mapper
                 .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.User.FullName));
             CreateMap<WorkerGroup, WorkerGroupResponse>();
             CreateMap<WorkGroupMemberRequestDTO, WorkGroupMember>();
+            CreateMap<GroupAssignment, GroupAssignmentResponse>();
 
             #region User
 
