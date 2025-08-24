@@ -12,7 +12,8 @@ namespace MSWT_Services
         IUserRepository UserRepository { get; }
         IRoleRepository RoleRepository { get; }
         IRequestRepository RequestRepository { get; }
-
+        IWorkerGroupRepository WorkerGroupRepository { get; }
+        IWorkGroupMemberRepository WorkGroupMemberRepository { get; }
 
         Task<int> SaveChangesAsync();
         void Dispose();

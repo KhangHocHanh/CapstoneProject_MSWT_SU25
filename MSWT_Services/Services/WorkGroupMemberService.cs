@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using MSWT_BussinessObject.Model;
+using MSWT_BussinessObject.RequestDTO;
 using MSWT_BussinessObject.ResponseDTO;
 using MSWT_Repositories.IRepository;
 using MSWT_Repositories.Repository;
@@ -14,12 +16,16 @@ namespace MSWT_Services.Services
     public class WorkGroupMemberService : IWorkGroupMemberService
     {
         private readonly IWorkGroupMemberRepository _workGroupMemberRepository;
+        private readonly IWorkerGroupRepository _workerGroupRepository;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
-        public WorkGroupMemberService(IWorkGroupMemberRepository workGroupMemberRepository, IMapper mapper)
+        public WorkGroupMemberService(IWorkGroupMemberRepository workGroupMemberRepository, IMapper mapper, IWorkerGroupRepository workerGroupRepository, IUnitOfWork unitOfWork)
         {
             _workGroupMemberRepository = workGroupMemberRepository;
             _mapper = mapper;
+            _workerGroupRepository = workerGroupRepository;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<WorkGroupMemberResponse> GetWorkGroupMemberById(string id)
@@ -69,5 +75,65 @@ namespace MSWT_Services.Services
             var members = await _workGroupMemberRepository.GetAllAsync();
             return _mapper.Map<IEnumerable<WorkGroupMemberResponse>>(members);
         }
+
+        public async Task<WorkerGroup> CreateWorkerGroupWithMembersAsync(WorkGroupMemberRequestDTO request)
+        {
+            await _unitOfWork.BeginTransactionAsync();
+            try
+            {
+                var group = new WorkerGroup
+                {
+                    WorkerGroupId = Guid.NewGuid().ToString(),
+                    WorkerGroupName = request.Name,
+                    Description = request.Description,
+                    CreatedAt = DateTime.Now
+                };
+
+                await _unitOfWork.WorkerGroupRepository.AddAsync(group);
+
+                bool supervisorAdded = false;
+
+                foreach (var userId in request.UserIds)
+                {
+                    var user = await _unitOfWork.UserRepository.GetByIdAsync(userId);
+                    if (user == null)
+                        throw new Exception($"User {userId} not found.");
+
+                    // use the user's actual role
+                    var roleId = user.RoleId;
+
+                    if (roleId == "RL03")
+                    {
+                        if (supervisorAdded)
+                            throw new Exception("Only one supervisor (RL03) can be added to a worker group.");
+
+                        supervisorAdded = true;
+                    }
+
+                    var member = new WorkGroupMember
+                    {
+                        WorkGroupMemberId = Guid.NewGuid().ToString(),
+                        WorkGroupId = group.WorkerGroupId,
+                        UserId = user.UserId,
+                        RoleId = roleId,
+                        JoinedAt = DateTime.Now
+                    };
+
+                    await _unitOfWork.WorkGroupMemberRepository.AddAsync(member);
+                }
+
+                await _unitOfWork.CommitAsync();
+                return group;
+            }
+            catch
+            {
+                await _unitOfWork.RollbackAsync();
+                throw;
+            }
+        }
+
+
+
+
     }
 }
