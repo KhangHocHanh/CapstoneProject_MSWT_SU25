@@ -63,5 +63,11 @@ namespace MSWT_Services.Services
             var members = await _workGroupMemberRepository.GetByWorkGroupIdAsync(workGroupId);
             return _mapper.Map<IEnumerable<WorkGroupMemberResponse>>(members);
         }
+
+        public async Task<IEnumerable<WorkGroupMemberResponse>> GetAllWorkGroup()
+        {
+            var members = await _workGroupMemberRepository.GetAllAsync();
+            return _mapper.Map<IEnumerable<WorkGroupMemberResponse>>(members);
+        }
     }
 }

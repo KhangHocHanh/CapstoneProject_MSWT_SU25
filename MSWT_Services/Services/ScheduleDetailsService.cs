@@ -50,8 +50,11 @@ namespace MSWT_Services.Services
             _workGroupMemberService = workGroupMemberService;
         }
 
-        public async Task<ScheduleDetailsResponseDTO> CreateScheduleDetailFromScheduleAsync(
-    string scheduleId, ScheduleDetailsRequestDTO detailDto)
+        public async Task<List<ScheduleDetailsResponseDTO>> CreateScheduleDetailFromScheduleAsync(
+    string scheduleId,
+    ScheduleDetailsRequestDTO detailDto,
+    int shiftDurationMinutes = 135,
+    int breakMinutes = 25)
         {
             var schedule = await _scheduleRepository.GetByIdAsync(scheduleId)
                 ?? throw new Exception("Schedule not found.");
@@ -62,24 +65,37 @@ namespace MSWT_Services.Services
             if (supervisorId == null)
                 throw new Exception("No supervisor (RL03) found in this work group.");
 
-            var scheduleDetail = _mapper.Map<ScheduleDetail>(detailDto);
-            scheduleDetail.ScheduleId = scheduleId;
-            scheduleDetail.SupervisorId = supervisorId;
+            if (detailDto.StartTime == null)
+                throw new Exception("StartTime is required in the request DTO.");
 
-            if (scheduleDetail.StartTime.HasValue)
+            var results = new List<ScheduleDetailsResponseDTO>();
+            var currentStart = detailDto.StartTime.Value;
+
+            // ví dụ: 3 ca (có thể làm động hơn theo yêu cầu)
+            for (int i = 0; i < 3; i++)
             {
-                scheduleDetail.EndTime = scheduleDetail.StartTime.Value.AddMinutes(140);
+                var scheduleDetail = _mapper.Map<ScheduleDetail>(detailDto);
+                scheduleDetail.ScheduleId = scheduleId;
+                scheduleDetail.SupervisorId = supervisorId;
+
+                scheduleDetail.StartTime = currentStart;
+                scheduleDetail.EndTime = currentStart.AddMinutes(shiftDurationMinutes);
+
+                await _scheduleDetailsRepository.AddAsync(scheduleDetail);
+
+                var response = _mapper.Map<ScheduleDetailsResponseDTO>(scheduleDetail);
+                response.SupervisorId = supervisorId;
+                response.Workers = members;
+
+                results.Add(response);
+
+                // ca kế tiếp = EndTime + break
+                currentStart = scheduleDetail.EndTime.Value.AddMinutes(breakMinutes);
             }
 
-            await _scheduleDetailsRepository.AddAsync(scheduleDetail);
-
-
-            // map base entity -> DTO, then enrich
-            var response = _mapper.Map<ScheduleDetailsResponseDTO>(scheduleDetail);
-            response.SupervisorId = supervisorId;
-            response.Workers = members;   // <-- already includes FullName
-            return response;
+            return results;
         }
+
 
 
 
