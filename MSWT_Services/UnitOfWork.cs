@@ -15,7 +15,9 @@ namespace MSWT_Services
         private readonly SmartTrashBinandCleaningStaffManagementContext _context;
         private IUserRepository _userRepository;
         private IRoleRepository _roleRepository;
+        private IWorkerGroupRepository _workerGroupRepository;
         private IRequestRepository _requestRepository;
+        private IWorkGroupMemberRepository _workGroupMemberRepository;
 
         private IDbContextTransaction _transaction;
 
@@ -46,6 +48,22 @@ namespace MSWT_Services
             {
                 _requestRepository ??= new RequestRepository(_context);
                 return _requestRepository;
+            }
+        }
+        public IWorkerGroupRepository WorkerGroupRepository
+        {
+            get
+            {
+                _workerGroupRepository ??= new WorkerGroupRepository(_context);
+                return _workerGroupRepository;
+            }
+        }
+        public IWorkGroupMemberRepository WorkGroupMemberRepository
+        {
+            get
+            {
+                _workGroupMemberRepository ??= new WorkGroupMemberRepository(_context);
+                return _workGroupMemberRepository;
             }
         }
         public async Task<int> SaveChangesAsync()
