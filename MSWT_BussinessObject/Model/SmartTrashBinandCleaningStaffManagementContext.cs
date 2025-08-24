@@ -331,6 +331,9 @@ public partial class SmartTrashBinandCleaningStaffManagementContext : DbContext
             entity.HasOne(d => d.WorkerGroup).WithMany(p => p.ScheduleDetails)
                 .HasForeignKey(d => d.WorkerGroupId)
                 .HasConstraintName("FK_ScheduleDetails_WorkerGroup");
+            entity.HasOne(d => d.Area).WithMany(p => p.ScheduleDetails)
+                .HasForeignKey(d => d.AreaId)
+                .HasConstraintName("FK_ScheduleDetails_Areas");
         });
 
         modelBuilder.Entity<Sensor>(entity =>

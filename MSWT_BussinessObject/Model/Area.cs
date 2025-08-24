@@ -20,4 +20,5 @@ public partial class Area
     public virtual ICollection<Room> Rooms { get; set; } = new List<Room>();
 
     public virtual ICollection<TrashBin> TrashBins { get; set; } = new List<TrashBin>();
+    public virtual ICollection<ScheduleDetail> ScheduleDetails { get; set; } = new List<ScheduleDetail>();
 }

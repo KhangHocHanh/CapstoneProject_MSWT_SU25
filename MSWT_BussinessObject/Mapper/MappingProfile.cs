@@ -143,7 +143,9 @@ namespace MSWT_BussinessObject.Mapper
                 .ForMember(dest => dest.WorkerName, opt => opt.MapFrom(src => src.Worker.FullName));
             CreateMap<ScheduleDetail, ScheduleDetailsResponseDTO>()
                 .ForMember(dest => dest.WorkerGroupName, opt => opt.MapFrom(src => src.WorkerGroup.WorkerGroupName))
-                .ForMember(dest => dest.GroupAssignmentName, opt => opt.MapFrom(src => src.GroupAssignment.AssignmentGroupName));
+                .ForMember(dest => dest.GroupAssignmentName, opt => opt.MapFrom(src => src.GroupAssignment.AssignmentGroupName))
+                .ForMember(dest => dest.AreaName, opt => opt.MapFrom(src => src.Area.AreaName))
+                ;
         }
     }
 }
