@@ -129,6 +129,7 @@ builder.Services.AddScoped<IAlertRepository, AlertRepository>();
 //builder.Services.AddScoped<IAttendanceRecordRepository, AttendanceRecordRepository>();
 //builder.Services.AddScoped<IHolidayRepository, HolidayRepository>();
 builder.Services.AddScoped<IWorkGroupMemberRepository, WorkGroupMemberRepository>();
+builder.Services.AddScoped<IWorkerGroupRepository, WorkerGroupRepository>();
 
 // Đăng ký services
 builder.Services.AddScoped<IUserService, UserService>();
@@ -154,7 +155,8 @@ builder.Services.AddScoped<ICloudinaryService, CloudinaryService>();
 //builder.Services.AddScoped<IAttendanceRecordService, AttendanceRecordService>();
 //builder.Services.AddScoped<IHolidayService, HolidayService>();
 builder.Services.AddScoped<IWorkGroupMemberService, WorkGroupMemberService>();
-
+builder.Services.AddScoped<IWorkerGroupService, WorkerGroupService>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 builder.Services.Configure<CloudinarySettings>(
     builder.Configuration.GetSection("CloudinarySettings"));

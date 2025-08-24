@@ -109,7 +109,8 @@ namespace MSWT_BussinessObject.Mapper
             CreateMap<ShiftSwapRequest, ShiftSwapResponseDTO>();
             CreateMap<WorkGroupMember, WorkGroupMemberResponse>()
                 .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.User.FullName));
-
+            CreateMap<WorkerGroup, WorkerGroupResponse>();
+            CreateMap<WorkGroupMemberRequestDTO, WorkGroupMember>();
 
             #region User
 
