@@ -37,6 +37,7 @@ namespace MSWT_Repositories.Repository
             return await _context.ScheduleDetails
                 .Include(sd => sd.Schedule)
                 .Include(sd => sd.GroupAssignment)
+                .Include(sd => sd.Area)
                 .Include(sd => sd.WorkerGroup)
                  .ThenInclude(wg => wg.WorkGroupMembers)
                     .ThenInclude(wgm => wgm.User)
@@ -49,6 +50,7 @@ namespace MSWT_Repositories.Repository
             return await _context.ScheduleDetails
                 .Include(sd => sd.Schedule)
                 .Include(sd => sd.GroupAssignment)
+                .Include(sd => sd.Area)
                 .Include(sd => sd.WorkerGroup)
                  .ThenInclude(wg => wg.WorkGroupMembers)
                     .ThenInclude(wgm => wgm.User)

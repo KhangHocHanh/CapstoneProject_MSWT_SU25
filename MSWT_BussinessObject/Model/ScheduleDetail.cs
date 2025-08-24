@@ -42,4 +42,5 @@ public partial class ScheduleDetail
     public virtual Schedule? Schedule { get; set; }
 
     public virtual WorkerGroup? WorkerGroup { get; set; }
+    public virtual Area? Area { get; set; }
 }
