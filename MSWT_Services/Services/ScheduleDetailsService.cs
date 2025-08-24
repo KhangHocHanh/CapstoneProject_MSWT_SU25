@@ -169,6 +169,22 @@ namespace MSWT_Services.Services
             await _scheduleDetailsRepository.UpdateAsync(scheduleDetail);
         }
 
+        public async Task<ScheduleDetailsResponseDTO> UpdateScheduleDetailRatingAsync(string scheduleDetailId, ScheduleDetailsUpdateRatingRequestDTO request)
+        {
+            var scheduleDetail = await _scheduleDetailsRepository.GetByIdAsync(scheduleDetailId);
+            if (scheduleDetail == null)
+                throw new Exception("ScheduleDetail not found.");
+
+            scheduleDetail.Rating = request.Rating?.ToString(); // if your model keeps Rating as string
+            scheduleDetail.Comment = request.Comment;
+            scheduleDetail.Status = "Đã đóng";
+
+            await _scheduleDetailsRepository.UpdateAsync(scheduleDetail);
+
+            return _mapper.Map<ScheduleDetailsResponseDTO>(scheduleDetail);
+        }
+
+
         //public async Task<bool> AddWorkerToSchedule(string id, string workerId)
         //{
         //    try

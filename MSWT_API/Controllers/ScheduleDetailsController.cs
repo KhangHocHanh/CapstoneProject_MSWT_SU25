@@ -133,22 +133,12 @@ namespace MSWT_API.Controllers
         //    }
         //}
 
-        //[HttpPut("scheduledetails/rating/{id}")]
-        //public async Task<IActionResult> UpdateRating(string id, [FromBody] ScheduleDetailsUpdateRatingRequestDTO request)
-        //{
-        //    try
-        //    {
-        //        var result = await _scheduleDetailsService.UpdateRating(id, request);
-        //        if (!result)
-        //            return BadRequest(new { message = "Failed to rate scheduleDetails." });
-
-        //        return Ok(new { message = "scheduleDetails rated successfully." });
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return BadRequest(new { message = ex.Message });
-        //    }
-        //}
+        [HttpPut("scheduledetails/rating/{id}")]
+        public async Task<IActionResult> UpdateRatingAndClose(string id, [FromBody] ScheduleDetailsUpdateRatingRequestDTO request)
+        {
+            var result = await _scheduleDetailsService.UpdateScheduleDetailRatingAsync(id, request);
+            return Ok(result);
+        }
 
         //[HttpPost("schedule-detail/rating")]
         //[Authorize(Roles = "Supervisor")] // hoặc bỏ nếu mọi role đều có quyền
