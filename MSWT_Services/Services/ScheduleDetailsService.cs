@@ -29,6 +29,7 @@ namespace MSWT_Services.Services
         //private readonly IScheduleDetailRatingRepository _scheduleDetailRatingRepository;
         private readonly ICloudinaryService _cloudinary;
         private readonly IWorkGroupMemberService _workGroupMemberService;
+        private readonly IHolidayProvider _holidayProvider;
 
         public ScheduleDetailsService(IScheduleDetailsRepository scheduleDetailsRepository, 
             IUserRepository userRepository, 
@@ -37,7 +38,8 @@ namespace MSWT_Services.Services
             //IScheduleDetailRatingRepository scheduleDetailRatingRepository, 
             IAssignmentService assignmentService, 
             ICloudinaryService cloudinary,
-            IWorkGroupMemberService workGroupMemberService
+            IWorkGroupMemberService workGroupMemberService,
+            IHolidayProvider holidayProvider
             )
         {
             _scheduleDetailsRepository = scheduleDetailsRepository;
@@ -48,13 +50,15 @@ namespace MSWT_Services.Services
             _assignmentService = assignmentService;
             _cloudinary = cloudinary;
             _workGroupMemberService = workGroupMemberService;
+            _holidayProvider = holidayProvider;
         }
 
         public async Task<List<ScheduleDetailsResponseDTO>> CreateScheduleDetailFromScheduleAsync(
     string scheduleId,
     ScheduleDetailsRequestDTO detailDto,
     int shiftDurationMinutes = 135,
-    int breakMinutes = 25)
+    int breakMinutes = 25,
+    int shiftsPerDay = 3)
         {
             var schedule = await _scheduleRepository.GetByIdAsync(scheduleId)
                 ?? throw new Exception("Schedule not found.");
@@ -69,35 +73,41 @@ namespace MSWT_Services.Services
                 throw new Exception("StartTime is required in the request DTO.");
 
             var results = new List<ScheduleDetailsResponseDTO>();
-            var currentStart = detailDto.StartTime.Value;
 
-            // ví dụ: 3 ca (có thể làm động hơn theo yêu cầu)
-            for (int i = 0; i < 3; i++)
+            for (var day = schedule.StartDate!.Value; day <= schedule.EndDate!.Value; day = day.AddDays(1))
             {
-                var scheduleDetail = _mapper.Map<ScheduleDetail>(detailDto);
-                scheduleDetail.ScheduleId = scheduleId;
-                scheduleDetail.SupervisorId = supervisorId;
+                if (day.DayOfWeek == DayOfWeek.Sunday || _holidayProvider.IsHoliday(day.ToDateTime(TimeOnly.MinValue)))
+                    continue;
 
-                scheduleDetail.StartTime = currentStart;
-                scheduleDetail.EndTime = currentStart.AddMinutes(shiftDurationMinutes);
+                // Start datetime for this day
+                DateTime currentStart = day.ToDateTime(detailDto.StartTime!.Value);
 
-                await _scheduleDetailsRepository.AddAsync(scheduleDetail);
+                for (int i = 0; i < shiftsPerDay; i++)
+                {
+                    var scheduleDetail = _mapper.Map<ScheduleDetail>(detailDto);
+                    scheduleDetail.ScheduleId = scheduleId;
+                    scheduleDetail.SupervisorId = supervisorId;
+                    scheduleDetail.Date = day.ToDateTime(new TimeOnly(0, 0)); // store full date
+                    scheduleDetail.Status = "Sắp tới";
 
-                var response = _mapper.Map<ScheduleDetailsResponseDTO>(scheduleDetail);
-                response.SupervisorId = supervisorId;
-                response.Workers = members;
+                    // Convert to TimeOnly
+                    scheduleDetail.StartTime = TimeOnly.FromDateTime(currentStart);
+                    scheduleDetail.EndTime = TimeOnly.FromDateTime(currentStart.AddMinutes(shiftDurationMinutes));
 
-                results.Add(response);
+                    await _scheduleDetailsRepository.AddAsync(scheduleDetail);
 
-                // ca kế tiếp = EndTime + break
-                currentStart = scheduleDetail.EndTime.Value.AddMinutes(breakMinutes);
+                    var response = _mapper.Map<ScheduleDetailsResponseDTO>(scheduleDetail);
+                    response.SupervisorId = supervisorId;
+                    response.Workers = members;
+                    results.Add(response);
+
+                    // Next shift = previous end + break
+                    currentStart = currentStart.AddMinutes(shiftDurationMinutes + breakMinutes);
+                }
             }
 
             return results;
         }
-
-
-
 
 
 
