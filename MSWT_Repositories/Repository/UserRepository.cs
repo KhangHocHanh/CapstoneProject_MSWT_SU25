@@ -122,5 +122,12 @@ namespace MSWT_Repositories.Repository
             _context.Users.Update(user);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<IEnumerable<User>> GetByIdsAsync(IEnumerable<string> ids)
+        {
+            return await _context.Users
+                .Where(u => ids.Contains(u.UserId))
+                .ToListAsync();
+        }
     }
 }

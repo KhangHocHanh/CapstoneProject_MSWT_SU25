@@ -16,5 +16,11 @@ namespace MSWT_Repositories.IRepository
         Task<IEnumerable<WorkGroupMember>> GetAllAsync();
         Task UpdateAsync(WorkGroupMember workGroupMember);
         Task<IEnumerable<WorkGroupMember>> GetByWorkGroupIdAsync(string workGroupId);
+  
+        Task<WorkGroupMember> GetByIdWithUserAsync(string id);
+        Task<IEnumerable<WorkGroupMember>> GetActiveByWorkGroupIdAsync(string workGroupId);
+        Task<IEnumerable<WorkGroupMember>> GetActiveByUserIdAsync(string userId);
+        Task<bool> IsUserInAnyActiveGroupAsync(string userId);
+        Task<IEnumerable<WorkGroupMember>> GetActiveMembersAsync();
     }
 }

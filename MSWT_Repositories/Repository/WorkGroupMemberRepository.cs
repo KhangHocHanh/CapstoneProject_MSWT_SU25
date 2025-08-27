@@ -62,5 +62,44 @@ namespace MSWT_Repositories.Repository
 
             return members;
             }
+
+        public async Task<WorkGroupMember> GetByIdWithUserAsync(string id)
+        {
+            return await _context.WorkGroupMembers
+                .Include(m => m.User)
+                .FirstOrDefaultAsync(f => f.WorkGroupMemberId == id);
+        }
+
+        public async Task<IEnumerable<WorkGroupMember>> GetActiveByWorkGroupIdAsync(string workGroupId)
+        {
+            return await _context.WorkGroupMembers
+               .Include(m => m.User)
+               .Where(m => m.WorkGroupId == workGroupId && m.LeftAt == null)
+               .ToListAsync();
+        }
+
+        public async Task<IEnumerable<WorkGroupMember>> GetActiveByUserIdAsync(string userId)
+        {
+            return await _context.WorkGroupMembers
+                .Include(m => m.User)
+                .Include(m => m.WorkGroup)
+                .Where(m => m.UserId == userId && m.LeftAt == null)
+                .ToListAsync();
+        }
+
+        public async Task<bool> IsUserInAnyActiveGroupAsync(string userId)
+        {
+            return await _context.WorkGroupMembers
+                .AnyAsync(m => m.UserId == userId && m.LeftAt == null);
+        }
+
+        public async Task<IEnumerable<WorkGroupMember>> GetActiveMembersAsync()
+        {
+            return await _context.WorkGroupMembers
+                .Include(m => m.User)
+                .Include(m => m.WorkGroup)
+                .Where(m => m.LeftAt == null)
+                .ToListAsync();
+        }
     }
 }
