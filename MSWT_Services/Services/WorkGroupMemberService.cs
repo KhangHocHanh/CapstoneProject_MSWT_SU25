@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static MSWT_BussinessObject.ResponseDTO.ResponseDTO;
 
 namespace MSWT_Services.Services
 {
@@ -132,8 +133,73 @@ namespace MSWT_Services.Services
             }
         }
 
+        public async Task<ResponseDTO.WorkGroupMemberResponseDTO> GetMemberByIdAsync(string id)
+        {
+            var member = await _workGroupMemberRepository.GetByIdAsync(id);
+            if (member == null)
+                return null;
 
+            return new WorkGroupMemberResponseDTO
+            {
+                WorkGroupMemberId = member.WorkGroupMemberId,
+                WorkGroupId = member.WorkGroupId,
+                UserId = member.UserId,
+                RoleId = member.RoleId,
+                JoinedAt = member.JoinedAt,
+                LeftAt = member.LeftAt,
+                UserName = member.User?.UserName,
+                UserEmail = member.User?.Email
+            };
+        }
 
+        public async Task<IEnumerable<ResponseDTO.WorkGroupMemberResponseDTO>> GetAllMembersAsync()
+        {
+            var members = await _workGroupMemberRepository.GetAllAsync();
+            return members.Select(m => new WorkGroupMemberResponseDTO
+            {
+                WorkGroupMemberId = m.WorkGroupMemberId,
+                WorkGroupId = m.WorkGroupId,
+                UserId = m.UserId,
+                RoleId = m.RoleId,
+                JoinedAt = m.JoinedAt,
+                LeftAt = m.LeftAt,
+                UserName = m.User?.UserName,
+                UserEmail = m.User?.Email
+            });
+        }
 
+        public async Task<IEnumerable<ResponseDTO.WorkGroupMemberResponseDTO>> GetMembersByGroupIdAsync(string groupId)
+        {
+            var members = await _workGroupMemberRepository.GetByWorkGroupIdAsync(groupId);
+            return members.Select(m => new WorkGroupMemberResponseDTO
+            {
+                WorkGroupMemberId = m.WorkGroupMemberId,
+                WorkGroupId = m.WorkGroupId,
+                UserId = m.UserId,
+                RoleId = m.RoleId,
+                JoinedAt = m.JoinedAt,
+                LeftAt = m.LeftAt,
+                UserName = m.User?.UserName,
+                UserEmail = m.User?.Email
+            });
+        }
+
+        public async Task<ResponseDTO.WorkGroupMemberResponseDTO> UpdateMemberAsync(string id, RequestDTO.UpdateWorkGroupMemberRequest request)
+        {
+            var member = await _workGroupMemberRepository.GetByIdAsync(id);
+            if (member == null)
+                return null;
+
+            member.RoleId = request.RoleId;
+            await _workGroupMemberRepository.UpdateAsync(member);
+
+            return await GetMemberByIdAsync(id);
+        }
+
+        public async Task<bool> DeleteMemberAsync(string id)
+        {
+            await _workGroupMemberRepository.DeleteAsync(id);
+            return true;
+        }
     }
 }

@@ -51,5 +51,21 @@ namespace MSWT_Repositories.Repository
             _context.WorkerGroups.Update(workerGroup);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<WorkerGroup> GetByIdWithMembersAsync(string id)
+        {
+            return await _context.WorkerGroups
+                .Include(wg => wg.WorkGroupMembers)
+                    .ThenInclude(wgm => wgm.User)
+                .FirstOrDefaultAsync(f => f.WorkerGroupId == id);
+        }
+
+        public async Task<IEnumerable<WorkerGroup>> GetAllWithMembersAsync()
+        {
+            return await _context.WorkerGroups
+                 .Include(wg => wg.WorkGroupMembers)
+                     .ThenInclude(wgm => wgm.User)
+                 .ToListAsync();
+        }
     }
 }

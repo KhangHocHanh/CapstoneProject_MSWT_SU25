@@ -3,6 +3,7 @@ using MSWT_BussinessObject.Model;
 using MSWT_BussinessObject.RequestDTO;
 using MSWT_BussinessObject.ResponseDTO;
 using MSWT_Services.IServices;
+using static MSWT_BussinessObject.RequestDTO.RequestDTO;
 
 namespace MSWT_API.Controllers
 {
@@ -51,6 +52,46 @@ namespace MSWT_API.Controllers
             var member = await _workGroupMemberService.GetWorkGroupMemberById(id);
             if (member == null) return NotFound();
             return Ok(member);
+        }
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetMember(string id)
+        {
+            var result = await _workGroupMemberService.GetMemberByIdAsync(id);
+            if (result == null)
+                return NotFound(new { Success = false, Message = "Member not found" });
+
+            return Ok(new { Success = true, Data = result });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllMembers()
+        {
+            var result = await _workGroupMemberService.GetAllMembersAsync();
+            return Ok(new { Success = true, Data = result });
+        }
+
+        [HttpGet("group/{groupId}")]
+        public async Task<IActionResult> GetMembersByGroupId(string groupId)
+        {
+            var result = await _workGroupMemberService.GetMembersByGroupIdAsync(groupId);
+            return Ok(new { Success = true, Data = result });
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateMember(string id, [FromBody] UpdateWorkGroupMemberRequest request)
+        {
+            var result = await _workGroupMemberService.UpdateMemberAsync(id, request);
+            if (result == null)
+                return NotFound(new { Success = false, Message = "Member not found" });
+
+            return Ok(new { Success = true, Data = result, Message = "Member updated successfully" });
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteMember(string id)
+        {
+            var result = await _workGroupMemberService.DeleteMemberAsync(id);
+            return Ok(new { Success = true, Message = "Member deleted successfully" });
         }
     }
 }

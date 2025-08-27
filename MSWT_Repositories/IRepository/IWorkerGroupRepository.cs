@@ -14,5 +14,7 @@ namespace MSWT_Repositories.IRepository
         Task DeleteAsync(string id);
         Task<IEnumerable<WorkerGroup>> GetAllAsync();
         Task UpdateAsync(WorkerGroup workerGroup);
+        Task<WorkerGroup> GetByIdWithMembersAsync(string id);
+        Task<IEnumerable<WorkerGroup>> GetAllWithMembersAsync();
     }
 }
