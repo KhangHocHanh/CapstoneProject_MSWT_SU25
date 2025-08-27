@@ -159,6 +159,7 @@ builder.Services.AddScoped<IWorkGroupMemberService, WorkGroupMemberService>();
 builder.Services.AddScoped<IWorkerGroupService, WorkerGroupService>();
 builder.Services.AddScoped<IGroupAssignmentService, GroupAssignmentService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IHolidayProvider, HolidayProvider>();
 
 builder.Services.Configure<CloudinarySettings>(
     builder.Configuration.GetSection("CloudinarySettings"));

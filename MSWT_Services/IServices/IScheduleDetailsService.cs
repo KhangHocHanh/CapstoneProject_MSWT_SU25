@@ -13,7 +13,7 @@ namespace MSWT_Services.IServices
 {
     public interface IScheduleDetailsService
     {
-        Task<List<ScheduleDetailsResponseDTO>> CreateScheduleDetailFromScheduleAsync(string scheduleId, ScheduleDetailsRequestDTO detailDto, int shiftDurationMinutes = 135, int breakMinutes = 25);
+        Task<List<ScheduleDetailsResponseDTO>> CreateScheduleDetailFromScheduleAsync(string scheduleId, ScheduleDetailsRequestDTO detailDto, int shiftDurationMinutes = 135, int breakMinutes = 25, int shiftsPerDay = 3);
         Task DeleteSchedule(string id);
         Task<IEnumerable<ScheduleDetailsResponseDTO>> GetAllSchedule();
         Task<ScheduleDetailsResponseDTO> GetScheduleById(string id);
