@@ -25,5 +25,6 @@ namespace MSWT_Repositories.IRepository
         Task<List<User>> GetUsersByRoleAsync(string roleName);
         Task<User> GetUserByPhone(string phoneNumber);
         Task UpdatePasswordAsync(string userId, string newPassword);
-        }
+        Task<IEnumerable<User>> GetByIdsAsync(IEnumerable<string> ids);
+    }
 }

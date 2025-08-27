@@ -306,6 +306,29 @@ namespace MSWT_BussinessObject.RequestDTO
 
         #endregion
 
+        #region workerGroupDTO
+        public class CreateWorkerGroupRequest
+        {
+            public string WorkerGroupName { get; set; } = null!;
+            public string? Description { get; set; }
+            public List<string> MemberUserIds { get; set; } = new List<string>();
+        }
 
+        public class UpdateWorkerGroupRequest
+        {
+            public string WorkerGroupName { get; set; } = null!;
+            public string? Description { get; set; }
+        }
+
+        public class AddMembersToGroupRequest
+        {
+            public List<string> UserIds { get; set; } = new List<string>();
+        }
+
+        public class UpdateWorkGroupMemberRequest
+        {
+            public string? RoleId { get; set; }
+        }
+        #endregion
     }
 }

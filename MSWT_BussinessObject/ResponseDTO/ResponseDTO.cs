@@ -217,7 +217,36 @@ namespace MSWT_BussinessObject.ResponseDTO
             public string? BuildingName { get; set; }
 
         }
-      
 
+        #region WorkerGroup
+        public class WorkerGroupResponseDTO
+        {
+            public string WorkerGroupId { get; set; } = null!;
+            public string? WorkerGroupName { get; set; }
+            public string? Description { get; set; }
+            public DateTime? CreatedAt { get; set; }
+            public List<WorkGroupMemberResponseDTO>? Members { get; set; }
+        }
+
+        public class WorkGroupMemberResponseDTO
+        {
+            public string WorkGroupMemberId { get; set; } = null!;
+            public string? WorkGroupId { get; set; }
+            public string? UserId { get; set; }
+            public string? RoleId { get; set; }
+            public DateTime? JoinedAt { get; set; }
+            public DateTime? LeftAt { get; set; }
+            public string? UserName { get; set; } // From User navigation property
+            public string? UserEmail { get; set; } // From User navigation property
+        }
+
+        public class AvailableUserResponse
+        {
+            public string UserId { get; set; } = null!;
+            public string? UserName { get; set; }
+            public string? Email { get; set; }
+            // Add other user properties as needed
+        }
+        #endregion
     }
 }
