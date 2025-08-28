@@ -40,7 +40,9 @@ namespace MSWT_Repositories.Repository
         async Task<IEnumerable<Report>> IReportRepository.GetAllAsync()
         {
             return await _context.Reports
-                .Include(r => r.User).ToListAsync();
+                .Include(r => r.User)
+                .OrderByDescending(r => r.CreatedAt)
+                .ToListAsync();
         }
 
         public async Task UpdateAsync(Report report)

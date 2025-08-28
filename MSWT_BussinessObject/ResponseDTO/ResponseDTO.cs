@@ -237,7 +237,7 @@ namespace MSWT_BussinessObject.ResponseDTO
             public string? RoleId { get; set; }
             public DateTime? JoinedAt { get; set; }
             public DateTime? LeftAt { get; set; }
-            public string? UserName { get; set; } // From User navigation property
+            public string? FullName { get; set; } // From User navigation property
             public string? UserEmail { get; set; } // From User navigation property
         }
 

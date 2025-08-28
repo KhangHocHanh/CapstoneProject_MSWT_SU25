@@ -41,6 +41,7 @@ namespace MSWT_Repositories.Repository
         {
             return await _context.Leaves
                 .Include(u => u.Worker)
+                .OrderByDescending(u => u.RequestDate)
                 .ToListAsync();
         }
 
