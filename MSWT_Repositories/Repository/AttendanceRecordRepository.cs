@@ -61,6 +61,7 @@ namespace MSWT_Repositories.Repository
         public async Task<List<AttendanceRecord>> GetAllByDateAsync(DateOnly date)
         {
             return await _context.AttendanceRecords
+                .Include(r => r.Employee)
         .Where(r => r.AttendanceDate == date)
         .ToListAsync();
         }

@@ -119,9 +119,10 @@ namespace MSWT_Services.Services
             return await _repo.GetAllAsync();
         }
 
-        public async Task<List<AttendanceRecord>> GetRecordsByDateAsync(DateOnly date)
+        public async Task<IEnumerable<AttendanceRecordResponseDTO>> GetRecordsByDateAsync(DateOnly date)
         {
-            return await _repo.GetAllByDateAsync(date);
+            var records = await _repo.GetAllByDateAsync(date);
+            return _mapper.Map<IEnumerable<AttendanceRecordResponseDTO>>(records);
         }
         public async Task GenerateDailyRecordsAsync()
         {
