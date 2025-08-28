@@ -61,5 +61,22 @@ namespace MSWT_Repositories.Repository
 
             return assignments;
         }
+
+        public async Task<List<GroupAssignment>> GetAll()
+        {
+            return await _context.GroupAssignments
+                .Include(g => g.Assignments)
+                .ToListAsync();
+        }
+
+        public async Task DeleteAsync(GroupAssignment entity)
+        {
+            _context.GroupAssignments.Remove(entity);
+        }
+
+        public async Task SaveChangesAsync()
+        {
+            await _context.SaveChangesAsync();
+        }
     }
 }
