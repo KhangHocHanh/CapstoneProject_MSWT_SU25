@@ -15,5 +15,8 @@ namespace MSWT_Repositories.IRepository
         Task DeleteAsync(string id);
         Task UpdateAsync(GroupAssignment groupAssignment);
         Task<IEnumerable<GroupAssignment>> GetByAssignmentGroupIdAsync(string workGroupId);
+        Task<List<GroupAssignment>> GetAll();
+        Task DeleteAsync(GroupAssignment entity);
+        Task SaveChangesAsync();
     }
 }
