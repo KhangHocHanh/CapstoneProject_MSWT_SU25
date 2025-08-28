@@ -140,6 +140,13 @@ namespace MSWT_API.Controllers
             return Ok(result);
         }
 
+        [HttpPut("scheduledetails/status/{id}")]
+        public async Task<IActionResult> MarkScheduleAsCompleted(string id)
+        {
+            var result = await _scheduleDetailsService.MarkAsComplete(id);
+            return Ok(result);
+        }
+
         //[HttpPost("schedule-detail/rating")]
         //[Authorize(Roles = "Supervisor")] // hoặc bỏ nếu mọi role đều có quyền
         //public async Task<IActionResult> CreateDailyRating([FromBody] ScheduleDetailRatingCreateDTO dto)

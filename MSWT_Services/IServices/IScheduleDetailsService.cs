@@ -20,6 +20,7 @@ namespace MSWT_Services.IServices
         Task UpdateSchedule(ScheduleDetail scheduleDetail);
         Task<IEnumerable<ScheduleDetailsResponseDTO>> GetSchedulesByUserIdAsync(string userId);
         Task<ScheduleDetailsResponseDTO> UpdateScheduleDetailRatingAsync(string scheduleDetailId, ScheduleDetailsUpdateRatingRequestDTO request);
+        Task<ScheduleDetailsResponseDTO> MarkAsComplete(string scheduleDetailId);
 
         //Task<bool> AddWorkerToSchedule(string id, string workerId);
         //Task<bool> AddSupervisorToSchedule(string id, string supervisorId);
