@@ -33,6 +33,9 @@ public partial class User
 
     public string? IsAssigned { get; set; }
 
+    // 🔑 Thêm token FCM
+    public string? FcmToken { get; set; }
+
 
     public virtual ICollection<AttendanceRecord> AttendanceRecords { get; set; } = new List<AttendanceRecord>();
 
