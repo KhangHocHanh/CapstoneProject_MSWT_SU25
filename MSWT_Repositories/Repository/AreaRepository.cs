@@ -45,6 +45,7 @@ namespace MSWT_Repositories.Repository
             return await _context.Areas
                 .Include(a => a.Building)
                 .Include(a => a.Rooms)
+                .OrderBy(a => a.AreaName)
                 .ToListAsync();
         }
 
