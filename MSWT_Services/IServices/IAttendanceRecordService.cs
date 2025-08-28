@@ -15,7 +15,7 @@ namespace MSWT_Services.IServices
         Task<(bool IsSuccess, string Message)> CheckOutAsync(string userId);
         Task<List<AttendanceRecord>> GetAttendanceRecordsByUserAsync(string userId);
         Task<List<AttendanceRecord>> GetAllAttendanceRecordsAsync();
-        Task<List<AttendanceRecord>> GetRecordsByDateAsync(DateOnly date);
+        Task<IEnumerable<AttendanceRecordResponseDTO>> GetRecordsByDateAsync(DateOnly date);
         Task GenerateDailyRecordsAsync();
         Task<(bool IsSuccess, string Message)> CreateMonthlyAttendanceRecordsAsync(CreateMonthlyAttendanceRequest request);
         Task<(bool IsSuccess, string Message)> AddNewEmployeeAttendanceAsync(AddNewEmployeeAttendanceRequest request);
