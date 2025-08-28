@@ -22,5 +22,10 @@ namespace MSWT_Services.IServices
         Task<byte[]> ExportMonthlyAttendanceAsync(int year, int month);
         Task<IEnumerable<AttendanceRecordResponseDTO>> GetAllAttendanceRecordWithFullName();
 
+        Task<bool> CheckInAsync(string supervisorId, string employeeId, string shift); // shift: "Morning" or "Afternoon"
+                                                                                       // SCBS.Services/Interfaces/IAttendanceService.cs
+        Task<List<User>> GetEmployeesAsync(string supervisorId);
+        Task<bool> SaveAttendancesAsync(string supervisorId, List<string> presentEmployeeIds, string shift);
+
     }
 }
