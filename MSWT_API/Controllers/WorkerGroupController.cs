@@ -120,6 +120,27 @@ namespace MSWT_API.Controllers
 
             return Ok(new { Success = true, Message = "Member removed successfully" });
         }
-    
-}
+        [HttpPut("{groupId}")]
+        public async Task<IActionResult> UpdateWorkerGroupWithMembers(string groupId, [FromBody] UpdateWorkerGroupWithMembersRequest request)
+        {
+            try
+            {
+                var result = await _workerGroupService.UpdateWorkerGroupWithMembersAsync(groupId, request);
+                if (result == null)
+                    return NotFound(new { Success = false, Message = "Worker group not found" });
+
+                return Ok(new
+                {
+                    Success = true,
+                    Data = result,
+                    Message = "Worker group and members updated successfully"
+                });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { Success = false, Message = ex.Message });
+            }
+        }
+
+    }
 }

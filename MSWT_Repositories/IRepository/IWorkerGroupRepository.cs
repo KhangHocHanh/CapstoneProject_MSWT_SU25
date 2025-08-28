@@ -16,5 +16,6 @@ namespace MSWT_Repositories.IRepository
         Task UpdateAsync(WorkerGroup workerGroup);
         Task<WorkerGroup> GetByIdWithMembersAsync(string id);
         Task<IEnumerable<WorkerGroup>> GetAllWithMembersAsync();
+        Task SaveChangesAsync();
     }
 }

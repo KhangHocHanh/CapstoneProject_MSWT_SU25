@@ -1,4 +1,5 @@
-﻿using MSWT_BussinessObject.ResponseDTO;
+﻿using MSWT_BussinessObject.Model;
+using MSWT_BussinessObject.ResponseDTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,5 +22,6 @@ namespace MSWT_Services.IServices
         Task<IEnumerable<AvailableUserResponse>> GetAvailableUsersAsync();
         Task<bool> AddMembersToGroupAsync(string groupId, AddMembersToGroupRequest request);
         Task<bool> RemoveMemberFromGroupAsync(string groupId, string userId);
+        Task<WorkerGroup?> UpdateWorkerGroupWithMembersAsync(string groupId, UpdateWorkerGroupWithMembersRequest request);
     }
 }
