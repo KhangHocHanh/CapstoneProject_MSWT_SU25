@@ -336,5 +336,30 @@ namespace MSWT_BussinessObject.RequestDTO
             public string? Description { get; set; }
             public List<string> MemberIds { get; set; } = new(); // danh sách UserId để gán vào nhóm
         }
+        #region firebase
+        public class SendNotificationRequest
+        {
+            public string Token { get; set; } = string.Empty;
+            public string Title { get; set; } = string.Empty;
+            public string Body { get; set; } = string.Empty;
+            public Dictionary<string, string>? Data { get; set; }
+        }
+
+        public class SendMulticastNotificationRequest
+        {
+            public List<string> Tokens { get; set; } = new();
+            public string Title { get; set; } = string.Empty;
+            public string Body { get; set; } = string.Empty;
+            public Dictionary<string, string>? Data { get; set; }
+        }
+
+        public class SendTopicNotificationRequest
+        {
+            public string Topic { get; set; } = string.Empty;
+            public string Title { get; set; } = string.Empty;
+            public string Body { get; set; } = string.Empty;
+            public Dictionary<string, string>? Data { get; set; }
+        }
+        #endregion
     }
 }

@@ -10,6 +10,7 @@ using static MSWT_BussinessObject.RequestDTO.RequestDTO;
 using static MSWT_BussinessObject.Enum.Enum;
 using MSWT_BussinessObject.Enum;
 using MSWT_Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace MSWT_API.Controllers
 {
@@ -19,11 +20,17 @@ namespace MSWT_API.Controllers
     {
         private readonly ILeaveService _leaveService;
         private readonly IMapper _mapper;
+        private readonly SmartTrashBinandCleaningStaffManagementContext _dbContext;
+        private readonly INotificationService _notificationService;
+        private readonly ILogger<LeaveController> _logger;
 
-        public LeaveController(ILeaveService leaveService, IMapper mapper)
+        public LeaveController(ILeaveService leaveService, IMapper mapper, SmartTrashBinandCleaningStaffManagementContext dbContext, INotificationService notificationService, ILogger<LeaveController> logger)
         {
             _leaveService = leaveService;
             _mapper = mapper;
+            _dbContext = dbContext;
+            _notificationService = notificationService;
+            _logger = logger;
         }
 
         /// <summary>
@@ -46,24 +53,54 @@ namespace MSWT_API.Controllers
             return Ok(new ResponseDTO(Const.SUCCESS_CREATE_CODE, "Tạo đơn nghỉ phép thành công", leave));
         }
 
+        //[HttpPatch("{id}/approval")]
+        //[Authorize(Roles = "Leader")]
+        //public async Task<IActionResult> ApproveOrRejectLeave(string id, [FromBody] LeaveApprovalDto dto)
+        //{
+        //    var leave = await _leaveService.GetLeaveById(id);
+        //    if (leave == null)
+        //    {
+        //        return NotFound(new ResponseDTO(Const.FAIL_READ_CODE, "Không tìm thấy đơn nghỉ phép."));
+        //    }
+
+        //    // Nếu trạng thái hiện tại đã được duyệt hoặc từ chối -> không cho phép cập nhật nữa
+        //    if (leave.ApprovalStatus == ApprovalStatusEnum.DaDuyet.ToVietnamese() ||
+        //        leave.ApprovalStatus == ApprovalStatusEnum.TuChoi.ToVietnamese())
+        //    {
+        //        return BadRequest(new ResponseDTO(Const.FAIL_UPDATE_CODE, "Đơn nghỉ phép đã được xử lý, không thể thay đổi trạng thái."));
+        //    }
+
+        //    // Nếu trạng thái hiện tại là Chưa duyệt, cho phép chuyển sang Đã duyệt hoặc Từ chối
+        //    var currentUserId = User.FindFirstValue("User_Id");
+
+        //    leave.ApprovalStatus = dto.ApprovalStatus.ToVietnamese();
+        //    leave.ApprovalDate = DateOnly.FromDateTime(TimeHelper.GetNowInVietnamTime());
+        //    leave.ApprovedBy = currentUserId;
+        //    leave.Note = dto.Note;
+
+        //    await _leaveService.UpdateLeaf(leave);
+
+        //    var message = dto.ApprovalStatus switch
+        //    {
+        //        ApprovalStatusEnum.DaDuyet => "✅ Đã duyệt đơn nghỉ phép.",
+        //        ApprovalStatusEnum.TuChoi => "❌ Đơn nghỉ phép đã bị từ chối.",
+        //        _ => "⚠️ Cập nhật trạng thái thành công."
+        //    };
+
+        //    return Ok(new ResponseDTO(Const.SUCCESS_UPDATE_CODE, message));
+        //}
         [HttpPatch("{id}/approval")]
         [Authorize(Roles = "Leader")]
         public async Task<IActionResult> ApproveOrRejectLeave(string id, [FromBody] LeaveApprovalDto dto)
         {
             var leave = await _leaveService.GetLeaveById(id);
             if (leave == null)
-            {
                 return NotFound(new ResponseDTO(Const.FAIL_READ_CODE, "Không tìm thấy đơn nghỉ phép."));
-            }
 
-            // Nếu trạng thái hiện tại đã được duyệt hoặc từ chối -> không cho phép cập nhật nữa
             if (leave.ApprovalStatus == ApprovalStatusEnum.DaDuyet.ToVietnamese() ||
                 leave.ApprovalStatus == ApprovalStatusEnum.TuChoi.ToVietnamese())
-            {
                 return BadRequest(new ResponseDTO(Const.FAIL_UPDATE_CODE, "Đơn nghỉ phép đã được xử lý, không thể thay đổi trạng thái."));
-            }
 
-            // Nếu trạng thái hiện tại là Chưa duyệt, cho phép chuyển sang Đã duyệt hoặc Từ chối
             var currentUserId = User.FindFirstValue("User_Id");
 
             leave.ApprovalStatus = dto.ApprovalStatus.ToVietnamese();
@@ -73,14 +110,36 @@ namespace MSWT_API.Controllers
 
             await _leaveService.UpdateLeaf(leave);
 
-            var message = dto.ApprovalStatus switch
+            var messageText = dto.ApprovalStatus switch
             {
-                ApprovalStatusEnum.DaDuyet => "✅ Đã duyệt đơn nghỉ phép.",
-                ApprovalStatusEnum.TuChoi => "❌ Đơn nghỉ phép đã bị từ chối.",
-                _ => "⚠️ Cập nhật trạng thái thành công."
+                ApprovalStatusEnum.DaDuyet => "✅ Đơn nghỉ phép của bạn đã được duyệt.",
+                ApprovalStatusEnum.TuChoi => "❌ Đơn nghỉ phép của bạn đã bị từ chối.",
+                _ => "⚠️ Trạng thái đơn nghỉ phép đã được cập nhật."
             };
 
-            return Ok(new ResponseDTO(Const.SUCCESS_UPDATE_CODE, message));
+            // 🔎 Lấy token của Worker
+            var worker = await _dbContext.Users.FindAsync(leave.WorkerId);
+            var token = worker?.FcmToken;
+
+            if (!string.IsNullOrWhiteSpace(token))
+            {
+                await _notificationService.SendNotificationAsync(
+                    token,
+                    "Thông báo đơn nghỉ phép",
+                    messageText,
+                    new Dictionary<string, string>
+                    {
+                { "LeaveId", leave.LeaveId },
+                { "Status",  leave.ApprovalStatus }
+                    }
+                );
+            }
+            else
+            {
+                _logger.LogWarning("User {UserId} chưa có FCM token. Bỏ qua gửi thông báo.", leave.WorkerId);
+            }
+
+            return Ok(new ResponseDTO(Const.SUCCESS_UPDATE_CODE, messageText));
         }
 
 

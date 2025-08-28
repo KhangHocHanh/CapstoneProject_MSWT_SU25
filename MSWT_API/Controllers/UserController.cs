@@ -19,10 +19,12 @@ namespace MSWT_API.Controllers
     {
         private readonly IUserService _userService;
         private readonly IMapper _mapper;
-        public UserController(IUserService userService, IMapper mapper)
+        private readonly SmartTrashBinandCleaningStaffManagementContext _context;
+        public UserController(IUserService userService, IMapper mapper, SmartTrashBinandCleaningStaffManagementContext context)
         {
             _userService = userService;
             _mapper = mapper;
+            _context = context;
         }
         #region CRUD User
         [HttpGet]
@@ -167,6 +169,21 @@ namespace MSWT_API.Controllers
         {
             var users = await _userService.GetUnassignedSupervisorsAsync();
             return Ok(users);
+        }
+        [HttpPost("fcm-token")]
+        [Authorize] // cần attach JWT có claim User_Id
+        public async Task<IActionResult> UpdateFcmToken([FromBody] string fcmToken)
+        {
+            var userId = User.FindFirstValue("User_Id");
+            if (string.IsNullOrEmpty(userId)) return Unauthorized();
+
+            var user = await _context.Users.FindAsync(userId);
+            if (user is null) return NotFound();
+
+            user.FcmToken = fcmToken;
+            await _context.SaveChangesAsync();
+
+            return Ok(new { Success = true });
         }
     }
 }

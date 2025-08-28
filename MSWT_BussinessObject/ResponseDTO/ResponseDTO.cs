@@ -92,6 +92,7 @@ namespace MSWT_BussinessObject.ResponseDTO
             public string? RoleName { get; set; }
 
             public string? Description { get; set; }
+            public string? FcmToken { get; set; }
         }
         public class SensorMeasurementDto
         {
