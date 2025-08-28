@@ -58,9 +58,11 @@ namespace MSWT_Repositories.Repository
             throw new NotImplementedException();
         }
 
-        public Task<List<AttendanceRecord>> GetAllByDateAsync(DateOnly date)
+        public async Task<List<AttendanceRecord>> GetAllByDateAsync(DateOnly date)
         {
-            throw new NotImplementedException();
+            return await _context.AttendanceRecords
+        .Where(r => r.AttendanceDate == date)
+        .ToListAsync();
         }
         public async Task<bool> ExistsByUserAndDateAsync(string userId, DateOnly date)
         {
