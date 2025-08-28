@@ -72,7 +72,7 @@ namespace MSWT_API.Controllers
                 TrashBinId = dto.TrashBinId,
                 TimeSend = TimeHelper.GetNowInVietnamTime(),
                 Status = AlertStatus.ChuaXuLy.ToDisplayString(),
-                UserId = null
+                WorkerGroupId = null
             };
 
             await _alertService.CreateAlertAsync(newAlert);

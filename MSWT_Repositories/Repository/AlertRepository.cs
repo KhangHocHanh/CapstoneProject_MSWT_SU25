@@ -36,7 +36,7 @@ namespace MSWT_Repositories.Repository
         public async Task<Alert> GetByIdAsync(string id)
         {
             return await _context.Alerts
-        .Include(a => a.User)
+        .Include(a => a.WorkerGroup)
         .Include(a => a.TrashBin)
         .FirstOrDefaultAsync(a => a.AlertId == id);
         }
@@ -44,7 +44,7 @@ namespace MSWT_Repositories.Repository
         async Task<IEnumerable<Alert>> IAlertRepository.GetAllAsync()
         {
             return await _context.Alerts
-                .Include(a => a.User)
+                .Include(a => a.WorkerGroup)
                 .Include(a => a.TrashBin)
                 .ToListAsync();
         }
@@ -59,7 +59,7 @@ namespace MSWT_Repositories.Repository
             return await _context.Alerts
                 .Include(a => a.TrashBin)
                 .ThenInclude(tb => tb.Area)
-                .Where(l => l.UserId == userId)
+                .Where(l => l.WorkerGroupId == userId)
                 .OrderByDescending(l => l.TimeSend)
                 .ToListAsync();
         }
