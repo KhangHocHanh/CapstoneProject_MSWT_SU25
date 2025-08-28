@@ -33,7 +33,6 @@ public partial class User
 
     public string? IsAssigned { get; set; }
 
-    public virtual ICollection<Alert> Alerts { get; set; } = new List<Alert>();
 
     public virtual ICollection<AttendanceRecord> AttendanceRecords { get; set; } = new List<AttendanceRecord>();
 

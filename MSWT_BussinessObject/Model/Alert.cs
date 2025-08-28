@@ -13,11 +13,11 @@ public partial class Alert
 
     public DateTime? ResolvedAt { get; set; }
 
-    public string? UserId { get; set; }
+    public string? WorkerGroupId { get; set; }
 
     public string? Status { get; set; }
 
     public virtual TrashBin? TrashBin { get; set; }
 
-    public virtual User? User { get; set; }
+    public virtual WorkerGroup? WorkerGroup { get; set; }
 }
