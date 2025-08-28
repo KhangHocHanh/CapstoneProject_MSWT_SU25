@@ -109,7 +109,7 @@ namespace MSWT_Services.Services
                     RoleId = m.RoleId,
                     JoinedAt = m.JoinedAt,
                     LeftAt = m.LeftAt,
-                    UserName = m.User?.UserName,
+                    FullName = m.User?.FullName,
                     UserEmail = m.User?.Email
                 }).ToList()
             };
