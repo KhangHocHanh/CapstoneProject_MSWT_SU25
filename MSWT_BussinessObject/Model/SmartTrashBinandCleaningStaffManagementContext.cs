@@ -451,7 +451,7 @@ public partial class SmartTrashBinandCleaningStaffManagementContext : DbContext
                 .HasMaxLength(50)
                 .IsUnicode(false);
             entity.Property(e => e.FcmToken)
-                .HasMaxLength(50);
+                .HasMaxLength(500);
 
             entity.HasOne(d => d.Role).WithMany(p => p.Users)
                 .HasForeignKey(d => d.RoleId)
