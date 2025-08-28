@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc;
+using MSWT_BussinessObject.Model;
 using MSWT_Services.IServices;
 using static MSWT_BussinessObject.RequestDTO.RequestDTO;
 
@@ -92,6 +94,44 @@ namespace MSWT_API.Controllers
             var fileName = $"BaoCaoDiemDanh_{month:D2}_{year}.xlsx";
             return File(fileBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
         }
+        // Lấy danh sách nhân viên trong nhóm supervisor
+        [HttpGet("employees")]
+        public async Task<IActionResult> GetEmployees()
+        {
+            // Lấy UserId từ JWT Claims
+            var supervisorId = User.FindFirst("User_Id")?.Value;
+            var role = User.FindFirst(ClaimTypes.Role)?.Value;
 
+            if (string.IsNullOrEmpty(supervisorId) || role != "Supervisor")
+                return Unauthorized("Bạn không có quyền xem danh sách này");
+
+            var employees = await _attendanceService.GetEmployeesAsync(supervisorId);
+            return Ok(employees);
+        }
+
+        // POST: Supervisor điểm danh
+        [HttpPost("save")]
+        public async Task<IActionResult> SaveAttendances([FromBody] SaveAttendanceRequest request)
+        {
+            var supervisorId = User.FindFirst("User_Id")?.Value;
+            var role = User.FindFirst(ClaimTypes.Role)?.Value;
+
+            if (string.IsNullOrEmpty(supervisorId) || role != "Supervisor")
+                return Unauthorized("Bạn không có quyền điểm danh");
+
+            var success = await _attendanceService.SaveAttendancesAsync(supervisorId, request.PresentEmployeeIds, request.Shift);
+
+            if (!success) return BadRequest("Không thể lưu điểm danh");
+
+            return Ok(new { message = "Điểm danh thành công" });
+        }
     }
+
+    public class SaveAttendanceRequest
+    {
+        public List<string> PresentEmployeeIds { get; set; } = new();
+        public string Shift { get; set; } = null!; // "Morning" hoặc "Afternoon"
+    }
+
+
 }

@@ -9,6 +9,7 @@ namespace MSWT_Repositories.IRepository
 {
     public interface IAttendanceRecordRepository : IGenericRepository<AttendanceRecord>
     {
+# region old
         Task<List<AttendanceRecord>> GetRecordsByUserIdAsync(string userId);
         Task<List<AttendanceRecord>> GetAllWithUsersAsync();
 
@@ -18,5 +19,12 @@ namespace MSWT_Repositories.IRepository
         Task<bool> ExistsByUserAndDateAsync(string userId, DateOnly date);
         Task<bool> HasMonthlyAttendanceRecordsAsync(int year, int month);
         Task<List<AttendanceRecord>> GetRecordsByMonthAsync(int year, int month);
+        #endregion
+        Task<AttendanceRecord?> GetAttendanceAsync(string employeeId, DateOnly date);
+        Task AddAttendanceAsync(AttendanceRecord record);
+        Task UpdateAttendanceAsync(AttendanceRecord record);
+        Task<List<WorkGroupMember>> GetGroupMembersBySupervisorAsync(string supervisorId);
+        Task SaveChangesAsync();
+        Task<List<User>> GetEmployeesBySupervisorAsync(string supervisorId);
     }
 }
