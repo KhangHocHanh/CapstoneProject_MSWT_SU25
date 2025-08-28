@@ -330,5 +330,11 @@ namespace MSWT_BussinessObject.RequestDTO
             public string? RoleId { get; set; }
         }
         #endregion
+        public class UpdateWorkerGroupWithMembersRequest
+        {
+            public string? GroupName { get; set; }
+            public string? Description { get; set; }
+            public List<string> MemberIds { get; set; } = new(); // danh sách UserId để gán vào nhóm
+        }
     }
 }

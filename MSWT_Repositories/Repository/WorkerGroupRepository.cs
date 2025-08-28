@@ -67,5 +67,10 @@ namespace MSWT_Repositories.Repository
                      .ThenInclude(wgm => wgm.User)
                  .ToListAsync();
         }
+
+        public async Task SaveChangesAsync()
+        {
+            await _context.SaveChangesAsync();
+        }
     }
 }
