@@ -169,7 +169,8 @@ namespace MSWT_Services.Services
                 .ToHashSet();
 
             // Filter out users who are already in groups
-            var availableUsers = allUsers.Where(u => !usersInGroups.Contains(u.UserId));
+            var availableUsers = allUsers
+       .Where(u => (u.RoleId == "RL03" || u.RoleId == "RL04") && !usersInGroups.Contains(u.UserId));
 
             return availableUsers.Select(u => new AvailableUserResponse
             {
