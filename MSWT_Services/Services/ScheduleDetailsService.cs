@@ -418,5 +418,127 @@ namespace MSWT_Services.Services
         //    return await _scheduleDetailsRepository.GetWorkStatsInMonthAsync(workerId, month, year);
         //}
 
+        public async Task<IEnumerable<ScheduleDetailsResponseDTO>> GetByUserIdAndDateAsync(string userId, DateTime date)
+        {
+            var scheduleDetails = await _scheduleDetailsRepository.GetByUserIdAndDateAsync(userId, date);
+            var responses = new List<ScheduleDetailsResponseDTO>();
+
+            // Collect unique WorkGroupIds and GroupAssignmentIds
+            var workGroupIds = scheduleDetails
+                .Where(d => !string.IsNullOrEmpty(d.WorkerGroupId))
+                .Select(d => d.WorkerGroupId)
+                .Distinct()
+                .ToList();
+
+            var groupAssignmentIds = scheduleDetails
+                .Where(d => !string.IsNullOrEmpty(d.GroupAssignmentId))
+                .Select(d => d.GroupAssignmentId)
+                .Distinct()
+                .ToList();
+
+            // Batch fetch workgroups and assignments
+            var workGroups = new Dictionary<string, (string supervisorId, IEnumerable<WorkGroupMemberResponse> members)>();
+            foreach (var wgId in workGroupIds)
+            {
+                workGroups[wgId] = await _workGroupMemberService.GetSupervisorAndMembersByWorkGroupIdAsync(wgId);
+            }
+
+            var assignmentsDict = new Dictionary<string, IEnumerable<AssignmentResponseDTO>>();
+            foreach (var gaId in groupAssignmentIds)
+            {
+                assignmentsDict[gaId] = await _assignmentService.GetAssignmentsByGroupAssignmentIdAsync(gaId);
+            }
+
+            // Build DTOs
+            foreach (var detail in scheduleDetails)
+            {
+                var dto = _mapper.Map<ScheduleDetailsResponseDTO>(detail);
+
+                // Add workgroup info
+                if (!string.IsNullOrEmpty(detail.WorkerGroupId) && workGroups.TryGetValue(detail.WorkerGroupId, out var wg))
+                {
+                    dto.SupervisorId = wg.supervisorId;
+                    dto.Workers = wg.members.ToList();
+                    dto.SupervisorName = wg.members.FirstOrDefault(m => m.UserId == wg.supervisorId)?.FullName;
+                }
+
+                // Add assignments
+                if (!string.IsNullOrEmpty(detail.GroupAssignmentId) && assignmentsDict.TryGetValue(detail.GroupAssignmentId, out var asgs))
+                {
+                    dto.Assignments = asgs.ToList();
+                }
+
+                responses.Add(dto);
+            }
+
+            return responses;
+        }
+
+
+        public async Task<PaginatedResponse<ScheduleDetailsResponseDTO>> GetByDatePaginatedAsync(DateTime date, int pageNumber, int pageSize)
+        {
+            var (items, totalCount) = await _scheduleDetailsRepository.GetByDatePaginatedAsync(date, pageNumber, pageSize);
+
+            // Collect unique WorkGroupIds and GroupAssignmentIds
+            var workGroupIds = items
+                .Where(d => !string.IsNullOrEmpty(d.WorkerGroupId))
+                .Select(d => d.WorkerGroupId)
+                .Distinct()
+                .ToList();
+
+            var groupAssignmentIds = items
+                .Where(d => !string.IsNullOrEmpty(d.GroupAssignmentId))
+                .Select(d => d.GroupAssignmentId)
+                .Distinct()
+                .ToList();
+
+            // Batch fetch
+            var workGroups = new Dictionary<string, (string supervisorId, IEnumerable<WorkGroupMemberResponse> members)>();
+            foreach (var wgId in workGroupIds)
+            {
+                workGroups[wgId] = await _workGroupMemberService.GetSupervisorAndMembersByWorkGroupIdAsync(wgId);
+            }
+
+            var assignmentsDict = new Dictionary<string, IEnumerable<AssignmentResponseDTO>>();
+            foreach (var gaId in groupAssignmentIds)
+            {
+                assignmentsDict[gaId] = await _assignmentService.GetAssignmentsByGroupAssignmentIdAsync(gaId);
+            }
+
+            // Build DTOs
+            var responses = new List<ScheduleDetailsResponseDTO>();
+            foreach (var detail in items)
+            {
+                var dto = _mapper.Map<ScheduleDetailsResponseDTO>(detail);
+
+                // Workgroup
+                if (!string.IsNullOrEmpty(detail.WorkerGroupId) && workGroups.TryGetValue(detail.WorkerGroupId, out var wg))
+                {
+                    dto.SupervisorId = wg.supervisorId;
+                    dto.Workers = wg.members.ToList();
+                    dto.SupervisorName = wg.members.FirstOrDefault(m => m.UserId == wg.supervisorId)?.FullName;
+                }
+
+                // Assignments
+                if (!string.IsNullOrEmpty(detail.GroupAssignmentId) && assignmentsDict.TryGetValue(detail.GroupAssignmentId, out var asgs))
+                {
+                    dto.Assignments = asgs.ToList();
+                }
+
+                responses.Add(dto);
+            }
+
+            return new PaginatedResponse<ScheduleDetailsResponseDTO>
+            {
+                Items = responses,
+                TotalCount = totalCount,
+                PageNumber = pageNumber,
+                PageSize = pageSize
+            };
+        }
+
+
+
+
     }
 }

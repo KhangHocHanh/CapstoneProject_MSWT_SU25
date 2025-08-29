@@ -77,6 +77,45 @@ namespace MSWT_Repositories.Repository
                          .Any(wgm => wgm.UserId == userId))
         .ToListAsync();
         }
+
+        public async Task<IEnumerable<ScheduleDetail>> GetByUserIdAndDateAsync(string userId, DateTime date)
+        {
+            return await _context.ScheduleDetails
+                .Include(sd => sd.Schedule)
+                .Include(sd => sd.GroupAssignment)
+                .Include(sd => sd.Area)
+                .Include(sd => sd.WorkerGroup)
+                    .ThenInclude(wg => wg.WorkGroupMembers)
+                        .ThenInclude(wgm => wgm.User)
+                .Where(sd => sd.Date.HasValue
+                          && sd.Date.Value.Date == date.Date
+                          && sd.WorkerGroupId != null
+                          && sd.WorkerGroup.WorkGroupMembers.Any(wgm => wgm.UserId == userId))
+                .ToListAsync();
+        }
+
+        public async Task<(IEnumerable<ScheduleDetail> Items, int TotalCount)> GetByDatePaginatedAsync(DateTime date, int pageNumber, int pageSize)
+        {
+            var query = _context.ScheduleDetails
+                .Include(sd => sd.Schedule)
+                .Include(sd => sd.GroupAssignment)
+                .Include(sd => sd.Area)
+                .Include(sd => sd.WorkerGroup)
+                    .ThenInclude(wg => wg.WorkGroupMembers)
+                        .ThenInclude(wgm => wgm.User)
+                .Where(sd => sd.Date.HasValue && sd.Date.Value.Date == date.Date);
+
+            var totalCount = await query.CountAsync();
+
+            var items = await query
+                .OrderBy(sd => sd.StartTime) // optional: order by start time
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return (items, totalCount);
+        }
+
         //public async Task<ScheduleDetail?> GetByUserAndDateAsync(string userId, DateOnly targetDate)
         //{
         //    return await _context.ScheduleDetails
