@@ -81,6 +81,21 @@ namespace MSWT_API.Controllers
             }
         }
 
+        [HttpGet("by-user-date")]
+        public async Task<IActionResult> GetByUserIdAndDate(string userId, DateTime date)
+        {
+            var results = await _scheduleDetailsService.GetByUserIdAndDateAsync(userId, date);
+            return Ok(results);
+        }
+
+        [HttpGet("by-date-paginated")]
+        public async Task<IActionResult> GetByDatePaginated(DateTime date, int pageNumber = 1, int pageSize = 20)
+        {
+            var results = await _scheduleDetailsService.GetByDatePaginatedAsync(date, pageNumber, pageSize);
+            return Ok(results);
+        }
+
+
         //[HttpPut("{id}/assignments/{assignmentId}")]
         //public async Task<IActionResult> AddAssignmentToSchedule(string id, string assignmentId)
         //{
