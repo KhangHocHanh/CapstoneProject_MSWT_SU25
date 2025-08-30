@@ -216,5 +216,22 @@ namespace MSWT_Repositories.Repository
                     sd.Schedule.StartDate <= date &&
                     sd.Schedule.EndDate >= date);
         }
+
+        public async Task<List<string>> GetDistinctScheduleDatesByUserIdAsync(string userId)
+        {
+            var dates = await _context.ScheduleDetails
+                .Where(s => s.Date.HasValue &&
+                       (s.SupervisorId == userId ||
+                        s.WorkerGroup.WorkGroupMembers.Any(m => m.UserId == userId)))
+                .Select(s => s.Date.Value.Date)
+                .Distinct()
+                .OrderBy(d => d)
+                .ToListAsync();
+
+            return dates
+                .Select(d => d.ToString("yyyy-MM-dd"))
+                .ToList();
+        }
+
     }
 }

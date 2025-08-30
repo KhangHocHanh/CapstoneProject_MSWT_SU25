@@ -225,6 +225,11 @@ namespace MSWT_Services.Services
             return await _scheduleDetailsRepository.GetDistinctScheduleDatesAsync();
         }
 
+        public async Task<List<string>> GetDistinctScheduleDatesByUserIdAsync(string userId)
+        {
+            return await _scheduleDetailsRepository.GetDistinctScheduleDatesByUserIdAsync(userId);
+        }
+
 
         //public async Task<bool> AddWorkerToSchedule(string id, string workerId)
         //{

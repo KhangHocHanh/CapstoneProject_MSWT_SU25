@@ -25,6 +25,7 @@ namespace MSWT_Services.IServices
         Task<PaginatedResponse<ScheduleDetailsResponseDTO>> GetByDatePaginatedAsync(DateTime date, int pageNumber, int pageSize);
         Task<ScheduleDetailsResponseDTO> MarkAsNotComplete(string scheduleDetailId);
         Task<IEnumerable<string>> GetScheduleDatesAsync();
+        Task<List<string>> GetDistinctScheduleDatesByUserIdAsync(string userId);
 
         //Task<bool> AddWorkerToSchedule(string id, string workerId);
         //Task<bool> AddSupervisorToSchedule(string id, string supervisorId);
