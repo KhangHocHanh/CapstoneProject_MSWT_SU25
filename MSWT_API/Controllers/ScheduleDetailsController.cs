@@ -95,6 +95,12 @@ namespace MSWT_API.Controllers
             return Ok(results);
         }
 
+        [HttpGet("dates")]
+        public async Task<IActionResult> GetScheduleDates()
+        {
+            var dates = await _scheduleDetailsService.GetScheduleDatesAsync();
+            return Ok(dates);
+        }
 
         //[HttpPut("{id}/assignments/{assignmentId}")]
         //public async Task<IActionResult> AddAssignmentToSchedule(string id, string assignmentId)
@@ -155,10 +161,17 @@ namespace MSWT_API.Controllers
             return Ok(result);
         }
 
-        [HttpPut("scheduledetails/status/{id}")]
+        [HttpPut("scheduledetails/status/{id}/complete")]
         public async Task<IActionResult> MarkScheduleAsCompleted(string id)
         {
             var result = await _scheduleDetailsService.MarkAsComplete(id);
+            return Ok(result);
+        }
+
+        [HttpPut("scheduledetails/status/{id}/incomplete")]
+        public async Task<IActionResult> MarkScheduleAsNotCompleted(string id)
+        {
+            var result = await _scheduleDetailsService.MarkAsNotComplete(id);
             return Ok(result);
         }
 
