@@ -151,6 +151,9 @@ namespace MSWT_BussinessObject.Mapper
             CreateMap<AttendanceRecord, AttendanceRecordResponseDTO>()
     .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.Employee.FullName));
 
+            CreateMap<WorkGroupMember, WorkGroupMemberResponseDTO>()
+                .ForMember(dest => dest.RoleName, opt => opt.MapFrom(src => src.User.Role));
+
         }
     }
 }
