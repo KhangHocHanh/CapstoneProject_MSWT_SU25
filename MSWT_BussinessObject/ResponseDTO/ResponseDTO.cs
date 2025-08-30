@@ -92,6 +92,7 @@ namespace MSWT_BussinessObject.ResponseDTO
             public string? RoleName { get; set; }
 
             public string? Description { get; set; }
+            public string? FcmToken { get; set; }
         }
         public class SensorMeasurementDto
         {
@@ -236,7 +237,7 @@ namespace MSWT_BussinessObject.ResponseDTO
             public string? RoleId { get; set; }
             public DateTime? JoinedAt { get; set; }
             public DateTime? LeftAt { get; set; }
-            public string? UserName { get; set; } // From User navigation property
+            public string? FullName { get; set; } // From User navigation property
             public string? UserEmail { get; set; } // From User navigation property
         }
 

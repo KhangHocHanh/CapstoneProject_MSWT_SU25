@@ -190,17 +190,6 @@ namespace MSWT_Repositories.Repository
         //    return (workedDays, totalDays, percentage);
         //}
 
-        //public async Task<ScheduleDetail?> GetByWorkerAndDateAsync(string userId, DateOnly date)
-        //{
-        //    return await _context.ScheduleDetails
-        //        .Include(sd => sd.Schedule)
-        //        .Include(sd => sd.Worker) // Nếu cần thông tin User
-        //        .FirstOrDefaultAsync(sd =>
-        //            sd.WorkerId == userId &&
-        //            sd.Schedule != null &&
-        //            sd.Schedule.StartDate <= date &&
-        //            sd.Schedule.EndDate >= date);
-        //}
 
         public async Task<List<string>> GetDistinctScheduleDatesAsync()
         {
@@ -216,8 +205,16 @@ namespace MSWT_Repositories.Repository
                 .ToList();        // ✅ convert to string list
         }
 
-
-
-
+        public async Task<ScheduleDetail?> GetByWorkerAndDateAsync(string userId, DateOnly date)
+        {
+            return await _context.ScheduleDetails
+                .Include(sd => sd.Schedule)
+                .Include(sd => sd.WorkerGroup) // Nếu cần thông tin User
+                .FirstOrDefaultAsync(sd =>
+                    sd.WorkerGroupId == userId &&
+                    sd.Schedule != null &&
+                    sd.Schedule.StartDate <= date &&
+                    sd.Schedule.EndDate >= date);
+        }
     }
 }

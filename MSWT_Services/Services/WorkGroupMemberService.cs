@@ -147,7 +147,7 @@ namespace MSWT_Services.Services
                 RoleId = member.RoleId,
                 JoinedAt = member.JoinedAt,
                 LeftAt = member.LeftAt,
-                UserName = member.User?.UserName,
+                FullName = member.User?.FullName,
                 UserEmail = member.User?.Email
             };
         }
@@ -163,7 +163,7 @@ namespace MSWT_Services.Services
                 RoleId = m.RoleId,
                 JoinedAt = m.JoinedAt,
                 LeftAt = m.LeftAt,
-                UserName = m.User?.UserName,
+                FullName = m.User?.FullName,
                 UserEmail = m.User?.Email
             });
         }
@@ -179,7 +179,7 @@ namespace MSWT_Services.Services
                 RoleId = m.RoleId,
                 JoinedAt = m.JoinedAt,
                 LeftAt = m.LeftAt,
-                UserName = m.User?.UserName,
+                FullName = m.User?.FullName,
                 UserEmail = m.User?.Email
             });
         }

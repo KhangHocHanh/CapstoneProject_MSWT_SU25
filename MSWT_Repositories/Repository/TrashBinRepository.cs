@@ -42,6 +42,7 @@ namespace MSWT_Repositories.Repository
         {
             return await _context.TrashBins
                 .Include(t => t.Area)
+                .OrderBy(t => t.Location)
                 .ToListAsync();
         }
 

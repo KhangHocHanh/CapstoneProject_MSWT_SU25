@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static MSWT_BussinessObject.RequestDTO.RequestDTO;
 using static MSWT_BussinessObject.ResponseDTO.ResponseDTO;
 
 namespace MSWT_Services.Services
@@ -108,7 +109,7 @@ namespace MSWT_Services.Services
                     RoleId = m.RoleId,
                     JoinedAt = m.JoinedAt,
                     LeftAt = m.LeftAt,
-                    UserName = m.User?.UserName,
+                    FullName = m.User?.FullName,
                     UserEmail = m.User?.Email
                 }).ToList()
             };
@@ -169,7 +170,8 @@ namespace MSWT_Services.Services
                 .ToHashSet();
 
             // Filter out users who are already in groups
-            var availableUsers = allUsers.Where(u => !usersInGroups.Contains(u.UserId));
+            var availableUsers = allUsers
+       .Where(u => (u.RoleId == "RL03" || u.RoleId == "RL04") && !usersInGroups.Contains(u.UserId));
 
             return availableUsers.Select(u => new AvailableUserResponse
             {
@@ -233,5 +235,46 @@ namespace MSWT_Services.Services
 
             return usersInGroups;
         }
+
+        public async Task<WorkerGroup?> UpdateWorkerGroupWithMembersAsync(string groupId, UpdateWorkerGroupWithMembersRequest request)
+        {
+            // Tìm group
+            var group = await _workerGroupRepository.GetByIdAsync(groupId);
+            if (group == null) return null;
+
+            // Cập nhật thông tin group
+            group.WorkerGroupName = request.GroupName ?? group.WorkerGroupName;
+            group.Description = request.Description ?? group.Description;
+
+            // Xoá tất cả thành viên hiện tại (chỉ active)
+            var existingMembers = await _workGroupMemberRepository.GetAllAsync();
+            var currentMembers = existingMembers.Where(m => m.WorkGroupId == groupId && m.LeftAt == null).ToList();
+            foreach (var member in currentMembers)
+            {
+                member.LeftAt = DateTime.Now; // đánh dấu rời nhóm
+            }
+
+            // Thêm danh sách thành viên mới
+
+            foreach (var userId in request.MemberIds)
+            {
+                var user = await _userRepository.GetByIdAsync(userId);
+                var newMember = new WorkGroupMember
+                {
+                    WorkGroupMemberId = Guid.NewGuid().ToString(),
+                    WorkGroupId = groupId,
+                    UserId = userId,
+                    RoleId = user.RoleId,
+                    JoinedAt = DateTime.Now
+                };
+                await _workGroupMemberRepository.AddAsync(newMember);
+            }
+
+            await _workerGroupRepository.UpdateAsync(group);
+            await _workerGroupRepository.SaveChangesAsync();
+
+            return group;
+        }
+
     }
 }

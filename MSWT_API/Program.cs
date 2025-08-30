@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using FirebaseAdmin;
+using Google.Apis.Auth.OAuth2;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -104,6 +106,7 @@ builder.Services.AddScoped<IJWTService, JWTService>();
 builder.Services.AddHostedService<LeaveStatusUpdateService>();
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole(); // hoặc AddFile, AddDebug, tùy nhu cầu
+builder.Services.AddScoped<INotificationService, FirebaseNotificationService>();
 
 
 
@@ -123,10 +126,10 @@ builder.Services.AddScoped<IReportRepository, ReportRepository>();
 builder.Services.AddScoped<IScheduleRepository, ScheduleRepository>();
 builder.Services.AddScoped<IScheduleDetailsRepository, ScheduleDetailsRepository>();
 builder.Services.AddScoped<IAlertRepository, AlertRepository>();
-//builder.Services.AddScoped<ISensorBinRepository, SensorBinRepository>();
+builder.Services.AddScoped<ISensorBinRepository, SensorBinRepository>();
 //builder.Services.AddScoped<IScheduleDetailRatingRepository, ScheduleDetailRatingRepository>();
 //builder.Services.AddScoped<IShiftSwapRepository, ShiftSwapRepository>();
-//builder.Services.AddScoped<IAttendanceRecordRepository, AttendanceRecordRepository>();
+builder.Services.AddScoped<IAttendanceRecordRepository, AttendanceRecordRepository>();
 //builder.Services.AddScoped<IHolidayRepository, HolidayRepository>();
 builder.Services.AddScoped<IWorkGroupMemberRepository, WorkGroupMemberRepository>();
 builder.Services.AddScoped<IWorkerGroupRepository, WorkerGroupRepository>();
@@ -148,12 +151,12 @@ builder.Services.AddScoped<IReportService, ReportService>();
 builder.Services.AddScoped<IScheduleService, ScheduleService>();
 builder.Services.AddScoped<IScheduleDetailsService, ScheduleDetailsService>();
 builder.Services.AddScoped<IAlertService, AlertService>();
-//builder.Services.AddScoped<ISensorBinService, SensorBinService>();
+builder.Services.AddScoped<ISensorBinService, SensorBinService>();
 builder.Services.AddScoped<ICloudinaryService, CloudinaryService>();
 ////builder.Services.AddScoped<IShiftSwapService, ShiftSwapService>();
 //builder.Services.AddHostedService<ScheduleDetailsStatusUpdateService>();
 ////builder.Services.AddHostedService<UserStatusUpdateService>();
-//builder.Services.AddScoped<IAttendanceRecordService, AttendanceRecordService>();
+builder.Services.AddScoped<IAttendanceRecordService, AttendanceRecordService>();
 //builder.Services.AddScoped<IHolidayService, HolidayService>();
 builder.Services.AddScoped<IWorkGroupMemberService, WorkGroupMemberService>();
 builder.Services.AddScoped<IWorkerGroupService, WorkerGroupService>();
@@ -163,6 +166,12 @@ builder.Services.AddScoped<IHolidayProvider, HolidayProvider>();
 
 builder.Services.Configure<CloudinarySettings>(
     builder.Configuration.GetSection("CloudinarySettings"));
+// Initialize Firebase Admin SDK
+FirebaseApp.Create(new AppOptions()
+{
+    Credential = GoogleCredential.FromFile("mswt-547af-firebase-adminsdk-fbsvc-61031b9c47.json"),
+    ProjectId = "mswt-547af"
+});
 
 builder.Services.AddControllers();
 
@@ -173,6 +182,8 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+
 
 
 // Đăng ký AutoMapper

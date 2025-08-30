@@ -48,7 +48,7 @@ namespace MSWT_Services.Services
                 request.TrashBinId, (DateTime)request.TimeSend
             );
 
-            request.UserId = userId; // Nếu null thì vẫn giữ null
+            request.WorkerGroupId = userId; // Nếu null thì vẫn giữ null
             await _alertRepository.AddAsync(request);
         }
         public async Task<IEnumerable<Alert>> GetAlertsByUser(string userId)

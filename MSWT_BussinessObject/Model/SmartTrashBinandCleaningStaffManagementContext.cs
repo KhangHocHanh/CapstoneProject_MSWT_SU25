@@ -89,15 +89,15 @@ public partial class SmartTrashBinandCleaningStaffManagementContext : DbContext
             entity.Property(e => e.Status).HasMaxLength(50);
             entity.Property(e => e.TimeSend).HasColumnType("datetime");
             entity.Property(e => e.TrashBinId).HasMaxLength(50);
-            entity.Property(e => e.UserId).HasMaxLength(50);
+            entity.Property(e => e.WorkerGroupId).HasMaxLength(50);
 
             entity.HasOne(d => d.TrashBin).WithMany(p => p.Alerts)
                 .HasForeignKey(d => d.TrashBinId)
                 .HasConstraintName("Alerts_TrashBins_FK");
 
-            entity.HasOne(d => d.User).WithMany(p => p.Alerts)
-                .HasForeignKey(d => d.UserId)
-                .HasConstraintName("FK_Alerts_Users");
+            entity.HasOne(d => d.WorkerGroup).WithMany(p => p.Alerts)
+                .HasForeignKey(d => d.WorkerGroupId)
+                .HasConstraintName("FK_Alerts_WorkerGroup");
         });
 
         modelBuilder.Entity<Area>(entity =>
@@ -450,6 +450,8 @@ public partial class SmartTrashBinandCleaningStaffManagementContext : DbContext
             entity.Property(e => e.UserName)
                 .HasMaxLength(50)
                 .IsUnicode(false);
+            entity.Property(e => e.FcmToken)
+                .HasMaxLength(500);
 
             entity.HasOne(d => d.Role).WithMany(p => p.Users)
                 .HasForeignKey(d => d.RoleId)
