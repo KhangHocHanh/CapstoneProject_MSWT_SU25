@@ -18,6 +18,8 @@ namespace MSWT_Repositories.IRepository
         Task<IEnumerable<ScheduleDetail>> SearchByUserIdAsync(string userId);
         Task<IEnumerable<ScheduleDetail>> GetByUserIdAndDateAsync(string userId, DateTime date);
         Task<(IEnumerable<ScheduleDetail> Items, int TotalCount)> GetByDatePaginatedAsync(DateTime date, int pageNumber, int pageSize);
+        Task<IEnumerable<ScheduleDetail>> GetByDateAsync(DateTime date);
+        Task<List<string>> GetDistinctScheduleDatesAsync();
         //Task<ScheduleDetail?> GetByUserAndDateAsync(string userId, DateOnly targetDate);
         //Task<double?> GetAverageRatingForMonthAsync(string workerId, int year, int month);
         //Task<(int workedDays, int totalDays, double percentage)> GetWorkStatsInMonthAsync(string workerId, int month, int year);

@@ -207,6 +207,25 @@ namespace MSWT_Services.Services
             return _mapper.Map<ScheduleDetailsResponseDTO>(scheduleDetail);
         }
 
+        public async Task<ScheduleDetailsResponseDTO> MarkAsNotComplete(string scheduleDetailId)
+        {
+            var scheduleDetail = await _scheduleDetailsRepository.GetByIdAsync(scheduleDetailId);
+            if (scheduleDetail == null)
+                throw new Exception("ScheduleDetail not found.");
+
+            scheduleDetail.Status = "Chưa hoàn thành";
+
+            await _scheduleDetailsRepository.UpdateAsync(scheduleDetail);
+
+            return _mapper.Map<ScheduleDetailsResponseDTO>(scheduleDetail);
+        }
+
+        public async Task<IEnumerable<string>> GetScheduleDatesAsync()
+        {
+            return await _scheduleDetailsRepository.GetDistinctScheduleDatesAsync();
+        }
+
+
         //public async Task<bool> AddWorkerToSchedule(string id, string workerId)
         //{
         //    try

@@ -23,6 +23,8 @@ namespace MSWT_Services.IServices
         Task<ScheduleDetailsResponseDTO> MarkAsComplete(string scheduleDetailId);
         Task<IEnumerable<ScheduleDetailsResponseDTO>> GetByUserIdAndDateAsync(string userId, DateTime date);
         Task<PaginatedResponse<ScheduleDetailsResponseDTO>> GetByDatePaginatedAsync(DateTime date, int pageNumber, int pageSize);
+        Task<ScheduleDetailsResponseDTO> MarkAsNotComplete(string scheduleDetailId);
+        Task<IEnumerable<string>> GetScheduleDatesAsync();
 
         //Task<bool> AddWorkerToSchedule(string id, string workerId);
         //Task<bool> AddSupervisorToSchedule(string id, string supervisorId);

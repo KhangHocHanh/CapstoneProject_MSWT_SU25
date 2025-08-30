@@ -116,6 +116,20 @@ namespace MSWT_Repositories.Repository
             return (items, totalCount);
         }
 
+        public async Task<IEnumerable<ScheduleDetail>> GetByDateAsync(DateTime date)
+        {
+            return await _context.ScheduleDetails
+                .Include(sd => sd.Schedule)
+                .Include(sd => sd.GroupAssignment)
+                .Include(sd => sd.Area)
+                .Include(sd => sd.WorkerGroup)
+                    .ThenInclude(wg => wg.WorkGroupMembers)
+                        .ThenInclude(wgm => wgm.User)
+                .Where(sd => sd.Date.HasValue
+                          && sd.Date.Value.Date == date.Date)
+                .ToListAsync();
+        }
+
         //public async Task<ScheduleDetail?> GetByUserAndDateAsync(string userId, DateOnly targetDate)
         //{
         //    return await _context.ScheduleDetails
@@ -175,6 +189,21 @@ namespace MSWT_Repositories.Repository
 
         //    return (workedDays, totalDays, percentage);
         //}
+
+
+        public async Task<List<string>> GetDistinctScheduleDatesAsync()
+        {
+            var dates = await _context.ScheduleDetails
+                .Where(s => s.Date.HasValue)
+                .Select(s => s.Date.Value.Date)
+                .Distinct()
+                .OrderBy(d => d)
+                .ToListAsync();   // ✅ query executed in DB
+
+            return dates
+                .Select(d => d.ToString("yyyy-MM-dd"))
+                .ToList();        // ✅ convert to string list
+        }
 
         public async Task<ScheduleDetail?> GetByWorkerAndDateAsync(string userId, DateOnly date)
         {
