@@ -42,7 +42,9 @@ namespace MSWT_Repositories.Repository
         async Task<IEnumerable<WorkerGroup>> IWorkerGroupRepository.GetAllAsync()
         {
             return await _context.WorkerGroups
-                //.Include(m => m.User)
+                .Include(m => m.WorkGroupMembers)
+                .ThenInclude(u => u.User)
+                .ThenInclude(u => u.Role)
                 .ToListAsync();
         }
 

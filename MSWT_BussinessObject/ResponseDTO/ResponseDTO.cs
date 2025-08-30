@@ -235,6 +235,7 @@ namespace MSWT_BussinessObject.ResponseDTO
             public string? WorkGroupId { get; set; }
             public string? UserId { get; set; }
             public string? RoleId { get; set; }
+            public string? RoleName { get; set; } // From Role navigation property
             public DateTime? JoinedAt { get; set; }
             public DateTime? LeftAt { get; set; }
             public string? FullName { get; set; } // From User navigation property

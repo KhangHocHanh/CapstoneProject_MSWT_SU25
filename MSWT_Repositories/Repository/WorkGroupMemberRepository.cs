@@ -44,6 +44,7 @@ namespace MSWT_Repositories.Repository
             {
                 return await _context.WorkGroupMembers
                     .Include(m => m.User)
+                    .ThenInclude(u => u.Role)
                     .ToListAsync();
             }
 

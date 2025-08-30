@@ -107,6 +107,7 @@ namespace MSWT_Services.Services
                     WorkGroupId = m.WorkGroupId,
                     UserId = m.UserId,
                     RoleId = m.RoleId,
+                    RoleName = m.User?.Role?.RoleName,
                     JoinedAt = m.JoinedAt,
                     LeftAt = m.LeftAt,
                     FullName = m.User?.FullName,

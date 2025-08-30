@@ -62,7 +62,8 @@ namespace MSWT_Services
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                     new Claim("User_Id",account.UserId.ToString()),
                     new Claim("Username", account.UserName.ToString()),
-                    new Claim(ClaimTypes.Role, account.Role.RoleName)  // Store Role in Token
+                    new Claim(ClaimTypes.Role, account.Role.RoleName) // Store Role in Token
+                 
                 };
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
             var signIn = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
