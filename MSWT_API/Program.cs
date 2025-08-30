@@ -169,8 +169,8 @@ builder.Services.Configure<CloudinarySettings>(
 // Initialize Firebase Admin SDK
 FirebaseApp.Create(new AppOptions()
 {
-    Credential = GoogleCredential.FromFile("mswt-547af-firebase-adminsdk-fbsvc-61031b9c47.json"),
-    ProjectId = "mswt-547af"
+    Credential = GoogleCredential.FromFile("private_key.json"),
+    ProjectId = "mswt-capstone"
 });
 
 builder.Services.AddControllers();
