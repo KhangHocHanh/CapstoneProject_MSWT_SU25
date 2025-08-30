@@ -102,6 +102,17 @@ namespace MSWT_API.Controllers
             return Ok(dates);
         }
 
+        [HttpGet("dates/{userId}")]
+        public async Task<IActionResult> GetDistinctScheduleDatesByUserId(string userId)
+        {
+            var dates = await _scheduleDetailsService.GetDistinctScheduleDatesByUserIdAsync(userId);
+
+            if (dates == null || !dates.Any())
+                return NotFound(new { message = "No scheduleDetails found for this user." });
+
+            return Ok(dates);
+        }
+
         //[HttpPut("{id}/assignments/{assignmentId}")]
         //public async Task<IActionResult> AddAssignmentToSchedule(string id, string assignmentId)
         //{
